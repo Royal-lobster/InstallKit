@@ -499,19 +499,13 @@ const PRODUCTIVITY_APPS: Array<App> = [
 	{
 		id: "todoist",
 		name: "Todoist",
-		brewName: "todoist",
+		brewName: "todoist-app",
 		category: AppCategoryEnum.enum.productivity,
 		description: "Task manager and to-do list app",
 		iconUrl: simpleIcon("todoist"),
+		isCask: true,
 	},
-	{
-		id: "things",
-		name: "Things 3",
-		brewName: "things",
-		category: AppCategoryEnum.enum.productivity,
-		description: "Award-winning task manager",
-		iconUrl: favicon("culturedcode.com"),
-	},
+
 	{
 		id: "ticktick",
 		name: "TickTick",
@@ -539,14 +533,7 @@ const PRODUCTIVITY_APPS: Array<App> = [
 		iconUrl: favicon("flexibits.com"),
 		isCask: true,
 	},
-	{
-		id: "cron",
-		name: "Cron",
-		brewName: "cron",
-		category: AppCategoryEnum.enum.productivity,
-		description: "Modern calendar for professionals",
-		iconUrl: simpleIcon("googlecalendar"),
-	},
+
 	{
 		id: "grammarly",
 		name: "Grammarly Desktop",
@@ -680,14 +667,7 @@ const MEDIA_APPS: Array<App> = [
 		iconUrl: simpleIcon("spotify"),
 		isCask: true,
 	},
-	{
-		id: "apple-music",
-		name: "Apple Music",
-		brewName: "apple-music",
-		category: AppCategoryEnum.enum.media,
-		description: "Apple's music streaming service",
-		iconUrl: simpleIcon("applemusic"),
-	},
+
 	{
 		id: "vlc",
 		name: "VLC",
@@ -1018,10 +998,11 @@ const SECURITY_APPS: Array<App> = [
 	{
 		id: "mullvad-vpn",
 		name: "Mullvad VPN",
-		brewName: "mullvadvpn",
+		brewName: "mullvad-vpn",
 		category: AppCategoryEnum.enum.security,
 		description: "Privacy-focused VPN service",
 		iconUrl: simpleIcon("mullvad"),
+		isCask: true,
 	},
 	{
 		id: "protonvpn",
@@ -1396,10 +1377,11 @@ const CLI_APPS: Array<App> = [
 	{
 		id: "python",
 		name: "Python",
-		brewName: "python",
+		brewName: "python@3.13",
 		category: AppCategoryEnum.enum.cli,
-		description: "Python programming language",
+		description: "Python programming language (3.13)",
 		iconUrl: simpleIcon("python"),
+		isCask: false,
 	},
 	{
 		id: "ruby",
@@ -1431,10 +1413,11 @@ const CLI_APPS: Array<App> = [
 	{
 		id: "postgres",
 		name: "PostgreSQL",
-		brewName: "postgresql",
+		brewName: "postgresql@18",
 		category: AppCategoryEnum.enum.cli,
-		description: "Object-relational database",
+		description: "Object-relational database (18)",
 		iconUrl: simpleIcon("postgresql"),
+		isCask: false,
 	},
 	{
 		id: "mysql",
