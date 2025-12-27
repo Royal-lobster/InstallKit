@@ -27,20 +27,8 @@ export function AppCard({ app, isSelected, onToggle }: AppCardProps) {
 		setShouldFetch(true);
 	}, []);
 
-	const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
-		if (event.key === "Enter" || event.key === " ") {
-			event.preventDefault();
-			onToggle(app.id);
-		}
-	};
-
 	return (
 		<div
-			role="button"
-			tabIndex={0}
-			aria-pressed={isSelected}
-			onClick={() => onToggle(app.id)}
-			onKeyDown={handleKeyDown}
 			className={cn(
 				"group flex cursor-pointer select-none items-center gap-2.5 border px-2.5 py-2 text-left transition-colors",
 				"hover:bg-muted/50",
@@ -62,7 +50,11 @@ export function AppCard({ app, isSelected, onToggle }: AppCardProps) {
 					error={error}
 					onTrigger={handleTriggerFetch}
 				/>
-				<SelectionCheckbox isSelected={isSelected} />
+				<SelectionCheckbox
+					isSelected={isSelected}
+					onToggle={onToggle}
+					appId={app.id}
+				/>
 			</div>
 		</div>
 	);
