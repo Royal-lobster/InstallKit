@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./public/logo512.png" alt="TakeOver logo" width="120" />
+  <img src="./public/icon.svg" alt="TakeOver logo" width="120" />
 </p>
 
 <h1 align="center">TakeOver 🚀</h1>
