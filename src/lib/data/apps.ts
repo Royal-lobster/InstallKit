@@ -1,6 +1,6 @@
+import type { App, AppCategory } from "../../_schema";
 import { AppCategoryEnum } from "../../_schema";
 import { favicon, simpleIcon } from "../helpers/icons";
-import type { App, AppCategory } from "../../_schema";
 
 const BROWSER_APPS: Array<App> = [
 	{
@@ -10,6 +10,7 @@ const BROWSER_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.browsers,
 		description: "Fast, secure web browser by Google",
 		iconUrl: simpleIcon("googlechrome"),
+		isCask: true,
 	},
 	{
 		id: "firefox",
@@ -18,6 +19,7 @@ const BROWSER_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.browsers,
 		description: "Privacy-focused browser by Mozilla",
 		iconUrl: simpleIcon("firefox"),
+		isCask: true,
 	},
 	{
 		id: "brave",
@@ -26,6 +28,7 @@ const BROWSER_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.browsers,
 		description: "Privacy-first browser with built-in ad blocker",
 		iconUrl: simpleIcon("brave"),
+		isCask: true,
 	},
 	{
 		id: "arc",
@@ -34,6 +37,7 @@ const BROWSER_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.browsers,
 		description: "The browser that reimagines web browsing",
 		iconUrl: simpleIcon("arc"),
+		isCask: true,
 	},
 	{
 		id: "opera",
@@ -42,6 +46,7 @@ const BROWSER_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.browsers,
 		description: "Feature-rich browser with built-in VPN",
 		iconUrl: simpleIcon("opera"),
+		isCask: true,
 	},
 	{
 		id: "edge",
@@ -50,6 +55,7 @@ const BROWSER_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.browsers,
 		description: "Chromium-based browser by Microsoft",
 		iconUrl: favicon("www.microsoft.com"),
+		isCask: true,
 	},
 	{
 		id: "vivaldi",
@@ -58,6 +64,7 @@ const BROWSER_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.browsers,
 		description: "Highly customizable browser for power users",
 		iconUrl: simpleIcon("vivaldi"),
+		isCask: true,
 	},
 	{
 		id: "tor-browser",
@@ -66,6 +73,7 @@ const BROWSER_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.browsers,
 		description: "Privacy browser using Tor network",
 		iconUrl: simpleIcon("torbrowser"),
+		isCask: true,
 	},
 	{
 		id: "orion",
@@ -74,6 +82,7 @@ const BROWSER_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.browsers,
 		description: "WebKit browser with Chrome/Firefox extension support",
 		iconUrl: favicon("browser.kagi.com"),
+		isCask: true,
 	},
 ];
 
@@ -85,6 +94,7 @@ const DEVELOPMENT_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.development,
 		description: "Lightweight but powerful source code editor",
 		iconUrl: favicon("code.visualstudio.com"),
+		isCask: true,
 	},
 	{
 		id: "cursor",
@@ -93,6 +103,7 @@ const DEVELOPMENT_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.development,
 		description: "AI-first code editor built for pair programming",
 		iconUrl: simpleIcon("cursor"),
+		isCask: true,
 		invertInDark: true,
 	},
 	{
@@ -102,6 +113,7 @@ const DEVELOPMENT_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.development,
 		description: "High-performance multiplayer code editor",
 		iconUrl: favicon("zed.dev"),
+		isCask: true,
 	},
 	{
 		id: "iterm2",
@@ -110,6 +122,7 @@ const DEVELOPMENT_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.development,
 		description: "Terminal emulator for macOS",
 		iconUrl: simpleIcon("iterm2"),
+		isCask: true,
 		invertInDark: true,
 	},
 	{
@@ -119,6 +132,7 @@ const DEVELOPMENT_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.development,
 		description: "Modern, Rust-based terminal with AI",
 		iconUrl: simpleIcon("warp"),
+		isCask: true,
 	},
 	{
 		id: "alacritty",
@@ -127,6 +141,7 @@ const DEVELOPMENT_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.development,
 		description: "GPU-accelerated terminal emulator",
 		iconUrl: simpleIcon("alacritty"),
+		isCask: true,
 	},
 	{
 		id: "kitty",
@@ -135,6 +150,7 @@ const DEVELOPMENT_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.development,
 		description: "Fast, feature-rich GPU terminal",
 		iconUrl: favicon("sw.kovidgoyal.net"),
+		isCask: true,
 	},
 	{
 		id: "docker",
@@ -143,6 +159,7 @@ const DEVELOPMENT_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.development,
 		description: "Container platform for developers",
 		iconUrl: simpleIcon("docker"),
+		isCask: false,
 	},
 	{
 		id: "github-desktop",
@@ -151,6 +168,7 @@ const DEVELOPMENT_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.development,
 		description: "Git client by GitHub",
 		iconUrl: simpleIcon("github"),
+		isCask: true,
 		invertInDark: true,
 	},
 	{
@@ -160,6 +178,7 @@ const DEVELOPMENT_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.development,
 		description: "Free Git client by Atlassian",
 		iconUrl: simpleIcon("sourcetree"),
+		isCask: true,
 	},
 	{
 		id: "fork",
@@ -168,6 +187,7 @@ const DEVELOPMENT_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.development,
 		description: "Fast and friendly Git client",
 		iconUrl: simpleIcon("git"),
+		isCask: true,
 	},
 	{
 		id: "sublime-text",
@@ -176,6 +196,7 @@ const DEVELOPMENT_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.development,
 		description: "Sophisticated text editor for code",
 		iconUrl: simpleIcon("sublimetext"),
+		isCask: true,
 	},
 	{
 		id: "sublime-merge",
@@ -184,6 +205,7 @@ const DEVELOPMENT_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.development,
 		description: "Git client from Sublime HQ",
 		iconUrl: simpleIcon("sublimetext"),
+		isCask: true,
 	},
 	{
 		id: "postman",
@@ -192,6 +214,7 @@ const DEVELOPMENT_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.development,
 		description: "API platform for building and using APIs",
 		iconUrl: simpleIcon("postman"),
+		isCask: true,
 	},
 	{
 		id: "insomnia",
@@ -200,6 +223,7 @@ const DEVELOPMENT_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.development,
 		description: "Open-source API client",
 		iconUrl: simpleIcon("insomnia"),
+		isCask: true,
 	},
 	{
 		id: "httpie",
@@ -208,6 +232,7 @@ const DEVELOPMENT_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.development,
 		description: "User-friendly HTTP client",
 		iconUrl: simpleIcon("httpie"),
+		isCask: false,
 	},
 	{
 		id: "tableplus",
@@ -216,6 +241,7 @@ const DEVELOPMENT_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.development,
 		description: "Modern database management GUI",
 		iconUrl: favicon("tableplus.com"),
+		isCask: true,
 	},
 	{
 		id: "dbeaver",
@@ -224,6 +250,7 @@ const DEVELOPMENT_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.development,
 		description: "Universal database tool",
 		iconUrl: simpleIcon("dbeaver"),
+		isCask: true,
 		invertInDark: true,
 	},
 	{
@@ -233,6 +260,7 @@ const DEVELOPMENT_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.development,
 		description: "MySQL/MariaDB database manager",
 		iconUrl: simpleIcon("mysql"),
+		isCask: true,
 	},
 	{
 		id: "android-studio",
@@ -241,6 +269,7 @@ const DEVELOPMENT_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.development,
 		description: "Official IDE for Android development",
 		iconUrl: simpleIcon("androidstudio"),
+		isCask: true,
 	},
 	{
 		id: "jetbrains-toolbox",
@@ -249,6 +278,7 @@ const DEVELOPMENT_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.development,
 		description: "Manage JetBrains IDEs",
 		iconUrl: simpleIcon("jetbrains"),
+		isCask: true,
 		invertInDark: true,
 	},
 	{
@@ -258,6 +288,7 @@ const DEVELOPMENT_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.development,
 		description: "Java IDE by JetBrains",
 		iconUrl: simpleIcon("intellijidea"),
+		isCask: true,
 		invertInDark: true,
 	},
 	{
@@ -267,6 +298,7 @@ const DEVELOPMENT_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.development,
 		description: "Python IDE by JetBrains",
 		iconUrl: simpleIcon("pycharm"),
+		isCask: true,
 		invertInDark: true,
 	},
 	{
@@ -276,6 +308,7 @@ const DEVELOPMENT_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.development,
 		description: "JavaScript IDE by JetBrains",
 		iconUrl: simpleIcon("webstorm"),
+		isCask: true,
 		invertInDark: true,
 	},
 	{
@@ -285,6 +318,7 @@ const DEVELOPMENT_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.development,
 		description: "Secure tunnels to localhost",
 		iconUrl: simpleIcon("ngrok"),
+		isCask: true,
 		invertInDark: true,
 	},
 	{
@@ -294,6 +328,7 @@ const DEVELOPMENT_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.development,
 		description: "Modern HTTP debugging proxy",
 		iconUrl: favicon("proxyman.com"),
+		isCask: true,
 	},
 	{
 		id: "charles",
@@ -302,6 +337,7 @@ const DEVELOPMENT_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.development,
 		description: "HTTP proxy and monitor",
 		iconUrl: simpleIcon("charles"),
+		isCask: true,
 	},
 	{
 		id: "devtoys",
@@ -310,6 +346,7 @@ const DEVELOPMENT_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.development,
 		description: "Swiss Army knife for developers",
 		iconUrl: favicon("devtoys.app"),
+		isCask: true,
 	},
 ];
 
@@ -321,6 +358,7 @@ const PRODUCTIVITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.productivity,
 		description: "All-in-one workspace for notes and docs",
 		iconUrl: simpleIcon("notion"),
+		isCask: true,
 		invertInDark: true,
 	},
 	{
@@ -330,6 +368,7 @@ const PRODUCTIVITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.productivity,
 		description: "Private knowledge base with local Markdown files",
 		iconUrl: simpleIcon("obsidian"),
+		isCask: true,
 	},
 	{
 		id: "logseq",
@@ -338,6 +377,7 @@ const PRODUCTIVITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.productivity,
 		description: "Privacy-first outliner and knowledge base",
 		iconUrl: favicon("logseq.com"),
+		isCask: true,
 	},
 	{
 		id: "craft",
@@ -346,6 +386,7 @@ const PRODUCTIVITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.productivity,
 		description: "Beautiful document editor for Mac",
 		iconUrl: favicon("craft.do"),
+		isCask: true,
 	},
 	{
 		id: "raycast",
@@ -354,6 +395,7 @@ const PRODUCTIVITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.productivity,
 		description: "Blazingly fast productivity launcher",
 		iconUrl: simpleIcon("raycast"),
+		isCask: true,
 	},
 	{
 		id: "alfred",
@@ -362,6 +404,7 @@ const PRODUCTIVITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.productivity,
 		description: "Productivity app with custom workflows",
 		iconUrl: simpleIcon("alfred"),
+		isCask: true,
 	},
 	{
 		id: "rectangle",
@@ -370,6 +413,7 @@ const PRODUCTIVITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.productivity,
 		description: "Window management for macOS",
 		iconUrl: favicon("rectangleapp.com"),
+		isCask: true,
 	},
 	{
 		id: "alt-tab",
@@ -378,6 +422,7 @@ const PRODUCTIVITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.productivity,
 		description: "Windows-style Alt+Tab window switcher",
 		iconUrl: favicon("alt-tab-macos.netlify.app"),
+		isCask: true,
 	},
 	{
 		id: "maccy",
@@ -386,6 +431,7 @@ const PRODUCTIVITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.productivity,
 		description: "Lightweight clipboard manager",
 		iconUrl: favicon("maccy.app"),
+		isCask: true,
 	},
 	{
 		id: "shottr",
@@ -394,6 +440,7 @@ const PRODUCTIVITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.productivity,
 		description: "Screenshot tool with annotations",
 		iconUrl: favicon("shottr.cc"),
+		isCask: true,
 	},
 	{
 		id: "cleanshot",
@@ -402,6 +449,7 @@ const PRODUCTIVITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.productivity,
 		description: "Advanced screenshot and recording tool",
 		iconUrl: favicon("cleanshot.com"),
+		isCask: true,
 	},
 	{
 		id: "dropzone",
@@ -410,6 +458,7 @@ const PRODUCTIVITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.productivity,
 		description: "Drag and drop file actions",
 		iconUrl: favicon("aptonic.com"),
+		isCask: true,
 	},
 	{
 		id: "numi",
@@ -418,6 +467,7 @@ const PRODUCTIVITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.productivity,
 		description: "Beautiful calculator app",
 		iconUrl: favicon("numi.app"),
+		isCask: true,
 	},
 	{
 		id: "cheatsheet",
@@ -426,6 +476,7 @@ const PRODUCTIVITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.productivity,
 		description: "Show all keyboard shortcuts",
 		iconUrl: favicon("cheatsheetapp.com"),
+		isCask: true,
 	},
 	{
 		id: "1password",
@@ -434,6 +485,7 @@ const PRODUCTIVITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.productivity,
 		description: "Password manager for families and businesses",
 		iconUrl: simpleIcon("1password"),
+		isCask: true,
 	},
 	{
 		id: "bitwarden",
@@ -442,6 +494,7 @@ const PRODUCTIVITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.productivity,
 		description: "Open-source password manager",
 		iconUrl: simpleIcon("bitwarden"),
+		isCask: true,
 	},
 	{
 		id: "todoist",
@@ -466,6 +519,7 @@ const PRODUCTIVITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.productivity,
 		description: "To-do list with calendar and habits",
 		iconUrl: simpleIcon("ticktick"),
+		isCask: true,
 	},
 	{
 		id: "linear",
@@ -474,6 +528,7 @@ const PRODUCTIVITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.productivity,
 		description: "Modern issue tracking for teams",
 		iconUrl: simpleIcon("linear"),
+		isCask: true,
 	},
 	{
 		id: "fantastical",
@@ -482,6 +537,7 @@ const PRODUCTIVITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.productivity,
 		description: "Calendar app with natural language input",
 		iconUrl: favicon("flexibits.com"),
+		isCask: true,
 	},
 	{
 		id: "cron",
@@ -498,6 +554,7 @@ const PRODUCTIVITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.productivity,
 		description: "Writing assistant for clear communication",
 		iconUrl: simpleIcon("grammarly"),
+		isCask: true,
 	},
 ];
 
@@ -509,6 +566,7 @@ const COMMUNICATION_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.communication,
 		description: "Business communication platform",
 		iconUrl: simpleIcon("slack"),
+		isCask: true,
 	},
 	{
 		id: "discord",
@@ -517,6 +575,7 @@ const COMMUNICATION_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.communication,
 		description: "Voice, video, and text chat platform",
 		iconUrl: simpleIcon("discord"),
+		isCask: true,
 	},
 	{
 		id: "zoom",
@@ -525,6 +584,7 @@ const COMMUNICATION_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.communication,
 		description: "Video conferencing platform",
 		iconUrl: simpleIcon("zoom"),
+		isCask: true,
 	},
 	{
 		id: "telegram",
@@ -533,6 +593,7 @@ const COMMUNICATION_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.communication,
 		description: "Cloud-based messaging app",
 		iconUrl: simpleIcon("telegram"),
+		isCask: true,
 	},
 	{
 		id: "whatsapp",
@@ -541,6 +602,7 @@ const COMMUNICATION_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.communication,
 		description: "Messaging and calling app",
 		iconUrl: simpleIcon("whatsapp"),
+		isCask: true,
 	},
 	{
 		id: "signal",
@@ -549,6 +611,7 @@ const COMMUNICATION_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.communication,
 		description: "Private messenger with end-to-end encryption",
 		iconUrl: simpleIcon("signal"),
+		isCask: true,
 	},
 	{
 		id: "microsoft-teams",
@@ -557,6 +620,7 @@ const COMMUNICATION_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.communication,
 		description: "Team collaboration platform",
 		iconUrl: favicon("www.microsoft.com"),
+		isCask: true,
 	},
 	{
 		id: "webex",
@@ -565,6 +629,7 @@ const COMMUNICATION_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.communication,
 		description: "Video conferencing by Cisco",
 		iconUrl: simpleIcon("webex"),
+		isCask: true,
 		invertInDark: true,
 	},
 	{
@@ -574,6 +639,7 @@ const COMMUNICATION_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.communication,
 		description: "Video calling and messaging",
 		iconUrl: favicon("www.skype.com"),
+		isCask: true,
 	},
 	{
 		id: "element",
@@ -582,6 +648,7 @@ const COMMUNICATION_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.communication,
 		description: "Decentralized Matrix messenger",
 		iconUrl: simpleIcon("element"),
+		isCask: true,
 	},
 	{
 		id: "mailspring",
@@ -590,6 +657,7 @@ const COMMUNICATION_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.communication,
 		description: "Beautiful email client",
 		iconUrl: favicon("getmailspring.com"),
+		isCask: true,
 	},
 	{
 		id: "spark",
@@ -598,6 +666,7 @@ const COMMUNICATION_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.communication,
 		description: "Smart email client by Readdle",
 		iconUrl: favicon("www.shadowlab.org"),
+		isCask: false,
 	},
 ];
 
@@ -609,6 +678,7 @@ const MEDIA_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.media,
 		description: "Music streaming service",
 		iconUrl: simpleIcon("spotify"),
+		isCask: true,
 	},
 	{
 		id: "apple-music",
@@ -625,6 +695,7 @@ const MEDIA_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.media,
 		description: "Free and open-source media player",
 		iconUrl: simpleIcon("vlcmediaplayer"),
+		isCask: true,
 	},
 	{
 		id: "iina",
@@ -633,6 +704,7 @@ const MEDIA_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.media,
 		description: "Modern media player for macOS",
 		iconUrl: favicon("iina.io"),
+		isCask: true,
 	},
 	{
 		id: "plex",
@@ -641,6 +713,7 @@ const MEDIA_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.media,
 		description: "Media server and streaming",
 		iconUrl: simpleIcon("plex"),
+		isCask: true,
 	},
 	{
 		id: "handbrake",
@@ -649,6 +722,7 @@ const MEDIA_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.media,
 		description: "Open-source video transcoder",
 		iconUrl: favicon("handbrake.fr"),
+		isCask: false,
 	},
 	{
 		id: "obs",
@@ -657,6 +731,7 @@ const MEDIA_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.media,
 		description: "Free streaming and recording software",
 		iconUrl: simpleIcon("obsstudio"),
+		isCask: true,
 		invertInDark: true,
 	},
 	{
@@ -666,6 +741,7 @@ const MEDIA_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.media,
 		description: "Streaming software with alerts",
 		iconUrl: simpleIcon("streamlabs"),
+		isCask: true,
 	},
 	{
 		id: "audacity",
@@ -674,6 +750,7 @@ const MEDIA_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.media,
 		description: "Free audio editor and recorder",
 		iconUrl: simpleIcon("audacity"),
+		isCask: true,
 	},
 	{
 		id: "steam",
@@ -682,6 +759,7 @@ const MEDIA_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.media,
 		description: "Gaming platform by Valve",
 		iconUrl: simpleIcon("steam"),
+		isCask: true,
 		invertInDark: true,
 	},
 	{
@@ -691,6 +769,7 @@ const MEDIA_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.media,
 		description: "Epic Games store and launcher",
 		iconUrl: simpleIcon("epicgames"),
+		isCask: true,
 		invertInDark: true,
 	},
 	{
@@ -700,6 +779,7 @@ const MEDIA_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.media,
 		description: "DRM-free game launcher",
 		iconUrl: favicon("www.gog.com"),
+		isCask: true,
 	},
 	{
 		id: "downie",
@@ -708,6 +788,7 @@ const MEDIA_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.media,
 		description: "Video downloader for thousands of sites",
 		iconUrl: simpleIcon("youtube"),
+		isCask: true,
 	},
 	{
 		id: "permute",
@@ -716,6 +797,7 @@ const MEDIA_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.media,
 		description: "Media converter for Mac",
 		iconUrl: simpleIcon("convertio"),
+		isCask: true,
 	},
 ];
 
@@ -727,6 +809,7 @@ const UTILITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.utilities,
 		description: "Archive extraction tool",
 		iconUrl: favicon("theunarchiver.com"),
+		isCask: true,
 	},
 	{
 		id: "keka",
@@ -735,6 +818,7 @@ const UTILITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.utilities,
 		description: "macOS file archiver",
 		iconUrl: favicon("www.keka.io"),
+		isCask: true,
 	},
 	{
 		id: "appcleaner",
@@ -743,6 +827,7 @@ const UTILITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.utilities,
 		description: "Thoroughly uninstall apps",
 		iconUrl: favicon("freemacsoft.net"),
+		isCask: true,
 	},
 	{
 		id: "cleanmymac",
@@ -751,6 +836,7 @@ const UTILITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.utilities,
 		description: "Mac cleaning and optimization tool",
 		iconUrl: favicon("macpaw.com"),
+		isCask: true,
 	},
 	{
 		id: "daisydisk",
@@ -759,6 +845,7 @@ const UTILITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.utilities,
 		description: "Visualize disk space usage",
 		iconUrl: favicon("daisydiskapp.com"),
+		isCask: true,
 	},
 	{
 		id: "stats",
@@ -767,6 +854,7 @@ const UTILITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.utilities,
 		description: "System monitor in your menu bar",
 		iconUrl: favicon("exelban.github.io"),
+		isCask: true,
 	},
 	{
 		id: "istatmenus",
@@ -775,6 +863,7 @@ const UTILITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.utilities,
 		description: "Advanced system monitor",
 		iconUrl: favicon("bjango.com"),
+		isCask: true,
 	},
 	{
 		id: "aldente",
@@ -783,6 +872,7 @@ const UTILITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.utilities,
 		description: "MacBook battery charge limiter",
 		iconUrl: favicon("apphousekitchen.com"),
+		isCask: true,
 	},
 	{
 		id: "karabiner-elements",
@@ -791,6 +881,7 @@ const UTILITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.utilities,
 		description: "Keyboard customizer for macOS",
 		iconUrl: favicon("karabiner-elements.pqrs.org"),
+		isCask: true,
 	},
 	{
 		id: "bartender",
@@ -799,6 +890,7 @@ const UTILITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.utilities,
 		description: "Organize your menu bar icons",
 		iconUrl: favicon("www.macbartender.com"),
+		isCask: true,
 	},
 	{
 		id: "ice",
@@ -807,6 +899,7 @@ const UTILITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.utilities,
 		description: "Free menu bar manager",
 		iconUrl: simpleIcon("macos"),
+		isCask: true,
 		invertInDark: true,
 	},
 	{
@@ -816,6 +909,7 @@ const UTILITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.utilities,
 		description: "Hide menu bar items",
 		iconUrl: favicon("superbits.co"),
+		isCask: true,
 	},
 	{
 		id: "monitorcontrol",
@@ -824,6 +918,7 @@ const UTILITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.utilities,
 		description: "Control external display brightness",
 		iconUrl: favicon("monitorcontrol.app"),
+		isCask: true,
 	},
 	{
 		id: "lunar",
@@ -832,6 +927,7 @@ const UTILITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.utilities,
 		description: "Intelligent adaptive brightness",
 		iconUrl: favicon("lunar.fyi"),
+		isCask: true,
 	},
 	{
 		id: "flux",
@@ -840,6 +936,7 @@ const UTILITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.utilities,
 		description: "Adjusts display color for better sleep",
 		iconUrl: simpleIcon("flux"),
+		isCask: false,
 	},
 	{
 		id: "coconutbattery",
@@ -848,6 +945,7 @@ const UTILITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.utilities,
 		description: "Battery health monitor",
 		iconUrl: favicon("www.coconut-flavour.com"),
+		isCask: true,
 	},
 	{
 		id: "suspicious-package",
@@ -856,6 +954,7 @@ const UTILITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.utilities,
 		description: "Inspect macOS installer packages",
 		iconUrl: simpleIcon("macos"),
+		isCask: true,
 		invertInDark: true,
 	},
 	{
@@ -865,6 +964,7 @@ const UTILITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.utilities,
 		description: "System maintenance and optimization",
 		iconUrl: simpleIcon("macos"),
+		isCask: true,
 		invertInDark: true,
 	},
 	{
@@ -874,6 +974,7 @@ const UTILITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.utilities,
 		description: "FTP/SFTP client by Panic",
 		iconUrl: favicon("panic.com"),
+		isCask: true,
 	},
 	{
 		id: "cyberduck",
@@ -882,6 +983,7 @@ const UTILITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.utilities,
 		description: "FTP, SFTP, and cloud storage browser",
 		iconUrl: favicon("cyberduck.io"),
+		isCask: true,
 	},
 	{
 		id: "syncthing",
@@ -890,6 +992,7 @@ const UTILITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.utilities,
 		description: "Continuous file synchronization",
 		iconUrl: simpleIcon("syncthing"),
+		isCask: false,
 	},
 	{
 		id: "mountain-duck",
@@ -898,6 +1001,7 @@ const UTILITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.utilities,
 		description: "Mount cloud storage as disk",
 		iconUrl: favicon("mountainduck.io"),
+		isCask: true,
 	},
 ];
 
@@ -909,6 +1013,7 @@ const SECURITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.security,
 		description: "VPN service for secure browsing",
 		iconUrl: simpleIcon("nordvpn"),
+		isCask: true,
 	},
 	{
 		id: "mullvad-vpn",
@@ -925,6 +1030,7 @@ const SECURITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.security,
 		description: "Secure VPN by Proton",
 		iconUrl: simpleIcon("protonvpn"),
+		isCask: true,
 	},
 	{
 		id: "expressvpn",
@@ -933,6 +1039,7 @@ const SECURITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.security,
 		description: "Fast and secure VPN",
 		iconUrl: simpleIcon("expressvpn"),
+		isCask: true,
 	},
 	{
 		id: "tunnelblick",
@@ -941,6 +1048,7 @@ const SECURITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.security,
 		description: "Free OpenVPN client",
 		iconUrl: simpleIcon("openvpn"),
+		isCask: true,
 	},
 	{
 		id: "wireguard",
@@ -949,6 +1057,7 @@ const SECURITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.security,
 		description: "Fast, modern VPN protocol",
 		iconUrl: simpleIcon("wireguard"),
+		isCask: false,
 	},
 	{
 		id: "lulu",
@@ -957,6 +1066,7 @@ const SECURITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.security,
 		description: "Free macOS firewall",
 		iconUrl: favicon("objective-see.org"),
+		isCask: true,
 	},
 	{
 		id: "little-snitch",
@@ -965,6 +1075,7 @@ const SECURITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.security,
 		description: "Network monitor and firewall",
 		iconUrl: favicon("www.obdev.at"),
+		isCask: true,
 	},
 	{
 		id: "micro-snitch",
@@ -973,6 +1084,7 @@ const SECURITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.security,
 		description: "Microphone and camera monitor",
 		iconUrl: favicon("www.obdev.at"),
+		isCask: true,
 	},
 	{
 		id: "oversight",
@@ -981,6 +1093,7 @@ const SECURITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.security,
 		description: "Monitor mic and webcam access",
 		iconUrl: favicon("objective-see.org"),
+		isCask: true,
 	},
 	{
 		id: "knockknock",
@@ -989,6 +1102,7 @@ const SECURITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.security,
 		description: "See what's persistently installed",
 		iconUrl: simpleIcon("macos"),
+		isCask: true,
 		invertInDark: true,
 	},
 	{
@@ -998,6 +1112,7 @@ const SECURITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.security,
 		description: "Monitor persistent components",
 		iconUrl: simpleIcon("macos"),
+		isCask: true,
 		invertInDark: true,
 	},
 	{
@@ -1007,6 +1122,7 @@ const SECURITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.security,
 		description: "Email and file encryption",
 		iconUrl: simpleIcon("gnuprivacyguard"),
+		isCask: true,
 	},
 	{
 		id: "keepassxc",
@@ -1015,6 +1131,348 @@ const SECURITY_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.security,
 		description: "Cross-platform password manager",
 		iconUrl: simpleIcon("keepassxc"),
+		isCask: true,
+	},
+];
+
+const CLI_APPS: Array<App> = [
+	{
+		id: "git",
+		name: "Git",
+		brewName: "git",
+		category: AppCategoryEnum.enum.cli,
+		description: "Version control system",
+		iconUrl: simpleIcon("git"),
+		isCask: false,
+	},
+	{
+		id: "fzf",
+		name: "fzf",
+		brewName: "fzf",
+		category: AppCategoryEnum.enum.cli,
+		description: "Command-line fuzzy finder",
+		iconUrl: simpleIcon("macos"),
+		isCask: false,
+		invertInDark: true,
+	},
+	{
+		id: "ripgrep",
+		name: "ripgrep",
+		brewName: "ripgrep",
+		category: AppCategoryEnum.enum.cli,
+		description: "Fast recursive search tool (rg)",
+		iconUrl: simpleIcon("rust"),
+		isCask: false,
+	},
+	{
+		id: "fd",
+		name: "fd",
+		brewName: "fd",
+		category: AppCategoryEnum.enum.cli,
+		description: "Fast alternative to find",
+		iconUrl: simpleIcon("rust"),
+		isCask: false,
+	},
+	{
+		id: "exa",
+		name: "eza",
+		brewName: "eza",
+		category: AppCategoryEnum.enum.cli,
+		description: "Modern ls replacement with git integration",
+		iconUrl: simpleIcon("rust"),
+		isCask: false,
+	},
+	{
+		id: "bat",
+		name: "bat",
+		brewName: "bat",
+		category: AppCategoryEnum.enum.cli,
+		description: "Cat clone with syntax highlighting",
+		iconUrl: simpleIcon("rust"),
+		isCask: false,
+	},
+	{
+		id: "zoxide",
+		name: "zoxide",
+		brewName: "zoxide",
+		category: AppCategoryEnum.enum.cli,
+		description: "Smarter cd command with directory jumping",
+		iconUrl: simpleIcon("rust"),
+		isCask: false,
+	},
+	{
+		id: "tldr",
+		name: "tldr",
+		brewName: "tldr",
+		category: AppCategoryEnum.enum.cli,
+		description: "Simplified man pages",
+		iconUrl: simpleIcon("macos"),
+		isCask: false,
+		invertInDark: true,
+	},
+	{
+		id: "jq",
+		name: "jq",
+		brewName: "jq",
+		category: AppCategoryEnum.enum.cli,
+		description: "JSON query and transformation tool",
+		iconUrl: simpleIcon("macos"),
+		isCask: false,
+		invertInDark: true,
+	},
+	{
+		id: "yq",
+		name: "yq",
+		brewName: "yq",
+		category: AppCategoryEnum.enum.cli,
+		description: "YAML processor like jq",
+		iconUrl: simpleIcon("macos"),
+		isCask: false,
+		invertInDark: true,
+	},
+	{
+		id: "httpie",
+		name: "HTTPie",
+		brewName: "httpie",
+		category: AppCategoryEnum.enum.cli,
+		description: "User-friendly HTTP client",
+		iconUrl: simpleIcon("httpie"),
+		isCask: false,
+	},
+	{
+		id: "lazygit",
+		name: "Lazygit",
+		brewName: "lazygit",
+		category: AppCategoryEnum.enum.cli,
+		description: "Simple TUI for git commands",
+		iconUrl: simpleIcon("git"),
+		isCask: false,
+	},
+	{
+		id: "lazydocker",
+		name: "Lazydocker",
+		brewName: "lazydocker",
+		category: AppCategoryEnum.enum.cli,
+		description: "Docker/Docker-compose TUI",
+		iconUrl: simpleIcon("docker"),
+		isCask: false,
+	},
+	{
+		id: "nnn",
+		name: "nnn",
+		brewName: "nnn",
+		category: AppCategoryEnum.enum.cli,
+		description: "Terminal file browser",
+		iconUrl: simpleIcon("macos"),
+		isCask: false,
+		invertInDark: true,
+	},
+	{
+		id: "starship",
+		name: "Starship",
+		brewName: "starship",
+		category: AppCategoryEnum.enum.cli,
+		description: "Cross-shell prompt",
+		iconUrl: simpleIcon("macos"),
+		isCask: false,
+		invertInDark: true,
+	},
+	{
+		id: "tmux",
+		name: "tmux",
+		brewName: "tmux",
+		category: AppCategoryEnum.enum.cli,
+		description: "Terminal multiplexer",
+		iconUrl: simpleIcon("macos"),
+		isCask: false,
+		invertInDark: true,
+	},
+	{
+		id: "vim",
+		name: "Vim",
+		brewName: "vim",
+		category: AppCategoryEnum.enum.cli,
+		description: "Highly configurable text editor",
+		iconUrl: simpleIcon("vim"),
+		isCask: false,
+	},
+	{
+		id: "neovim",
+		name: "Neovim",
+		brewName: "neovim",
+		category: AppCategoryEnum.enum.cli,
+		description: "Modern vim fork",
+		iconUrl: simpleIcon("vim"),
+		isCask: false,
+	},
+	{
+		id: "gnu-sed",
+		name: "GNU sed",
+		brewName: "gnu-sed",
+		category: AppCategoryEnum.enum.cli,
+		description: "GNU version of sed",
+		iconUrl: simpleIcon("macos"),
+		isCask: false,
+		invertInDark: true,
+	},
+	{
+		id: "gnu-grep",
+		name: "GNU grep",
+		brewName: "grep",
+		category: AppCategoryEnum.enum.cli,
+		description: "GNU version of grep",
+		iconUrl: simpleIcon("macos"),
+		isCask: false,
+		invertInDark: true,
+	},
+	{
+		id: "ag",
+		name: "The Silver Searcher",
+		brewName: "the-silver-searcher",
+		category: AppCategoryEnum.enum.cli,
+		description: "Code searching tool (ag)",
+		iconUrl: simpleIcon("macos"),
+		invertInDark: true,
+	},
+	{
+		id: "wget",
+		name: "wget",
+		brewName: "wget",
+		category: AppCategoryEnum.enum.cli,
+		description: "Network downloader",
+		iconUrl: simpleIcon("macos"),
+		isCask: false,
+		invertInDark: true,
+	},
+	{
+		id: "curl",
+		name: "curl",
+		brewName: "curl",
+		category: AppCategoryEnum.enum.cli,
+		description: "Data transfer tool with URLs",
+		iconUrl: simpleIcon("macos"),
+		isCask: false,
+		invertInDark: true,
+	},
+	{
+		id: "imagemagick",
+		name: "ImageMagick",
+		brewName: "imagemagick",
+		category: AppCategoryEnum.enum.cli,
+		description: "Image manipulation tool",
+		iconUrl: simpleIcon("macos"),
+		isCask: false,
+		invertInDark: true,
+	},
+	{
+		id: "ffmpeg",
+		name: "FFmpeg",
+		brewName: "ffmpeg",
+		category: AppCategoryEnum.enum.cli,
+		description: "Multimedia framework",
+		iconUrl: simpleIcon("macos"),
+		isCask: false,
+		invertInDark: true,
+	},
+	{
+		id: "graphviz",
+		name: "Graphviz",
+		brewName: "graphviz",
+		category: AppCategoryEnum.enum.cli,
+		description: "Graph visualization software",
+		iconUrl: simpleIcon("macos"),
+		isCask: false,
+		invertInDark: true,
+	},
+	{
+		id: "node",
+		name: "Node.js",
+		brewName: "node",
+		category: AppCategoryEnum.enum.cli,
+		description: "JavaScript runtime",
+		iconUrl: simpleIcon("nodedotjs"),
+		isCask: false,
+	},
+	{
+		id: "python",
+		name: "Python",
+		brewName: "python",
+		category: AppCategoryEnum.enum.cli,
+		description: "Python programming language",
+		iconUrl: simpleIcon("python"),
+	},
+	{
+		id: "ruby",
+		name: "Ruby",
+		brewName: "ruby",
+		category: AppCategoryEnum.enum.cli,
+		description: "Ruby programming language",
+		iconUrl: simpleIcon("ruby"),
+		isCask: false,
+	},
+	{
+		id: "go",
+		name: "Go",
+		brewName: "go",
+		category: AppCategoryEnum.enum.cli,
+		description: "Go programming language",
+		iconUrl: simpleIcon("go"),
+		isCask: false,
+	},
+	{
+		id: "rust",
+		name: "Rust",
+		brewName: "rust",
+		category: AppCategoryEnum.enum.cli,
+		description: "Rust programming language",
+		iconUrl: simpleIcon("rust"),
+		isCask: false,
+	},
+	{
+		id: "postgres",
+		name: "PostgreSQL",
+		brewName: "postgresql",
+		category: AppCategoryEnum.enum.cli,
+		description: "Object-relational database",
+		iconUrl: simpleIcon("postgresql"),
+	},
+	{
+		id: "mysql",
+		name: "MySQL",
+		brewName: "mysql",
+		category: AppCategoryEnum.enum.cli,
+		description: "Relational database management",
+		iconUrl: simpleIcon("mysql"),
+		isCask: false,
+	},
+	{
+		id: "redis",
+		name: "Redis",
+		brewName: "redis",
+		category: AppCategoryEnum.enum.cli,
+		description: "In-memory data store",
+		iconUrl: simpleIcon("redis"),
+		isCask: false,
+	},
+	{
+		id: "meson",
+		name: "Meson",
+		brewName: "meson",
+		category: AppCategoryEnum.enum.cli,
+		description: "Build system",
+		iconUrl: simpleIcon("macos"),
+		isCask: false,
+		invertInDark: true,
+	},
+	{
+		id: "cmake",
+		name: "CMake",
+		brewName: "cmake",
+		category: AppCategoryEnum.enum.cli,
+		description: "Cross-platform build system",
+		iconUrl: simpleIcon("macos"),
+		isCask: false,
+		invertInDark: true,
 	},
 ];
 
@@ -1026,6 +1484,7 @@ const DESIGN_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.design,
 		description: "Collaborative design tool",
 		iconUrl: simpleIcon("figma"),
+		isCask: true,
 	},
 	{
 		id: "sketch",
@@ -1034,6 +1493,7 @@ const DESIGN_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.design,
 		description: "Digital design toolkit for Mac",
 		iconUrl: simpleIcon("sketch"),
+		isCask: true,
 	},
 	{
 		id: "affinity-designer",
@@ -1042,6 +1502,7 @@ const DESIGN_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.design,
 		description: "Professional vector graphics editor",
 		iconUrl: favicon("affinity.serif.com"),
+		isCask: true,
 	},
 	{
 		id: "affinity-photo",
@@ -1050,6 +1511,7 @@ const DESIGN_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.design,
 		description: "Professional photo editing",
 		iconUrl: favicon("affinity.serif.com"),
+		isCask: true,
 	},
 	{
 		id: "affinity-publisher",
@@ -1058,6 +1520,7 @@ const DESIGN_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.design,
 		description: "Professional publishing software",
 		iconUrl: favicon("affinity.serif.com"),
+		isCask: true,
 	},
 	{
 		id: "imageoptim",
@@ -1066,6 +1529,7 @@ const DESIGN_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.design,
 		description: "Image compression tool",
 		iconUrl: favicon("imageoptim.com"),
+		isCask: true,
 	},
 	{
 		id: "gimp",
@@ -1074,6 +1538,7 @@ const DESIGN_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.design,
 		description: "Free and open-source image editor",
 		iconUrl: simpleIcon("gimp"),
+		isCask: true,
 	},
 	{
 		id: "inkscape",
@@ -1082,6 +1547,7 @@ const DESIGN_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.design,
 		description: "Free vector graphics editor",
 		iconUrl: simpleIcon("inkscape"),
+		isCask: true,
 		invertInDark: true,
 	},
 	{
@@ -1091,6 +1557,7 @@ const DESIGN_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.design,
 		description: "Free 3D creation suite",
 		iconUrl: simpleIcon("blender"),
+		isCask: true,
 	},
 	{
 		id: "colorsnapper",
@@ -1099,6 +1566,7 @@ const DESIGN_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.design,
 		description: "Color picker for designers",
 		iconUrl: favicon("colorsnapper.com"),
+		isCask: true,
 	},
 	{
 		id: "sip",
@@ -1107,6 +1575,7 @@ const DESIGN_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.design,
 		description: "Color picker and palette manager",
 		iconUrl: favicon("sipapp.io"),
+		isCask: false,
 	},
 	{
 		id: "rightfont",
@@ -1115,6 +1584,7 @@ const DESIGN_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.design,
 		description: "Font manager for designers",
 		iconUrl: simpleIcon("fontbase"),
+		isCask: true,
 	},
 	{
 		id: "iconjar",
@@ -1123,6 +1593,7 @@ const DESIGN_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.design,
 		description: "Icon organizer for designers",
 		iconUrl: favicon("geticonjar.com"),
+		isCask: true,
 	},
 	{
 		id: "principle",
@@ -1131,6 +1602,7 @@ const DESIGN_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.design,
 		description: "Animation and prototyping tool",
 		iconUrl: favicon("principleformac.com"),
+		isCask: true,
 	},
 	{
 		id: "framer",
@@ -1139,6 +1611,7 @@ const DESIGN_APPS: Array<App> = [
 		category: AppCategoryEnum.enum.design,
 		description: "Interactive design tool",
 		iconUrl: simpleIcon("framer"),
+		isCask: true,
 	},
 ];
 
@@ -1151,6 +1624,7 @@ export const APPS: Array<App> = [
 	...UTILITY_APPS,
 	...SECURITY_APPS,
 	...DESIGN_APPS,
+	...CLI_APPS,
 ];
 
 export const APPS_BY_CATEGORY: Record<AppCategory, Array<App>> = {
@@ -1162,6 +1636,7 @@ export const APPS_BY_CATEGORY: Record<AppCategory, Array<App>> = {
 	utilities: UTILITY_APPS,
 	security: SECURITY_APPS,
 	design: DESIGN_APPS,
+	cli: CLI_APPS,
 };
 
 export function getAppsByCategory(category: AppCategory): Array<App> {
@@ -1176,6 +1651,21 @@ export function generateBrewCommand(appIds: Array<string>): string {
 		.map((id) => APPS.find((app) => app.id === id))
 		.filter((app): app is App => app !== undefined);
 
-	const brewNames = apps.map((app) => app.brewName).join(" ");
-	return `brew install --cask ${brewNames}`;
+	// Separate cask apps from formula apps based on isCask property
+	const caskApps = apps.filter((app) => app.isCask);
+	const formulaApps = apps.filter((app) => !app.isCask);
+
+	const commands: string[] = [];
+
+	if (caskApps.length > 0) {
+		const caskNames = caskApps.map((app) => app.brewName).join(" ");
+		commands.push(`brew install --cask ${caskNames}`);
+	}
+
+	if (formulaApps.length > 0) {
+		const formulaNames = formulaApps.map((app) => app.brewName).join(" ");
+		commands.push(`brew install ${formulaNames}`);
+	}
+
+	return commands.join(" && ");
 }

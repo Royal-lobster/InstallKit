@@ -9,6 +9,7 @@ export const AppCategoryEnum = z.enum([
 	"utilities",
 	"security",
 	"design",
+	"cli",
 ]);
 
 export type AppCategory = z.infer<typeof AppCategoryEnum>;
@@ -20,6 +21,7 @@ export const AppSchema = z.object({
 	category: AppCategoryEnum,
 	description: z.string(),
 	iconUrl: z.string(),
+	isCask: z.boolean().optional(),
 	invertInDark: z.boolean().optional(),
 });
 
@@ -32,6 +34,7 @@ export const CATEGORIES: Array<{ id: AppCategory; label: string }> = [
 	{ id: AppCategoryEnum.enum.utilities, label: "Utilities" },
 	{ id: AppCategoryEnum.enum.security, label: "Security" },
 	{ id: AppCategoryEnum.enum.design, label: "Design" },
+	{ id: AppCategoryEnum.enum.cli, label: "CLI Tools" },
 ];
 
 export type App = z.infer<typeof AppSchema>;
