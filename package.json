@@ -1,40 +1,40 @@
 {
-  "name": "take-over",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "format": "prettier --write ."
-  },
-  "dependencies": {
-    "@base-ui/react": "^1.0.0",
-    "@fontsource-variable/inter": "^5.2.8",
-    "@fontsource-variable/jetbrains-mono": "^5.2.8",
-    "@phosphor-icons/react": "^2.1.10",
-    "@tanstack/react-query": "^5.90.12",
-    "axios": "^1.13.2",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "fuse.js": "^7.1.0",
-    "next": "^15.1.3",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "tailwind-merge": "^3.4.0",
-    "tailwindcss": "^4.0.6",
-    "tw-animate-css": "^1.4.0",
-    "zod": "^4.2.1"
-  },
-  "devDependencies": {
-    "@tailwindcss/postcss": "^4.0.6",
-    "@types/node": "^22.10.2",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "eslint": "^9.17.0",
-    "eslint-config-next": "^15.1.3",
-    "prettier": "^3.5.3",
-    "typescript": "^5.7.2"
-  }
+	"name": "Takeover",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "next dev --turbopack",
+		"build": "next build",
+		"start": "next start",
+		"lint": "next lint",
+		"format": "prettier --write ."
+	},
+	"dependencies": {
+		"@base-ui/react": "^1.0.0",
+		"@fontsource-variable/inter": "^5.2.8",
+		"@fontsource-variable/jetbrains-mono": "^5.2.8",
+		"@phosphor-icons/react": "^2.1.10",
+		"@tanstack/react-query": "^5.90.12",
+		"axios": "^1.13.2",
+		"class-variance-authority": "^0.7.1",
+		"clsx": "^2.1.1",
+		"fuse.js": "^7.1.0",
+		"next": "^15.1.3",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0",
+		"tailwind-merge": "^3.4.0",
+		"tailwindcss": "^4.0.6",
+		"tw-animate-css": "^1.4.0",
+		"zod": "^4.2.1"
+	},
+	"devDependencies": {
+		"@tailwindcss/postcss": "^4.0.6",
+		"@types/node": "^22.10.2",
+		"@types/react": "^19.0.0",
+		"@types/react-dom": "^19.0.0",
+		"eslint": "^9.17.0",
+		"eslint-config-next": "^15.1.3",
+		"prettier": "^3.5.3",
+		"typescript": "^5.7.2"
+	}
 }
