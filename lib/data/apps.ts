@@ -1294,7 +1294,7 @@ const CLI_APPS: Array<App> = [
     brewName: "imagemagick",
     category: AppCategoryEnum.enum.cli,
     description: "Image manipulation tool",
-    iconUrl: simpleIcon("imagemagick"),
+    iconUrl: favicon("imagemagick.org"),
     isCask: false,
   },
   {
@@ -1322,7 +1322,7 @@ const CLI_APPS: Array<App> = [
     brewName: "meson",
     category: AppCategoryEnum.enum.cli,
     description: "Build system",
-    iconUrl: simpleIcon("meson"),
+    iconUrl: favicon("mesonbuild.com"),
     isCask: false,
   },
   {
@@ -1593,7 +1593,7 @@ const PACKAGE_MANAGERS_APPS: Array<App> = [
     brewName: "jenv",
     category: AppCategoryEnum.enum["package-managers"],
     description: "Java version manager",
-    iconUrl: simpleIcon("java"),
+    iconUrl: favicon("www.jenv.be"),
     isCask: false,
   },
   {
