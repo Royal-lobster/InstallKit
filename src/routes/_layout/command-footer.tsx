@@ -46,11 +46,11 @@ export function CommandFooter({
 						)}
 					</Button>
 				</div>
-				{selectedCount > 0 && (
-					<p className="mt-2 font-mono text-[10px] text-muted-foreground">
-						{selectedCount} app{selectedCount !== 1 && "s"} selected
-					</p>
-				)}
+				<p className="mt-2 font-mono text-[10px] text-muted-foreground">
+					{selectedCount > 0
+						? `${selectedCount} app${selectedCount !== 1 ? "s" : ""} selected`
+						: "Select apps to generate brew install command"}
+				</p>
 			</div>
 		</footer>
 	);

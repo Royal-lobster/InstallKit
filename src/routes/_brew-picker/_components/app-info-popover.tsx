@@ -99,11 +99,13 @@ export function AppInfoPopover({
 						</div>
 						<p className="text-xs text-muted-foreground">{description}</p>
 						<div className="flex flex-wrap items-center gap-2">
-							<Badge variant="outline" className="font-mono">
+							<Badge variant="outline" className="max-w-full truncate font-mono">
 								{brewCommand}
 							</Badge>
 							{brewInfo?.version && (
-								<Badge variant="outline">v{brewInfo.version}</Badge>
+								<Badge variant="outline" className="max-w-full truncate">
+									v{brewInfo.version}
+								</Badge>
 							)}
 						</div>
 						<div className="flex flex-wrap gap-2 pt-1">
