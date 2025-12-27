@@ -1,37 +1,37 @@
-import { z } from 'zod'
+import { z } from "zod";
 
 export const AppCategoryEnum = z.enum([
-  'browsers',
-  'development',
-  'productivity',
-  'communication',
-  'media',
-  'utilities',
-  'security',
-  'design',
-])
+	"browsers",
+	"development",
+	"productivity",
+	"communication",
+	"media",
+	"utilities",
+	"security",
+	"design",
+]);
 
-export type AppCategory = z.infer<typeof AppCategoryEnum>
+export type AppCategory = z.infer<typeof AppCategoryEnum>;
 
 export const AppSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  brewName: z.string(),
-  category: AppCategoryEnum,
-  description: z.string(),
-  iconUrl: z.string(),
-  invertInDark: z.boolean().optional(),
-})
+	id: z.string(),
+	name: z.string(),
+	brewName: z.string(),
+	category: AppCategoryEnum,
+	description: z.string(),
+	iconUrl: z.string(),
+	invertInDark: z.boolean().optional(),
+});
 
 export const CATEGORIES: Array<{ id: AppCategory; label: string }> = [
-  { id: AppCategoryEnum.enum.browsers, label: 'Browsers' },
-  { id: AppCategoryEnum.enum.development, label: 'Development' },
-  { id: AppCategoryEnum.enum.productivity, label: 'Productivity' },
-  { id: AppCategoryEnum.enum.communication, label: 'Communication' },
-  { id: AppCategoryEnum.enum.media, label: 'Media' },
-  { id: AppCategoryEnum.enum.utilities, label: 'Utilities' },
-  { id: AppCategoryEnum.enum.security, label: 'Security' },
-  { id: AppCategoryEnum.enum.design, label: 'Design' },
-]
+	{ id: AppCategoryEnum.enum.browsers, label: "Browsers" },
+	{ id: AppCategoryEnum.enum.development, label: "Development" },
+	{ id: AppCategoryEnum.enum.productivity, label: "Productivity" },
+	{ id: AppCategoryEnum.enum.communication, label: "Communication" },
+	{ id: AppCategoryEnum.enum.media, label: "Media" },
+	{ id: AppCategoryEnum.enum.utilities, label: "Utilities" },
+	{ id: AppCategoryEnum.enum.security, label: "Security" },
+	{ id: AppCategoryEnum.enum.design, label: "Design" },
+];
 
-export type App = z.infer<typeof AppSchema>
+export type App = z.infer<typeof AppSchema>;
