@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  ArrowSquareOut,
   CheckIcon,
   MagnifyingGlassIcon,
   Package,
@@ -178,24 +179,40 @@ function SearchResultItem({
           {pkg.token}
         </code>
       </div>
-      <Button
-        variant={isSelected ? "default" : "outline"}
-        size="sm"
-        className="shrink-0 gap-1.5 font-mono text-xs"
-        onClick={() => onSelect(pkg)}
-      >
-        {isSelected ? (
-          <>
-            <CheckIcon className="size-3.5" weight="bold" />
-            Added
-          </>
-        ) : (
-          <>
-            <PlusIcon className="size-3.5" weight="bold" />
-            Add
-          </>
-        )}
-      </Button>
+      <div className="flex shrink-0 gap-2">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="gap-1.5 font-mono text-xs"
+          onClick={() =>
+            window.open(
+              `https://formulae.brew.sh/${pkg.type}/${pkg.token}`,
+              "_blank",
+            )
+          }
+        >
+          <ArrowSquareOut className="size-3.5" weight="bold" />
+          Open
+        </Button>
+        <Button
+          variant={isSelected ? "default" : "outline"}
+          size="sm"
+          className="gap-1.5 font-mono text-xs"
+          onClick={() => onSelect(pkg)}
+        >
+          {isSelected ? (
+            <>
+              <CheckIcon className="size-3.5" weight="bold" />
+              Added
+            </>
+          ) : (
+            <>
+              <PlusIcon className="size-3.5" weight="bold" />
+              Add
+            </>
+          )}
+        </Button>
+      </div>
     </div>
   );
 }

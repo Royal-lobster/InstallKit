@@ -110,9 +110,11 @@ export async function searchHomebrewCatalogue(
       { name: "name", weight: 0.4 },
       { name: "desc", weight: 0.2 },
     ],
-    threshold: 0.3,
+    threshold: 0.5,
     ignoreLocation: true,
     includeScore: true,
+    useExtendedSearch: true,
+    minMatchCharLength: 2,
   });
 
   const results = fuse.search(query.trim(), { limit: 50 });
