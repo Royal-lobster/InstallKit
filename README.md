@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./public/icon.svg" alt="InstallKit logo" width="120" />
+  <img src="./public/logo.svg" alt="InstallKit logo" width="120" />
 </p>
 
 <h1 align="center">InstallKit 🚀</h1>

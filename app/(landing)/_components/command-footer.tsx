@@ -38,9 +38,9 @@ export function CommandFooter({
             variant="outline"
             size="lg"
             className={cn(
-              "shrink-0 !h-auto !min-w-max px-3 py-2.5",
+              "shrink-0 h-auto! min-w-max~ px-3 py-2.5",
               isUninstallMode &&
-                "!bg-destructive !text-destructive-foreground !border-destructive hover:!bg-destructive/90",
+                "bg-destructive! text-destructive-foreground! border-destructive! !hover:bg-destructive/90",
             )}
             aria-label="Toggle uninstall mode"
           >
