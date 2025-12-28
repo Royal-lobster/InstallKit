@@ -130,3 +130,23 @@ export async function searchHomebrewCatalogue(
     type: result.item.type,
   }));
 }
+
+export async function lookupPackageTypes(
+  tokens: string[],
+): Promise<Map<string, "cask" | "formula">> {
+  if (tokens.length === 0) {
+    return new Map();
+  }
+
+  const catalogue = await getCatalogue();
+  const result = new Map<string, "cask" | "formula">();
+
+  for (const token of tokens) {
+    const pkg = catalogue.find((p) => p.token === token);
+    if (pkg) {
+      result.set(token, pkg.type);
+    }
+  }
+
+  return result;
+}

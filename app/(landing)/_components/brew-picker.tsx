@@ -2,11 +2,7 @@
 
 import Fuse from "fuse.js";
 import * as React from "react";
-import {
-  APPS,
-  generateBrewCommand,
-  generateUninstallCommand,
-} from "@/lib/data/apps";
+import { APPS } from "@/lib/data/apps";
 import type { App, AppCategory } from "@/lib/schema";
 import type { SearchResult } from "../_actions";
 import { AppCard } from "./app-card";
@@ -29,7 +25,11 @@ interface BrewPickerProps {
   kitName?: string;
   kitDescription?: string;
   initialSelectedAppIds?: string[];
-  initialCustomPackages?: Array<{ token: string; name: string }>;
+  initialCustomPackages?: Array<{
+    token: string;
+    name: string;
+    type: "cask" | "formula";
+  }>;
 }
 
 function generateCommandWithCustom(
@@ -106,7 +106,7 @@ export function BrewPicker({
     new Map(
       initialCustomPackages.map((pkg) => [
         pkg.token,
-        { ...pkg, type: "cask" as const },
+        { token: pkg.token, name: pkg.name, type: pkg.type },
       ]),
     ),
   );

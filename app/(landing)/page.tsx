@@ -1,5 +1,6 @@
 import { APPS } from "@/lib/data/apps";
 import { CATEGORIES } from "@/lib/schema";
+import { lookupPackageTypes } from "./_actions";
 import { BrewPicker } from "./_components/brew-picker";
 
 export default async function HomePage({
@@ -20,16 +21,33 @@ export default async function HomePage({
     .filter(Boolean);
 
   const selectedAppIds: string[] = [];
-  const customPackages: Array<{ token: string; name: string }> = [];
+  const externalTokens: string[] = [];
 
+  // First pass: identify which packages are in our curated list
   for (const token of packageTokens) {
     const app = APPS.find((a) => a.id === token || a.brewName === token);
     if (app) {
       selectedAppIds.push(app.id);
     } else if (token) {
-      customPackages.push({ token, name: token });
+      externalTokens.push(token);
     }
   }
+
+  // Only fetch Homebrew catalogue if there are external packages
+  const packageTypes =
+    externalTokens.length > 0
+      ? await lookupPackageTypes(externalTokens)
+      : new Map<string, "cask" | "formula">();
+
+  const customPackages: Array<{
+    token: string;
+    name: string;
+    type: "cask" | "formula";
+  }> = externalTokens.map((token) => ({
+    token,
+    name: token,
+    type: packageTypes.get(token) || "cask", // Default to cask if not found
+  }));
 
   return (
     <BrewPicker
