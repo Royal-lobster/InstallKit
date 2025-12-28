@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  ArrowRight,
   MagnifyingGlassIcon,
   Package,
   SpinnerGapIcon,
@@ -17,6 +18,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { APPS } from "@/lib/data/apps";
 import { range } from "@/lib/helpers/range";
@@ -25,33 +27,22 @@ import { useHomebrewSearch } from "../_hooks/use-homebrew-search";
 import { SearchResultItem } from "./search-result-item";
 
 interface HomebrewSearchDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
   onSelectPackage: (pkg: SearchResult) => void;
   selectedTokens: Set<string>;
 }
 
 export function HomebrewSearchDialog({
-  open,
-  onOpenChange,
   onSelectPackage,
   selectedTokens,
 }: HomebrewSearchDialogProps) {
   const [query, setQuery] = React.useState("");
   const { results, isSearching } = useHomebrewSearch(query);
 
-  const handleOpenChange = React.useCallback(
-    (nextOpen: boolean) => {
-      onOpenChange(nextOpen);
-      if (!nextOpen) {
-        setQuery("");
-      }
-    },
-    [onOpenChange],
-  );
-
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
+    <Dialog>
+      <DialogTrigger className="w-full">
+        <HomebrewCatalogueTrigger />
+      </DialogTrigger>
       <DialogContent className="overflow-hidden p-0 shadow-lg sm:max-w-2xl!">
         <DialogTitle className="sr-only">Search Homebrew Catalogue</DialogTitle>
         <DialogDescription className="sr-only">
@@ -138,5 +129,31 @@ export function HomebrewSearchDialog({
         </Command>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function HomebrewCatalogueTrigger() {
+  return (
+    <div className="group relative flex w-full items-center justify-between gap-4 overflow-hidden rounded-xl border border-border bg-card/50 p-4 text-left transition-all hover:border-primary/50 hover:bg-card hover:shadow-sm sm:p-5">
+      <div className="flex items-center gap-4">
+        <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+          <MagnifyingGlassIcon className="size-5" weight="bold" />
+        </div>
+        <div className="space-y-0.5">
+          <h3 className="font-mono text-sm font-medium leading-none transition-colors group-hover:text-primary">
+            Can&apos;t find your app?
+          </h3>
+          <p className="font-mono text-[11px] text-muted-foreground">
+            Search 10,000+ formulae and casks in the Homebrew catalogue
+          </p>
+        </div>
+      </div>
+      <div className="hidden shrink-0 text-muted-foreground transition-colors group-hover:text-primary sm:block">
+        <ArrowRight
+          className="size-4 transition-transform group-hover:translate-x-1"
+          weight="bold"
+        />
+      </div>
+    </div>
   );
 }

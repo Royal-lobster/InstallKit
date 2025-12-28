@@ -7,7 +7,6 @@ import type { App, AppCategory } from "@/lib/schema";
 import type { SearchResult } from "../_actions";
 import { AppCard } from "./app-card";
 import { AppGridView } from "./app-grid-view";
-import { CatalogueSearchCTA } from "./catalogue-search-cta";
 import { CategoryFilter } from "./category-filter";
 import { CategoryGridView } from "./category-grid-view";
 import {
@@ -42,8 +41,6 @@ interface BrewPickerContentProps {
   selectedTokens: Set<string>;
   searchQuery: string;
   onSearchChange: (query: string) => void;
-  isSearchDialogOpen: boolean;
-  setIsSearchDialogOpen: (open: boolean) => void;
   isShareDialogOpen: boolean;
   setIsShareDialogOpen: (open: boolean) => void;
 }
@@ -64,8 +61,6 @@ export function BrewPickerContent({
   addCustomPackage,
   selectedTokens,
   searchQuery,
-  isSearchDialogOpen,
-  setIsSearchDialogOpen,
   isShareDialogOpen,
   setIsShareDialogOpen,
 }: BrewPickerContentProps) {
@@ -238,18 +233,14 @@ export function BrewPickerContent({
             />
           )}
 
-          <CatalogueSearchCTA
-            onOpenSearch={() => setIsSearchDialogOpen(true)}
-          />
+          <div className="mt-6">
+            <HomebrewSearchDialog
+              onSelectPackage={handleSelectPackage}
+              selectedTokens={selectedTokens}
+            />
+          </div>
         </div>
       </div>
-
-      <HomebrewSearchDialog
-        open={isSearchDialogOpen}
-        onOpenChange={setIsSearchDialogOpen}
-        onSelectPackage={handleSelectPackage}
-        selectedTokens={selectedTokens}
-      />
 
       <ShareDialog
         open={isShareDialogOpen}

@@ -1,8 +1,9 @@
 "use client";
 
 import { CheckIcon, CopyIcon, ShareNetworkIcon } from "@phosphor-icons/react";
-import * as React from "react";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
+import { useBoolean, useCopyToClipboard } from "usehooks-ts";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -58,7 +59,7 @@ export function ShareDialog({
     watch,
     reset,
     setValue,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
       name: "",
@@ -67,20 +68,11 @@ export function ShareDialog({
     },
   });
 
-  const [shortUrl, setShortUrl] = React.useState("");
-  const [longUrl, setLongUrl] = React.useState("");
-  const [useShortUrl, setUseShortUrl] = React.useState(true);
-  const [copied, setCopied] = React.useState(false);
-  const [error, setError] = React.useState("");
+  const shortUrlMode = useBoolean(true);
+  const [copiedText, copy] = useCopyToClipboard();
 
-  const name = watch("name");
-  const description = watch("description");
-  const createShortLink = watch("createShortLink");
-
-  const onSubmit = async (data: FormData) => {
-    setError("");
-
-    try {
+  const generateLink = useMutation({
+    mutationFn: async (data: FormData) => {
       const allPackages = [...selectedAppIds, ...customPackageTokens];
       const params = new URLSearchParams({
         name: data.name.trim(),
@@ -95,38 +87,40 @@ export function ShareDialog({
         typeof window !== "undefined"
           ? window.location.origin
           : "https://installkit.vercel.app";
-      const fullUrl = `${baseUrl}?${params.toString()}`;
-      setLongUrl(fullUrl);
+      const longUrl = `${baseUrl}?${params.toString()}`;
 
+      let shortUrl = null;
       if (data.createShortLink) {
-        const shortUrl = await createShortURL(fullUrl);
-        setShortUrl(shortUrl);
+        shortUrl = await createShortURL(longUrl);
       }
-    } catch (err) {
-      setError("Failed to generate short URL. Please try again.");
-      console.error(err);
-    }
+
+      return { longUrl, shortUrl };
+    },
+  });
+
+  const name = watch("name");
+  const description = watch("description");
+  const createShortLink = watch("createShortLink");
+
+  const { longUrl, shortUrl } = generateLink.data ?? {
+    longUrl: "",
+    shortUrl: null,
   };
+  const urlToCopy = shortUrl && shortUrlMode.value ? shortUrl : longUrl;
+  const copied = copiedText === urlToCopy;
+  const isLinkGenerated = generateLink.isSuccess;
 
   const handleCopyUrl = async () => {
-    const urlToCopy = shortUrl && useShortUrl ? shortUrl : longUrl;
     if (!urlToCopy) return;
-    await navigator.clipboard.writeText(urlToCopy);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    await copy(urlToCopy);
   };
 
   const handleClose = () => {
     reset();
-    setShortUrl("");
-    setLongUrl("");
-    setUseShortUrl(true);
-    setError("");
-    setCopied(false);
+    generateLink.reset();
+    shortUrlMode.setTrue();
     onOpenChange(false);
   };
-
-  const isLinkGenerated = !!shortUrl || !!longUrl;
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -139,7 +133,10 @@ export function ShareDialog({
           </DialogDescription>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-6 py-4">
+        <form
+          onSubmit={handleSubmit((data) => generateLink.mutate(data))}
+          className="space-y-4 p-6 py-4"
+        >
           <Field>
             <div className="flex items-center justify-between">
               <FieldLabel htmlFor="name">Kit Name *</FieldLabel>
@@ -203,8 +200,12 @@ export function ShareDialog({
             </div>
           )}
 
-          {error && (
-            <p className="text-sm text-destructive font-medium">{error}</p>
+          {generateLink.isError && (
+            <p className="text-sm text-destructive font-medium">
+              {generateLink.error instanceof Error
+                ? generateLink.error.message
+                : "Failed to generate short URL. Please try again."}
+            </p>
           )}
 
           {isLinkGenerated && (
@@ -214,16 +215,16 @@ export function ShareDialog({
                   <FieldLabel htmlFor="url-type">Link Type</FieldLabel>
                   <div className="flex gap-2">
                     <Toggle
-                      pressed={!useShortUrl}
-                      onPressedChange={() => setUseShortUrl(false)}
+                      pressed={!shortUrlMode.value}
+                      onPressedChange={() => shortUrlMode.setFalse()}
                       variant="outline"
                       className="flex-1"
                     >
                       Long URL
                     </Toggle>
                     <Toggle
-                      pressed={useShortUrl}
-                      onPressedChange={() => setUseShortUrl(true)}
+                      pressed={shortUrlMode.value}
+                      onPressedChange={() => shortUrlMode.setTrue()}
                       variant="outline"
                       className="flex-1"
                     >
@@ -238,7 +239,7 @@ export function ShareDialog({
                 <div className="flex gap-2">
                   <Input
                     id="shareable-url"
-                    value={shortUrl && useShortUrl ? shortUrl : longUrl}
+                    value={shortUrl && shortUrlMode.value ? shortUrl : longUrl}
                     readOnly
                     className="font-mono text-sm"
                   />
@@ -265,8 +266,12 @@ export function ShareDialog({
                 <Button type="button" variant="outline" onClick={handleClose}>
                   Cancel
                 </Button>
-                <Button type="submit" disabled={isSubmitting} className="gap-2">
-                  {isSubmitting ? (
+                <Button
+                  type="submit"
+                  disabled={generateLink.isPending}
+                  className="gap-2"
+                >
+                  {generateLink.isPending ? (
                     "Generating..."
                   ) : (
                     <>

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useBoolean, useCopyToClipboard } from "usehooks-ts";
 import { AppShell } from "@/app/(layout)/app-shell";
 import type { App, AppCategory } from "@/lib/schema";
 import { useAppSelection } from "../_hooks/use-app-selection";
@@ -57,19 +58,17 @@ export function BrewPicker({
   );
 
   const [searchQuery, setSearchQuery] = React.useState("");
-  const [copied, setCopied] = React.useState(false);
-  const [isUninstallMode, setIsUninstallMode] = React.useState(false);
-  const [isSearchDialogOpen, setIsSearchDialogOpen] = React.useState(false);
-  const [isShareDialogOpen, setIsShareDialogOpen] = React.useState(false);
+  const [copiedText, copy] = useCopyToClipboard();
+  const uninstallMode = useBoolean(false);
+  const shareDialog = useBoolean(false);
 
   const selectedCount = selectedApps.size + selectedCustomPackages.size;
+  const displayCommand = uninstallMode.value ? uninstallCommand : brewCommand;
+  const copied = copiedText === displayCommand;
 
-  const handleCopy = async () => {
-    const command = isUninstallMode ? uninstallCommand : brewCommand;
-    if (!command) return;
-    await navigator.clipboard.writeText(command);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const handleCopy = () => {
+    if (!displayCommand) return;
+    copy(displayCommand);
   };
 
   const handleClearAll = () => {
@@ -83,12 +82,8 @@ export function BrewPicker({
     }
   };
 
-  const handleToggleMode = () => {
-    setIsUninstallMode((prev) => !prev);
-  };
-
   const handleShare = () => {
-    setIsShareDialogOpen(true);
+    shareDialog.setTrue();
   };
 
   return (
@@ -100,9 +95,9 @@ export function BrewPicker({
       brewCommand={brewCommand}
       uninstallCommand={uninstallCommand}
       copied={copied}
-      isUninstallMode={isUninstallMode}
+      isUninstallMode={uninstallMode.value}
       onCopy={handleCopy}
-      onToggleMode={handleToggleMode}
+      onToggleMode={uninstallMode.toggle}
       onShare={handleShare}
     >
       <BrewPickerContent
@@ -122,10 +117,8 @@ export function BrewPicker({
         selectedTokens={selectedTokens}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
-        isSearchDialogOpen={isSearchDialogOpen}
-        setIsSearchDialogOpen={setIsSearchDialogOpen}
-        isShareDialogOpen={isShareDialogOpen}
-        setIsShareDialogOpen={setIsShareDialogOpen}
+        isShareDialogOpen={shareDialog.value}
+        setIsShareDialogOpen={shareDialog.setValue}
       />
     </AppShell>
   );

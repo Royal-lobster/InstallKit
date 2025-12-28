@@ -1,11 +1,11 @@
 "use client";
 
 import { useMemo } from "react";
-import { APPS } from "@/lib/data/apps";
 import {
-  generateBulkBrewCommand,
   type CustomPackage,
+  generateBulkBrewCommand,
 } from "@/lib/brew-commands";
+import { APPS } from "@/lib/data/apps";
 
 export function useBrewCommands(
   selectedApps: Set<string>,

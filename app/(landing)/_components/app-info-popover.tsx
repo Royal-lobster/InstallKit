@@ -2,6 +2,7 @@
 
 import { Info } from "@phosphor-icons/react";
 import type * as React from "react";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,14 +13,11 @@ import {
 import type { HomebrewInfo } from "@/lib/api/homebrew";
 import { generateBrewCommand, getHomebrewUrl } from "@/lib/brew-commands";
 import type { App } from "@/lib/schema";
+import { useHomebrewInfo } from "../_hooks/use-homebrew-info";
 import { AppIcon } from "./app-icon";
 
 interface AppInfoPopoverProps {
   app: App;
-  brewInfo: HomebrewInfo | undefined;
-  isLoading: boolean;
-  error: Error | null;
-  onTrigger: () => void;
 }
 
 function getDescription(
@@ -32,13 +30,16 @@ function getDescription(
   return desc || fallback || "No description available yet.";
 }
 
-export function AppInfoPopover({
-  app,
-  brewInfo,
-  isLoading,
-  error,
-  onTrigger,
-}: AppInfoPopoverProps) {
+export function AppInfoPopover({ app }: AppInfoPopoverProps) {
+  const [open, setOpen] = useState(false);
+
+  // Only fetch when popover opens
+  const {
+    data: brewInfo,
+    isLoading,
+    error,
+  } = useHomebrewInfo(app.brewName, open);
+
   const homebrewUrl =
     brewInfo?.url ??
     getHomebrewUrl(app.brewName, app.isCask ? "cask" : "formula");
@@ -48,19 +49,12 @@ export function AppInfoPopover({
     brewInfo?.kind || (app.isCask ? "cask" : "formula"),
   );
 
-  const handleClick = (event: React.MouseEvent) => {
-    event.stopPropagation();
-    onTrigger();
-  };
-
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
         openOnHover
         delay={120}
         aria-label={`More about ${app.name}`}
-        onClick={handleClick}
-        onMouseEnter={onTrigger}
         render={
           <Button
             variant="ghost"

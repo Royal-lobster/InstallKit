@@ -2,10 +2,8 @@
 
 "use client";
 
-import * as React from "react";
 import type { App } from "@/lib/schema";
 import { cn } from "@/lib/utils";
-import { useHomebrewInfo } from "../_hooks/use-homebrew-info";
 import { AppIcon } from "./app-icon";
 import { AppInfoPopover } from "./app-info-popover";
 import { SelectionCheckbox } from "./selection-checkbox";
@@ -17,18 +15,6 @@ interface AppCardProps {
 }
 
 export function AppCard({ app, isSelected, onToggle }: AppCardProps) {
-  const [shouldFetch, setShouldFetch] = React.useState(false);
-
-  const {
-    data: brewInfo,
-    isLoading,
-    error,
-  } = useHomebrewInfo(app.brewName, shouldFetch);
-
-  const handleTriggerFetch = React.useCallback(() => {
-    setShouldFetch(true);
-  }, []);
-
   return (
     // biome-ignore lint/a11y/noStaticElementInteractions: Fine here
     <div
@@ -53,13 +39,7 @@ export function AppCard({ app, isSelected, onToggle }: AppCardProps) {
         {app.name}
       </span>
       <div className="flex items-center gap-2">
-        <AppInfoPopover
-          app={app}
-          brewInfo={brewInfo}
-          isLoading={isLoading}
-          error={error}
-          onTrigger={handleTriggerFetch}
-        />
+        <AppInfoPopover app={app} />
         <SelectionCheckbox
           isSelected={isSelected}
           onToggle={onToggle}
