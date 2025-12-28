@@ -2,6 +2,7 @@
 
 import {
   CheckIcon,
+  CloudArrowUpIcon,
   CopyIcon,
   GithubLogo,
   MagnifyingGlassIcon,
@@ -9,6 +10,8 @@ import {
   TerminalWindowIcon,
   XIcon,
 } from "@phosphor-icons/react";
+import * as React from "react";
+import { SyncDialog } from "@/app/(landing)/_components/sync-dialog";
 import { useBrewPickerContext } from "@/app/(landing)/_hooks/use-brew-picker-context";
 import { useSearchQuery } from "@/app/(landing)/_hooks/use-search-query";
 import { Button } from "@/components/ui/button";
@@ -30,6 +33,7 @@ export function AppShell({ children }: React.PropsWithChildren) {
   } = useBrewPickerContext();
 
   const { searchQuery, setSearchQuery } = useSearchQuery();
+  const [isSyncDialogOpen, setIsSyncDialogOpen] = React.useState(false);
   const displayCommand = isUninstallMode ? uninstallCommand : brewCommand;
   const commandLabel = isUninstallMode ? "uninstall" : "install";
   const controlHeight = "h-9 min-h-[36px]";
@@ -52,11 +56,19 @@ export function AppShell({ children }: React.PropsWithChildren) {
                   Select apps → Copy brew command → Paste in terminal
                 </p>
               </div>
+              <button
+                type="button"
+                onClick={() => setIsSyncDialogOpen(true)}
+                className="ml-1 flex items-center justify-center rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground sm:hidden"
+                aria-label="Sync existing Homebrew setup"
+              >
+                <CloudArrowUpIcon className="size-4" weight="bold" />
+              </button>
               <a
                 href="https://github.com/Royal-lobster/InstallKit"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ml-1 flex items-center justify-center rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground sm:hidden"
+                className="flex items-center justify-center rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground sm:hidden"
                 aria-label="View source on GitHub"
               >
                 <GithubLogo className="size-4" weight="bold" />
@@ -84,6 +96,15 @@ export function AppShell({ children }: React.PropsWithChildren) {
                   </button>
                 )}
               </div>
+              <button
+                type="button"
+                onClick={() => setIsSyncDialogOpen(true)}
+                className="hidden items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground sm:flex"
+                aria-label="Sync existing Homebrew setup"
+              >
+                <CloudArrowUpIcon className="size-4" weight="bold" />
+                <span>Sync</span>
+              </button>
               <a
                 href="https://github.com/Royal-lobster/InstallKit"
                 target="_blank"
@@ -186,6 +207,8 @@ export function AppShell({ children }: React.PropsWithChildren) {
           </div>
         </div>
       </footer>
+
+      <SyncDialog open={isSyncDialogOpen} onOpenChange={setIsSyncDialogOpen} />
     </div>
   );
 }
