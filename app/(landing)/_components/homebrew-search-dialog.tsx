@@ -7,6 +7,7 @@ import {
   Package,
   PlusIcon,
   SpinnerGapIcon,
+  Star,
 } from "@phosphor-icons/react";
 import * as React from "react";
 import { Badge } from "@/app/components/ui/badge";
@@ -26,6 +27,7 @@ import {
   DialogTitle,
 } from "@/app/components/ui/dialog";
 import { range } from "@/lib/helpers/range";
+import { APPS } from "@/lib/data/apps";
 import type { SearchResult } from "../_actions";
 import { useHomebrewSearch } from "./_hooks/use-homebrew-search";
 
@@ -123,14 +125,20 @@ export function HomebrewSearchDialog({
               )}
             {query.trim().length >= 2 && results.length > 0 && (
               <CommandGroup heading="Results">
-                {results.map((pkg) => (
-                  <SearchResultItem
-                    key={`${pkg.type}-${pkg.token}`}
-                    pkg={pkg}
-                    isSelected={selectedTokens.has(pkg.token)}
-                    onSelect={onSelectPackage}
-                  />
-                ))}
+                {results.map((pkg) => {
+                  const isInCatalog = APPS.some(
+                    (app) => app.brewName === pkg.token
+                  );
+                  return (
+                    <SearchResultItem
+                      key={`${pkg.type}-${pkg.token}`}
+                      pkg={pkg}
+                      isSelected={selectedTokens.has(pkg.token)}
+                      isInCatalog={isInCatalog}
+                      onSelect={onSelectPackage}
+                    />
+                  );
+                })}
               </CommandGroup>
             )}
           </CommandList>
@@ -143,12 +151,14 @@ export function HomebrewSearchDialog({
 interface SearchResultItemProps {
   pkg: SearchResult;
   isSelected: boolean;
+  isInCatalog: boolean;
   onSelect: (pkg: SearchResult) => void;
 }
 
 function SearchResultItem({
   pkg,
   isSelected,
+  isInCatalog,
   onSelect,
 }: SearchResultItemProps) {
   return (
@@ -158,7 +168,11 @@ function SearchResultItem({
       className="group flex items-center gap-3 rounded-lg border border-transparent px-3 py-2.5 transition-all duration-200 data-[selected=true]:border-primary/30 data-[selected=true]:bg-primary/5 data-[selected=true]:shadow-sm"
     >
       <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-muted/50 text-muted-foreground transition-all duration-200 group-data-[selected=true]:bg-primary/10 group-data-[selected=true]:text-primary">
-        <Package className="size-4" weight="duotone" />
+        {isInCatalog ? (
+          <Star className="size-4" weight="fill" />
+        ) : (
+          <Package className="size-4" weight="duotone" />
+        )}
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
