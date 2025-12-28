@@ -2,194 +2,152 @@
   <img src="./public/logo.svg" alt="InstallKit logo" width="120" />
 </p>
 
-<h1 align="center">InstallKit 🚀</h1>
-
-<p align="center">A beautiful, modern web app to help you take over your new Mac by quickly installing all your favorite applications via Homebrew.</p>
+<h1 align="center">InstallKit</h1>
 
 <p align="center">
-  <a href="https://installkit.vercel.app">🔗 Live</a>
+  <strong>Set up your new Mac in minutes, not hours.</strong>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js" alt="Next.js" />
-  <img src="https://img.shields.io/badge/React-19-blue?style=flat-square&logo=react" alt="React" />
-  <img src="https://img.shields.io/badge/TypeScript-5.7-blue?style=flat-square&logo=typescript" alt="TypeScript" />
+  <a href="https://installkit.vercel.app">Visit InstallKit</a>
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License" />
 </p>
 
+---
+
+## 🤔 What is InstallKit?
+
+**InstallKit** helps you install all your favorite Mac apps at once using [Homebrew](https://brew.sh).
+
+Instead of:
+1. Searching for each app online
+2. Downloading installers one by one
+3. Dragging apps to your Applications folder repeatedly
+
+You can:
+1. Pick all the apps you want from InstallKit
+2. Copy one command
+3. Paste it in Terminal and let Homebrew install everything
+
+Perfect for:
+- **Setting up a new Mac** — Get all your apps installed quickly
+- **Reinstalling macOS** — Restore your setup without hunting for downloads
+- **Sharing your setup** — Send friends a link with your recommended apps
+
+## 🚀 How to Use
+
+### Option 1: Browse and Select Apps
+
+1. Go to [installkit.vercel.app](https://installkit.vercel.app)
+2. Browse through 200+ popular Mac apps organized by category
+3. Check the apps you want to install
+4. Copy the generated Homebrew command
+5. Paste it in your Terminal
+
+### Option 2: Share Your Existing Setup
+
+Already have a Mac with apps installed via Homebrew? Generate a shareable link with all your apps:
+
+```bash
+curl -fsSL installkit.vercel.app/s | bash
+```
+
+This scans your installed Homebrew packages and creates a personalized InstallKit link. Use it to:
+- **Back up your app list** — Save the link before wiping your Mac
+- **Share with others** — Send the link to friends so they can install the same apps
+- **Set up another Mac** — Open the link on your new machine and install everything in one go
+
+## 📋 Requirements
+
+You need [Homebrew](https://brew.sh) installed on your Mac. If you don't have it yet:
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
 ## ✨ Features
 
-- 🎯 **Curated App Collection** - Browse 200+ popular macOS applications across 11 categories
-- 🔍 **Smart Search** - Quickly find apps with fuzzy search
-- 🍺 **Homebrew Catalogue Search** - Can't find an app in our collection? Search through 10,000+ formulae and casks from the official Homebrew repository directly within the app
-- 🎨 **Beautiful UI** - Built with shadcn/ui and Tailwind CSS 4
-- 📦 **One-Click Install** - Generate Homebrew commands to install multiple apps at once
-- 🌓 **Dark Mode** - Automatic dark mode support with icon inversion
-- ⚡ **Fast & Modern** - Built with Next.js 15 and React 19
-- 🎭 **Category Filtering** - Browse apps by browsers, development, productivity, and more
+- **200+ Curated Apps** — Popular browsers, dev tools, productivity apps, media players, and more
+- **Search** — Quickly find any app by name
+- **Homebrew Search** — Can't find an app? Search Homebrew's full catalog of 10,000+ packages
+- **Categories** — Browse by type: Browsers, Development, Productivity, Entertainment, etc.
+- **Dark Mode** — Easy on the eyes
+- **Shareable Links** — Share your app selections with anyone
 
-## 📸 Preview
+---
 
-Browse through curated categories of applications, select the ones you want, and get a ready-to-run Homebrew command to install them all at once.
+## 🛠️ For Developers
 
-## 🚀 Getting Started
+### Tech Stack
 
-### 🍺 Quick Start for Homebrew Users
+- [Next.js 15](https://nextjs.org/) with App Router
+- [React 19](https://react.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS 4](https://tailwindcss.com/)
+- [shadcn/ui](https://ui.shadcn.com/)
+- [TanStack Query](https://tanstack.com/query)
 
-Already have apps installed with Homebrew? Get your personalized InstallKit URL instantly:
-
-```bash
-# Generate InstallKit URL
-curl -fsSL https://installkit.vercel.app/installkit-sync.sh | bash
-
-# Generate InstallKit URL with short link
-curl -fsSL https://installkit.vercel.app/installkit-sync.sh | bash -s -- --short
-```
-
-This will scan your installed Homebrew packages and generate a shareable InstallKit URL with all your apps pre-selected.
-
-### 🛠️ Development Setup
-
-#### Prerequisites
-
-- Node.js 18+ or Bun
-- pnpm (recommended) or npm/yarn
-
-#### Installation
-
-1. Clone the repository:
+### Local Development
 
 ```bash
+# Clone the repo
 git clone https://github.com/Royal-lobster/installkit.git
 cd installkit
-```
 
-2. Install dependencies:
-
-```bash
+# Install dependencies
 pnpm install
-```
 
-3. Run the development server:
-
-```bash
+# Start dev server
 pnpm dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## 🏗️ Tech Stack
-
-- **Framework:** [Next.js 15](https://nextjs.org/) with App Router
-- **Language:** [TypeScript](https://www.typescriptlang.org/)
-- **UI Library:** [React 19](https://react.dev/)
-- **Styling:** [Tailwind CSS 4](https://tailwindcss.com/)
-- **Components:** [shadcn/ui](https://ui.shadcn.com/) + [@base-ui/react](https://base-ui.netlify.app/)
-- **Icons:** [Phosphor Icons](https://phosphoricons.com/) + [Simple Icons](https://simpleicons.org/)
-- **State Management:** [TanStack Query](https://tanstack.com/query)
-- **Search:** [Fuse.js](https://fusejs.io/) (fuzzy search)
-- **Validation:** [Zod](https://zod.dev/)
-- **Package Manager:** pnpm
-
-## 📁 Project Structure
-
-```
-installkit/
-├── app/
-│   ├── (landing)/           # Landing page with app picker
-│   │   ├── _actions.ts      # Server actions (Homebrew search)
-│   │   ├── _components/     # Landing page components
-│   │   └── page.tsx
-│   ├── (layout)/            # Layout components
-│   ├── components/ui/       # Reusable UI components (shadcn)
-│   ├── globals.css          # Global styles
-│   └── layout.tsx           # Root layout
-├── lib/
-│   ├── api/                 # API clients (Homebrew API)
-│   ├── data/                # App data source (200+ apps)
-│   ├── helpers/             # Helper functions
-│   └── schema.ts            # Zod schemas and types
-├── public/                  # Static assets
-└── package.json
-```
-
-## 🛠️ Development
-
-### Available Scripts
-
-```bash
-pnpm dev          # Start development server
-pnpm build        # Build for production
-pnpm start        # Start production server
-pnpm lint         # Run Biome
-pnpm format       # Format code with Biome
-```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### Adding New Apps
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md#adding-new-apps) for detailed instructions on how to add new applications to the collection.
-
-Quick example:
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for details. Quick example:
 
 ```typescript
 // lib/data/apps.ts
 {
   id: 'my-app',
   name: 'My App',
-  brewName: 'my-app',  // Exact Homebrew cask/formula name
-  category: AppCategoryEnum.enum.development,
-  description: 'Short description of the app',
-  iconUrl: simpleIcon('myapp'),  // or favicon('myapp.com')
-  isCask: true,  // true for casks, false for formulae
-  invertInDark: false,  // optional: invert icon in dark mode
+  brewName: 'my-app',
+  category: AppCategoryEnum.enum.productivity,
+  description: 'Short description',
+  iconUrl: simpleIcon('myapp'),
+  isCask: true,
 }
 ```
 
-### Verification Scripts
-
-Before submitting a PR with new apps:
+### Scripts
 
 ```bash
-# Verify all Homebrew packages exist
-node scripts/verify-homebrew-packages.mjs
-
-# Detect icons that may need dark mode inversion
-node scripts/detect-dark-icons.mjs
+pnpm dev      # Start development server
+pnpm build    # Build for production
+pnpm lint     # Run linter
+pnpm format   # Format code
 ```
 
 ## 🤝 Contributing
 
-We love contributions! Please read our [Contributing Guide](./CONTRIBUTING.md) to learn about our development process, how to propose bugfixes and improvements, and how to add new apps.
-
-### Quick Contribution Guide
-
-1. Fork the repo
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Add your apps or make changes
-4. Run verification scripts
-5. Commit your changes (`git commit -m 'feat: add some amazing apps'`)
-6. Push to the branch (`git push origin feature/amazing-feature`)
-7. Open a Pull Request
+Contributions welcome! See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+MIT License — see [LICENSE](./LICENSE) for details.
 
 ## 🙏 Acknowledgments
 
-- [shadcn/ui](https://ui.shadcn.com/) for the beautiful component library
+- [Homebrew](https://brew.sh/) for making Mac package management easy
+- [shadcn/ui](https://ui.shadcn.com/) for beautiful components
 - [Simple Icons](https://simpleicons.org/) for brand icons
-- [Homebrew](https://brew.sh/) for making macOS package management easy
-- All the amazing app developers whose work we showcase
-
-## 🌟 Support
-
-If you find this project helpful, please give it a ⭐️ on GitHub!
-
-## 📧 Contact
-
-Have questions or suggestions? Feel free to [open an issue](https://github.com/Royal-lobster/installkit/issues)!
 
 ---
 
-Built with ❤️ by [Srujan](https://github.com/Royal-lobster)
+<p align="center">
+  Built by <a href="https://github.com/Royal-lobster">Srujan</a>
+</p>

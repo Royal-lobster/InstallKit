@@ -18,6 +18,15 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ["@phosphor-icons/react"],
     useCache: true,
   },
+  async redirects() {
+    return [
+      {
+        source: "/s",
+        destination: "/installkit-sync.sh",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
