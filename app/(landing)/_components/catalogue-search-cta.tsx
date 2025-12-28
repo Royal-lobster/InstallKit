@@ -28,7 +28,10 @@ export function CatalogueSearchCTA({ onOpenSearch }: CatalogueSearchCTAProps) {
           </div>
         </div>
         <div className="hidden shrink-0 text-muted-foreground transition-colors group-hover:text-primary sm:block">
-          <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" weight="bold" />
+          <ArrowRight
+            className="size-4 transition-transform group-hover:translate-x-1"
+            weight="bold"
+          />
         </div>
       </button>
     </div>
