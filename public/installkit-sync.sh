@@ -102,14 +102,12 @@ multiselect_menu() {
     }
     trap cleanup INT TERM EXIT
     
-    for ((i=0; i<visible_count+3; i++)); do
+    for ((i=0; i<visible_count+2; i++)); do
         printf "\n"
     done
     
     render_menu() {
-        printf "\033[%dA" "$((visible_count + 3))"
-        
-        printf "\033[2K${BLUE}Select packages (SPACE=toggle, A=all, N=none, ENTER=confirm, Q=quit):${NC}\n"
+        printf "\033[%dA" "$((visible_count + 2))"
         
         local count=0
         for ((i=0; i<num_options; i++)); do
@@ -117,7 +115,7 @@ multiselect_menu() {
                 ((count++))
             fi
         done
-        printf "\033[2K${YELLOW}Selected: $count / $num_options packages${NC}"
+        printf "\033[2K${BLUE}📋 Select packages${NC} ${YELLOW}($count/$num_options)${NC}"
         if [ $num_options -gt $visible_count ]; then
             printf " ${BLUE}(showing $((scroll_offset+1))-$((scroll_offset+visible_count)) of $num_options)${NC}"
         fi
@@ -140,7 +138,7 @@ multiselect_menu() {
             fi
         done
         
-        printf "\033[2K\n"
+        printf "\033[2K${NC}↑↓:navigate  SPACE:toggle  A:all  N:none  ENTER:confirm  Q:quit${NC}\n"
     }
     
     render_menu
@@ -285,9 +283,6 @@ echo
 SELECTED_PACKAGES="$ALL_PACKAGES"
 
 if [ "$SKIP_SELECTION" = false ] && [ -t 0 ]; then
-    echo -e "${BLUE}📋 Select which packages to include in your InstallKit URL:${NC}"
-    echo
-    
     if multiselect_menu "$ALL_PACKAGES" SELECTED_PACKAGES 15; then
         if [ -z "$SELECTED_PACKAGES" ]; then
             echo -e "${YELLOW}⚠️  No packages selected${NC}"
