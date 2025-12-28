@@ -82,43 +82,18 @@ installkit/
 ├── app/
 │   ├── (landing)/           # Landing page with app picker
 │   │   ├── _actions.ts      # Server actions (Homebrew search)
-│   │   ├── page.tsx
-│   │   └── _components/     # Landing page components
-│   │       ├── app-card.tsx
-│   │       ├── app-icon.tsx
-│   │       ├── app-info-popover.tsx
-│   │       ├── brew-picker.tsx
-│   │       ├── catalogue-search-cta.tsx
-│   │       ├── category-filter.tsx
-│   │       ├── category-section.tsx
-│   │       ├── command-footer.tsx
-│   │       ├── custom-package-card.tsx
-│   │       ├── header.tsx
-│   │       ├── homebrew-search-dialog.tsx
-│   │       ├── selection-checkbox.tsx
-│   │       └── _hooks/      # Custom hooks
-│   │           ├── use-homebrew-info.ts
-│   │           └── use-homebrew-search.ts
+│   │   ├── _components/     # Landing page components
+│   │   └── page.tsx
 │   ├── (layout)/            # Layout components
-│   │   └── providers.tsx
 │   ├── components/ui/       # Reusable UI components (shadcn)
 │   ├── globals.css          # Global styles
-│   ├── layout.tsx           # Root layout
-│   └── opengraph-image.tsx  # OG image generation
+│   └── layout.tsx           # Root layout
 ├── lib/
-│   ├── api/                 # API clients
-│   │   ├── axios.ts
-│   │   └── homebrew.ts      # Homebrew API integration
-│   ├── data/
-│   │   └── apps.ts          # App data source (200+ apps)
-│   ├── helpers/
-│   │   └── icons.ts         # Icon helper functions
-│   ├── get-query-client.ts  # TanStack Query setup
-│   ├── schema.ts            # Zod schemas and types
-│   └── utils.ts             # Utility functions
+│   ├── api/                 # API clients (Homebrew API)
+│   ├── data/                # App data source (200+ apps)
+│   ├── helpers/             # Helper functions
+│   └── schema.ts            # Zod schemas and types
 ├── public/                  # Static assets
-│   ├── manifest.json
-│   └── robots.txt
 └── package.json
 ```
 
