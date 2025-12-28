@@ -1,0 +1,262 @@
+"use client";
+
+import Fuse from "fuse.js";
+import * as React from "react";
+import { APPS } from "@/lib/data/apps";
+import type { App, AppCategory } from "@/lib/schema";
+import type { SearchResult } from "../_actions";
+import { AppCard } from "./app-card";
+import { AppGridView } from "./app-grid-view";
+import { CatalogueSearchCTA } from "./catalogue-search-cta";
+import { CategoryFilter } from "./category-filter";
+import { CategoryGridView } from "./category-grid-view";
+import {
+  CustomPackageCard,
+  CustomPackagesSection,
+} from "./custom-package-card";
+import { EmptySearchState } from "./empty-search-state";
+import { HomebrewSearchDialog } from "./homebrew-search-dialog";
+import { ShareDialog } from "./share-dialog";
+
+interface BrewPickerContentProps {
+  apps: Array<App>;
+  categories: Array<{ id: AppCategory; label: string }>;
+  kitName?: string;
+  kitDescription?: string;
+  sharedAppIds: Set<string>;
+  sharedCustomTokens: Set<string>;
+  selectedApps: Set<string>;
+  toggleApp: (id: string) => void;
+  customPackages: Map<
+    string,
+    { token: string; name: string; type: "cask" | "formula" }
+  >;
+  selectedCustomPackages: Set<string>;
+  toggleCustomPackage: (token: string) => void;
+  removeCustomPackage: (token: string) => void;
+  addCustomPackage: (pkg: {
+    token: string;
+    name: string;
+    type: "cask" | "formula";
+  }) => void;
+  selectedTokens: Set<string>;
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
+  isSearchDialogOpen: boolean;
+  setIsSearchDialogOpen: (open: boolean) => void;
+  isShareDialogOpen: boolean;
+  setIsShareDialogOpen: (open: boolean) => void;
+}
+
+export function BrewPickerContent({
+  apps,
+  categories,
+  kitName,
+  kitDescription,
+  sharedAppIds,
+  sharedCustomTokens,
+  selectedApps,
+  toggleApp,
+  customPackages,
+  selectedCustomPackages,
+  toggleCustomPackage,
+  removeCustomPackage,
+  addCustomPackage,
+  selectedTokens,
+  searchQuery,
+  isSearchDialogOpen,
+  setIsSearchDialogOpen,
+  isShareDialogOpen,
+  setIsShareDialogOpen,
+}: BrewPickerContentProps) {
+  const [selectedCategory, setSelectedCategory] = React.useState<
+    AppCategory | "all"
+  >("all");
+
+  const fuse = React.useMemo(
+    () =>
+      new Fuse(apps, {
+        keys: ["name", "description", "brewName"],
+        threshold: 0.4,
+        ignoreLocation: true,
+      }),
+    [apps],
+  );
+
+  const filteredApps = React.useMemo(() => {
+    let result: Array<App>;
+
+    if (searchQuery.trim()) {
+      const results = fuse.search(searchQuery.trim());
+      result = results.map((r) => r.item);
+    } else {
+      result = apps;
+    }
+
+    if (selectedCategory !== "all") {
+      result = result.filter((app) => app.category === selectedCategory);
+    }
+
+    return result;
+  }, [searchQuery, selectedCategory, fuse, apps]);
+
+  const appsByCategory = React.useMemo(() => {
+    const grouped = new Map<AppCategory, Array<App>>();
+    for (const category of categories) {
+      const categoryApps = filteredApps.filter(
+        (app) => app.category === category.id,
+      );
+      if (categoryApps.length > 0) {
+        grouped.set(category.id, categoryApps);
+      }
+    }
+    return grouped;
+  }, [filteredApps, categories]);
+
+  const handleSelectPackage = React.useCallback(
+    (pkg: SearchResult) => {
+      const existingApp = APPS.find((app) => app.brewName === pkg.token);
+      if (existingApp) {
+        toggleApp(existingApp.id);
+        return;
+      }
+
+      addCustomPackage({
+        token: pkg.token,
+        name: pkg.name,
+        type: pkg.type,
+      });
+
+      toggleCustomPackage(pkg.token);
+    },
+    [toggleApp, addCustomPackage, toggleCustomPackage],
+  );
+
+  const showCategorySections = selectedCategory === "all";
+
+  return (
+    <>
+      <div className="border-b border-border">
+        <div className="mx-auto max-w-6xl px-4 py-2">
+          <CategoryFilter
+            categories={categories}
+            selectedCategory={selectedCategory}
+            onCategoryChange={setSelectedCategory}
+          />
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-6xl px-4 py-4">
+        {kitName && (
+          <>
+            <div className="mb-12 border-b border-border/40 pb-8 pt-12">
+              <h1 className="text-center text-5xl font-bold tracking-tight sm:text-6xl">
+                {kitName}
+              </h1>
+              {kitDescription && (
+                <p className="mx-auto mt-3 max-w-2xl text-center text-base text-muted-foreground">
+                  {kitDescription}
+                </p>
+              )}
+              <div className="mt-4 text-center text-sm text-muted-foreground">
+                <span className="font-medium text-foreground">
+                  {sharedAppIds.size + sharedCustomTokens.size} apps
+                </span>{" "}
+                pre-selected for quick installation
+              </div>
+            </div>
+
+            {(sharedAppIds.size > 0 || sharedCustomTokens.size > 0) && (
+              <div className="mb-12">
+                <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  {Array.from(sharedAppIds)
+                    .map((id) => apps.find((app) => app.id === id))
+                    .filter((app): app is App => app !== undefined)
+                    .map((app) => (
+                      <AppCard
+                        key={app.id}
+                        app={app}
+                        isSelected={selectedApps.has(app.id)}
+                        onToggle={toggleApp}
+                      />
+                    ))}
+                  {Array.from(sharedCustomTokens)
+                    .map((token) => customPackages.get(token))
+                    .filter((pkg) => pkg !== undefined)
+                    .map((pkg) => (
+                      <CustomPackageCard
+                        key={pkg.token}
+                        pkg={pkg}
+                        onRemove={removeCustomPackage}
+                        isSelected={selectedCustomPackages.has(pkg.token)}
+                        onToggle={toggleCustomPackage}
+                        showCheckbox={true}
+                      />
+                    ))}
+                </div>
+              </div>
+            )}
+
+            <div className="my-12 flex items-center gap-4">
+              <div className="h-px flex-1 bg-border" />
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <span className="font-medium">Browse all apps</span>
+              </div>
+              <div className="h-px flex-1 bg-border" />
+            </div>
+          </>
+        )}
+
+        <div className="mt-2">
+          {filteredApps.length > 0 ? (
+            showCategorySections ? (
+              <CategoryGridView
+                appsByCategory={appsByCategory}
+                categories={categories}
+                selectedApps={selectedApps}
+                onToggle={toggleApp}
+              />
+            ) : (
+              <AppGridView
+                apps={filteredApps}
+                selectedApps={selectedApps}
+                onToggle={toggleApp}
+              />
+            )
+          ) : (
+            <EmptySearchState query={searchQuery} />
+          )}
+
+          {customPackages.size > sharedCustomTokens.size && (
+            <CustomPackagesSection
+              packages={customPackages}
+              selectedTokens={selectedCustomPackages}
+              onRemove={removeCustomPackage}
+              fromShareLink={false}
+              sharedTokens={sharedCustomTokens}
+              onToggle={toggleCustomPackage}
+            />
+          )}
+
+          <CatalogueSearchCTA
+            onOpenSearch={() => setIsSearchDialogOpen(true)}
+          />
+        </div>
+      </div>
+
+      <HomebrewSearchDialog
+        open={isSearchDialogOpen}
+        onOpenChange={setIsSearchDialogOpen}
+        onSelectPackage={handleSelectPackage}
+        selectedTokens={selectedTokens}
+      />
+
+      <ShareDialog
+        open={isShareDialogOpen}
+        onOpenChange={setIsShareDialogOpen}
+        selectedAppIds={Array.from(selectedApps)}
+        customPackageTokens={Array.from(selectedCustomPackages)}
+      />
+    </>
+  );
+}
