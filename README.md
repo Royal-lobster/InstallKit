@@ -15,13 +15,6 @@
   </a>
 </p>
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Next.js-15.1-black?style=flat-square&logo=next.js" alt="Next.js" />
-  <img src="https://img.shields.io/badge/React-19.0-61dafb?style=flat-square&logo=react&logoColor=white" alt="React" />
-  <img src="https://img.shields.io/badge/TypeScript-blue?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
-  <img src="https://img.shields.io/badge/Tailwind_CSS-38bdf8?style=flat-square&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
-  <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License" />
-</p>
 
 <p align="center">
   <img src="https://img.shields.io/github/stars/Royal-lobster/InstallKit?style=social" alt="GitHub stars" />
