@@ -26,8 +26,8 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@/app/components/ui/dialog";
-import { range } from "@/lib/helpers/range";
 import { APPS } from "@/lib/data/apps";
+import { range } from "@/lib/helpers/range";
 import type { SearchResult } from "../_actions";
 import { useHomebrewSearch } from "./_hooks/use-homebrew-search";
 
@@ -127,7 +127,7 @@ export function HomebrewSearchDialog({
               <CommandGroup heading="Results">
                 {results.map((pkg) => {
                   const isInCatalog = APPS.some(
-                    (app) => app.brewName === pkg.token
+                    (app) => app.brewName === pkg.token,
                   );
                   return (
                     <SearchResultItem
