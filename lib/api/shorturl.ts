@@ -1,9 +1,13 @@
 import axios from "axios";
 
 interface ShortURLResponse {
+  alias: string;
   short_url: string;
-  original_url: string;
-  domain: string;
+  long_url: string;
+  owner_id: string | null;
+  created_at: number;
+  status: "ACTIVE" | "INACTIVE";
+  private_stats: boolean;
 }
 
 interface IsGdResponse {
@@ -11,14 +15,23 @@ interface IsGdResponse {
 }
 
 export async function createShortURL(longUrl: string): Promise<string> {
+  // Check if URL is localhost - most URL shorteners reject these
+  const isLocalhost =
+    longUrl.includes("localhost") || longUrl.includes("127.0.0.1");
+
+  if (isLocalhost) {
+    throw new Error(
+      "Cannot shorten localhost URLs. URL shorteners require public URLs.",
+    );
+  }
+
   try {
     const response = await axios.post<ShortURLResponse>(
-      "https://spoo.me",
-      new URLSearchParams({ url: longUrl }),
+      "https://spoo.me/api/v1/shorten",
+      { long_url: longUrl },
       {
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/x-www-form-urlencoded",
+          "Content-Type": "application/json",
         },
         timeout: 5000,
       },
