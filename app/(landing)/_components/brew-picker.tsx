@@ -37,34 +37,46 @@ function generateCommandWithCustom(
   customPackages: Map<string, CustomPackage>,
   mode: "install" | "uninstall",
 ): string {
-  const baseCommand =
-    mode === "install"
-      ? generateBrewCommand(appIds)
-      : generateUninstallCommand(appIds);
+  if (appIds.length === 0 && customPackages.size === 0) return "";
 
-  const customCasks: string[] = [];
-  const customFormulae: string[] = [];
+  const apps = appIds
+    .map((id) => APPS.find((app) => app.id === id))
+    .filter((app): app is App => app !== undefined);
 
-  for (const pkg of customPackages.values()) {
-    if (pkg.type === "cask") {
-      customCasks.push(pkg.token);
+  // Collect all casks and formulae from both built-in apps and custom packages
+  const allCasks: string[] = [];
+  const allFormulae: string[] = [];
+
+  // Add built-in apps
+  for (const app of apps) {
+    if (app.isCask) {
+      allCasks.push(app.brewName);
     } else {
-      customFormulae.push(pkg.token);
+      allFormulae.push(app.brewName);
     }
   }
 
-  const customCommands: string[] = [];
+  // Add custom packages
+  for (const pkg of customPackages.values()) {
+    if (pkg.type === "cask") {
+      allCasks.push(pkg.token);
+    } else {
+      allFormulae.push(pkg.token);
+    }
+  }
+
+  const commands: string[] = [];
   const verb = mode === "install" ? "install" : "uninstall";
 
-  if (customCasks.length > 0) {
-    customCommands.push(`brew ${verb} --cask ${customCasks.join(" ")}`);
-  }
-  if (customFormulae.length > 0) {
-    customCommands.push(`brew ${verb} ${customFormulae.join(" ")}`);
+  if (allCasks.length > 0) {
+    commands.push(`brew ${verb} --cask ${allCasks.join(" ")}`);
   }
 
-  const allCommands = [baseCommand, ...customCommands].filter(Boolean);
-  return allCommands.join(" && ");
+  if (allFormulae.length > 0) {
+    commands.push(`brew ${verb} ${allFormulae.join(" ")}`);
+  }
+
+  return commands.join(" && ");
 }
 
 export function BrewPicker({
