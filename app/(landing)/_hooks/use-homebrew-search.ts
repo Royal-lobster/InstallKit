@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { useDebounceValue } from "usehooks-ts";
-import { type SearchResult, searchHomebrewCatalogue } from "../../_actions";
+import { type SearchResult, searchHomebrewCatalogue } from "../_actions";
 
 export const homebrewSearchKeys = {
   all: ["homebrew-search"] as const,

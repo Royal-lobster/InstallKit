@@ -4,8 +4,8 @@
 
 import { Package, XIcon } from "@phosphor-icons/react";
 import * as React from "react";
-import { Badge } from "@/app/components/ui/badge";
-import { Button } from "@/app/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { SelectionCheckbox } from "./selection-checkbox";
 

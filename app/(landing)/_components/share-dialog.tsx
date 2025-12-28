@@ -4,19 +4,19 @@ import { CheckIcon, CopyIcon, ShareNetworkIcon } from "@phosphor-icons/react";
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from "@/app/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogTitle,
-} from "@/app/components/ui/dialog";
-import { Field, FieldError, FieldLabel } from "@/app/components/ui/field";
-import { Input } from "@/app/components/ui/input";
-import { Label } from "@/app/components/ui/label";
-import { Textarea } from "@/app/components/ui/textarea";
-import { Toggle } from "@/app/components/ui/toggle";
+} from "@/components/ui/dialog";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import { Toggle } from "@/components/ui/toggle";
 import { createShortURL } from "@/lib/api/shorturl";
 
 interface ShareDialogProps {

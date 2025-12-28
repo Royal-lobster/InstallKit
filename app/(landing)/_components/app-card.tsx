@@ -5,7 +5,7 @@
 import * as React from "react";
 import type { App } from "@/lib/schema";
 import { cn } from "@/lib/utils";
-import { useHomebrewInfo } from "./_hooks/use-homebrew-info";
+import { useHomebrewInfo } from "../_hooks/use-homebrew-info";
 import { AppIcon } from "./app-icon";
 import { AppInfoPopover } from "./app-info-popover";
 import { SelectionCheckbox } from "./selection-checkbox";

@@ -2,7 +2,7 @@
 
 import { CheckIcon, CopyIcon, ShareNetworkIcon } from "@phosphor-icons/react";
 
-import { Button } from "@/app/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 

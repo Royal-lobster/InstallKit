@@ -2,14 +2,15 @@
 
 import { Info } from "@phosphor-icons/react";
 import type * as React from "react";
-import { Badge } from "@/app/components/ui/badge";
-import { Button } from "@/app/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/app/components/ui/popover";
+} from "@/components/ui/popover";
 import type { HomebrewInfo } from "@/lib/api/homebrew";
+import { generateBrewCommand, getHomebrewUrl } from "@/lib/brew-commands";
 import type { App } from "@/lib/schema";
 import { AppIcon } from "./app-icon";
 
@@ -19,10 +20,6 @@ interface AppInfoPopoverProps {
   isLoading: boolean;
   error: Error | null;
   onTrigger: () => void;
-}
-
-function getHomebrewUrl(brewInfo: HomebrewInfo | undefined, brewName: string) {
-  return brewInfo?.url ?? `https://formulae.brew.sh/cask/${brewName}`;
 }
 
 function getDescription(
@@ -35,11 +32,6 @@ function getDescription(
   return desc || fallback || "No description available yet.";
 }
 
-function getBrewCommand(brewInfo: HomebrewInfo | undefined, brewName: string) {
-  const caskFlag = brewInfo?.kind === "cask" ? "--cask " : "";
-  return `brew install ${caskFlag}${brewName}`;
-}
-
 export function AppInfoPopover({
   app,
   brewInfo,
@@ -47,9 +39,14 @@ export function AppInfoPopover({
   error,
   onTrigger,
 }: AppInfoPopoverProps) {
-  const homebrewUrl = getHomebrewUrl(brewInfo, app.brewName);
+  const homebrewUrl =
+    brewInfo?.url ??
+    getHomebrewUrl(app.brewName, app.isCask ? "cask" : "formula");
   const description = getDescription(brewInfo, app.description, error);
-  const brewCommand = getBrewCommand(brewInfo, app.brewName);
+  const brewCommand = generateBrewCommand(
+    app.brewName,
+    brewInfo?.kind || (app.isCask ? "cask" : "formula"),
+  );
 
   const handleClick = (event: React.MouseEvent) => {
     event.stopPropagation();

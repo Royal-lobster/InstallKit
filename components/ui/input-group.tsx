@@ -3,9 +3,9 @@
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 import type * as React from "react";
-import { Button } from "@/app/components/ui/button";
-import { Input } from "@/app/components/ui/input";
-import { Textarea } from "@/app/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 
 function InputGroup({ className, ...props }: React.ComponentProps<"fieldset">) {

@@ -3,7 +3,7 @@
 import { MagnifyingGlassIcon } from "@phosphor-icons/react";
 import { Command as CommandPrimitive } from "cmdk";
 import * as React from "react";
-import { Dialog, DialogContent } from "@/app/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
 const Command = React.forwardRef<
