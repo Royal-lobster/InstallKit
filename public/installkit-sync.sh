@@ -16,47 +16,16 @@
 
 set -e
 
-# Parse command line arguments
+# =============================================================================
+# CONFIGURATION
+# =============================================================================
+
 CREATE_SHORT_URL=false
 SKIP_SELECTION=false
 
-while [[ $# -gt 0 ]]; do
-    case $1 in
-        -s|--short)
-            CREATE_SHORT_URL=true
-            shift
-            ;;
-        -n|--no-select)
-            SKIP_SELECTION=true
-            shift
-            ;;
-        -h|--help)
-            echo "InstallKit Sync - Generate shareable package lists from your Homebrew setup"
-            echo
-            echo "Usage: $0 [OPTIONS]"
-            echo
-            echo "Options:"
-            echo "  -s, --short      Create a shortened URL (easier to share)"
-            echo "  -n, --no-select  Skip package selection (include all packages)"
-            echo "  -h, --help       Show this help message"
-            echo
-            echo "Controls (in package selector):"
-            echo "  ↑/↓        Navigate up/down"
-            echo "  SPACE      Toggle current package"
-            echo "  A          Select all packages"
-            echo "  N          Deselect all packages"
-            echo "  ENTER      Confirm selection"
-            echo "  Q          Quit without generating URL"
-            echo
-            exit 0
-            ;;
-        *)
-            echo "❌ Unknown option: $1"
-            echo "💡 Use --help for usage information"
-            exit 1
-            ;;
-    esac
-done
+# =============================================================================
+# ANSI COLOR CODES
+# =============================================================================
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -69,6 +38,37 @@ NC='\033[0m'
 REVERSE='\033[7m'
 RESET='\033[0m'
 
+# =============================================================================
+# HELPER FUNCTIONS
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# show_help - Display usage information and exit
+# -----------------------------------------------------------------------------
+show_help() {
+    echo "InstallKit Sync - Generate shareable package lists from your Homebrew setup"
+    echo
+    echo "Usage: $0 [OPTIONS]"
+    echo
+    echo "Options:"
+    echo "  -s, --short      Create a shortened URL (easier to share)"
+    echo "  -n, --no-select  Skip package selection (include all packages)"
+    echo "  -h, --help       Show this help message"
+    echo
+    echo "Controls (in package selector):"
+    echo "  ↑/↓        Navigate up/down"
+    echo "  SPACE      Toggle current package"
+    echo "  A          Select all packages"
+    echo "  N          Deselect all packages"
+    echo "  ENTER      Confirm selection"
+    echo "  Q          Quit without generating URL"
+    echo
+    exit 0
+}
+
+# -----------------------------------------------------------------------------
+# print_header - Display the InstallKit ASCII banner
+# -----------------------------------------------------------------------------
 print_header() {
     echo -e "${CYAN}"
     echo '  ___           _        _ _ _  ___ _   '
@@ -81,8 +81,92 @@ print_header() {
     echo
 }
 
-# Interactive multiselect menu (bash 3.2 compatible)
-# Args: $1=comma-separated options, $2=result variable name, $3=page size (default 15)
+# -----------------------------------------------------------------------------
+# count_items - Count comma-separated items in a string
+# Args: $1 = comma-separated string
+# Returns: number of items (via stdout)
+# -----------------------------------------------------------------------------
+count_items() {
+    local items="$1"
+    echo "$items" | tr ',' '\n' | wc -l | tr -d ' '
+}
+
+# =============================================================================
+# URL SHORTENING
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# create_short_url - Attempt to shorten a URL using external services
+# Args: $1 = long URL to shorten
+# Returns: 0 on success (short URL via stdout), 1 on failure
+# Tries: spoo.me first, then is.gd as fallback
+# -----------------------------------------------------------------------------
+create_short_url() {
+    local long_url="$1"
+
+    if ! command -v curl &> /dev/null; then
+        return 1
+    fi
+
+    local response
+    response=$(curl -s -X POST "https://spoo.me/api/v1/shorten" \
+        -H "Content-Type: application/json" \
+        -d "{\"long_url\":\"$long_url\"}" \
+        --connect-timeout 5 --max-time 10 2>/dev/null || echo "")
+
+    if [ -n "$response" ]; then
+        local short_url
+        short_url=$(echo "$response" | grep -o '"short_url":"[^"]*"' | cut -d'"' -f4)
+        if [ -n "$short_url" ]; then
+            echo "$short_url"
+            return 0
+        fi
+    fi
+
+    local encoded_url
+    encoded_url=$(printf '%s' "$long_url" | sed 's/:/%3A/g; s|/|%2F|g; s/?/%3F/g; s/&/%26/g; s/=/%3D/g; s/+/%2B/g; s/ /%20/g')
+    response=$(curl -s "https://is.gd/create.php?format=simple&url=$encoded_url" \
+        --connect-timeout 5 --max-time 10 2>/dev/null || echo "")
+
+    if [ -n "$response" ] && [[ "$response" =~ ^https://is.gd/ ]]; then
+        echo "$response"
+        return 0
+    fi
+
+    return 1
+}
+
+# -----------------------------------------------------------------------------
+# generate_short - Wrapper to create and display a shortened URL
+# Uses global: INSTALLKIT_URL
+# -----------------------------------------------------------------------------
+generate_short() {
+    echo
+    echo -ne "${YELLOW}🔗 Creating short URL...${NC}"
+
+    local short_url
+    short_url=$(create_short_url "$INSTALLKIT_URL")
+
+    if [ $? -eq 0 ] && [ -n "$short_url" ]; then
+        echo -e "\r\033[2K${GREEN}✅ Short URL:${NC} $short_url"
+    else
+        echo -e "\r\033[2K${YELLOW}⚠️  Could not create short URL${NC}"
+    fi
+}
+
+# =============================================================================
+# INTERACTIVE MULTISELECT MENU
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# multiselect_menu - Interactive checkbox menu for package selection
+# Args:
+#   $1 = comma-separated list of options
+#   $2 = name of variable to store result (comma-separated selected items)
+#   $3 = page size (default: 15)
+# Returns: 0 on confirm, 1 on quit/cancel
+# Note: Bash 3.2 compatible (no associative arrays)
+# -----------------------------------------------------------------------------
 multiselect_menu() {
     local options_str="$1"
     local result_var="$2"
@@ -94,9 +178,9 @@ multiselect_menu() {
     IFS="$IFS_BACKUP"
 
     local num_options=${#options[@]}
+
     local selected=()
     local i
-
     for ((i=0; i<num_options; i++)); do
         selected+=("true")
     done
@@ -108,7 +192,6 @@ multiselect_menu() {
         visible_count=$num_options
     fi
 
-    # Check if we can access the terminal directly for input
     if [ ! -r /dev/tty ]; then
         eval "$result_var='$options_str'"
         return 0
@@ -136,6 +219,7 @@ multiselect_menu() {
                 ((count++))
             fi
         done
+
         printf "\033[2K${BLUE}📋 Select packages${NC} ${YELLOW}($count/$num_options)${NC}"
         if [ $num_options -gt $visible_count ]; then
             printf " ${BLUE}(showing $((scroll_offset+1))-$((scroll_offset+visible_count)) of $num_options)${NC}"
@@ -171,7 +255,7 @@ multiselect_menu() {
         if [ "$key" = $'\033' ]; then
             read -rsn2 -t 0.1 key 2>/dev/null < /dev/tty
             case "$key" in
-                '[A'|'[D')
+                '[A'|'[D') # Up/Left
                     if [ $cursor -gt 0 ]; then
                         ((cursor--))
                         if [ $cursor -lt $scroll_offset ]; then
@@ -179,7 +263,7 @@ multiselect_menu() {
                         fi
                     fi
                     ;;
-                '[B'|'[C')
+                '[B'|'[C') # Down/Right
                     if [ $cursor -lt $((num_options - 1)) ]; then
                         ((cursor++))
                         if [ $cursor -ge $((scroll_offset + visible_count)) ]; then
@@ -187,14 +271,14 @@ multiselect_menu() {
                         fi
                     fi
                     ;;
-                '[5~')
+                '[5~') # PgUp
                     cursor=$((cursor - visible_count))
                     if [ $cursor -lt 0 ]; then cursor=0; fi
                     if [ $cursor -lt $scroll_offset ]; then
                         scroll_offset=$cursor
                     fi
                     ;;
-                '[6~')
+                '[6~') # PgDn
                     cursor=$((cursor + visible_count))
                     if [ $cursor -ge $num_options ]; then cursor=$((num_options - 1)); fi
                     if [ $cursor -ge $((scroll_offset + visible_count)) ]; then
@@ -251,46 +335,49 @@ multiselect_menu() {
     done
 }
 
-create_short_url() {
-    local long_url="$1"
+# =============================================================================
+# ARGUMENT PARSING
+# =============================================================================
 
-    if ! command -v curl &> /dev/null; then
-        return 1
-    fi
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -s|--short)
+            CREATE_SHORT_URL=true
+            shift
+            ;;
+        -n|--no-select)
+            SKIP_SELECTION=true
+            shift
+            ;;
+        -h|--help)
+            show_help
+            ;;
+        *)
+            echo "❌ Unknown option: $1"
+            echo "💡 Use --help for usage information"
+            exit 1
+            ;;
+    esac
+done
 
-    local response=$(curl -s -X POST "https://spoo.me/api/v1/shorten" \
-        -H "Content-Type: application/json" \
-        -d "{\"long_url\":\"$long_url\"}" \
-        --connect-timeout 5 --max-time 10 2>/dev/null || echo "")
-
-    if [ -n "$response" ]; then
-        local short_url=$(echo "$response" | grep -o '"short_url":"[^"]*"' | cut -d'"' -f4)
-        if [ -n "$short_url" ]; then
-            echo "$short_url"
-            return 0
-        fi
-    fi
-
-    local encoded_url=$(printf '%s' "$long_url" | sed 's/:/%3A/g; s|/|%2F|g; s/?/%3F/g; s/&/%26/g; s/=/%3D/g; s/+/%2B/g; s/ /%20/g')
-    response=$(curl -s "https://is.gd/create.php?format=simple&url=$encoded_url" \
-        --connect-timeout 5 --max-time 10 2>/dev/null || echo "")
-
-    if [ -n "$response" ] && [[ "$response" =~ ^https://is.gd/ ]]; then
-        echo "$response"
-        return 0
-    fi
-
-    return 1
-}
+# =============================================================================
+# MAIN SCRIPT
+# =============================================================================
 
 print_header
 
+# -----------------------------------------------------------------------------
+# Verify Homebrew installation
+# -----------------------------------------------------------------------------
 if ! command -v brew &> /dev/null; then
     echo -e "${RED}❌ Error: Homebrew is not installed or not in PATH${NC}"
     echo "📥 Please install Homebrew first: https://brew.sh"
     exit 1
 fi
 
+# -----------------------------------------------------------------------------
+# Scan installed packages
+# -----------------------------------------------------------------------------
 echo -e "${YELLOW}📦 Scanning Homebrew packages...${NC}"
 
 USERNAME=$(basename "$HOME")
@@ -316,14 +403,18 @@ if [ -z "$ALL_PACKAGES" ]; then
     exit 0
 fi
 
-PACKAGE_COUNT=$(echo "$ALL_PACKAGES" | tr ',' '\n' | wc -l | tr -d ' ')
+# -----------------------------------------------------------------------------
+# Display package statistics
+# -----------------------------------------------------------------------------
+PACKAGE_COUNT=$(count_items "$ALL_PACKAGES")
 CASK_COUNT=0
 FORMULA_COUNT=0
+
 if [ -n "$CASKS" ]; then
-    CASK_COUNT=$(echo "$CASKS" | tr ',' '\n' | wc -l | tr -d ' ')
+    CASK_COUNT=$(count_items "$CASKS")
 fi
 if [ -n "$FORMULAE" ]; then
-    FORMULA_COUNT=$(echo "$FORMULAE" | tr ',' '\n' | wc -l | tr -d ' ')
+    FORMULA_COUNT=$(count_items "$FORMULAE")
 fi
 
 echo -e "${GREEN}✅ Found $PACKAGE_COUNT installed packages${NC}"
@@ -331,6 +422,9 @@ echo "📱 Casks (GUI apps): $CASK_COUNT"
 echo "⚡ Formulae (CLI tools): $FORMULA_COUNT"
 echo
 
+# -----------------------------------------------------------------------------
+# Package selection
+# -----------------------------------------------------------------------------
 SELECTED_PACKAGES="$ALL_PACKAGES"
 
 if [ "$SKIP_SELECTION" = false ] && [ -r /dev/tty ]; then
@@ -340,7 +434,7 @@ if [ "$SKIP_SELECTION" = false ] && [ -r /dev/tty ]; then
             exit 0
         fi
 
-        SELECTED_COUNT=$(echo "$SELECTED_PACKAGES" | tr ',' '\n' | wc -l | tr -d ' ')
+        SELECTED_COUNT=$(count_items "$SELECTED_PACKAGES")
         echo
         echo -e "${GREEN}✅ Selected $SELECTED_COUNT packages${NC}"
     else
@@ -356,6 +450,9 @@ else
     fi
 fi
 
+# -----------------------------------------------------------------------------
+# Generate InstallKit URL
+# -----------------------------------------------------------------------------
 TITLE_ENCODED=$(printf "%s's brew packages" "$USERNAME" | sed 's/ /+/g' | sed "s/'/\%27/g")
 PACKAGES_ENCODED=$(echo "$SELECTED_PACKAGES" | sed 's/,/%2C/g')
 INSTALLKIT_URL="https://installkit.vercel.app?name=$TITLE_ENCODED&packages=$PACKAGES_ENCODED"
@@ -364,17 +461,9 @@ echo
 echo -e "${GREEN}✅ Your InstallKit URL:${NC}"
 echo -e "${DIM}$INSTALLKIT_URL${NC}"
 
-generate_short() {
-    echo
-    echo -ne "${YELLOW}🔗 Creating short URL...${NC}"
-    SHORT_URL=$(create_short_url "$INSTALLKIT_URL")
-    if [ $? -eq 0 ] && [ -n "$SHORT_URL" ]; then
-        echo -e "\r\033[2K${GREEN}✅ Short URL:${NC} $SHORT_URL"
-    else
-        echo -e "\r\033[2K${YELLOW}⚠️  Could not create short URL${NC}"
-    fi
-}
-
+# -----------------------------------------------------------------------------
+# Optional: Generate short URL
+# -----------------------------------------------------------------------------
 if [ "$CREATE_SHORT_URL" = true ]; then
     generate_short
 elif [ -r /dev/tty ]; then
@@ -387,5 +476,8 @@ elif [ -r /dev/tty ]; then
     fi
 fi
 
+# -----------------------------------------------------------------------------
+# Done
+# -----------------------------------------------------------------------------
 echo
 echo -e "${GREEN}🎉 Done! Share your URL to help others set up their Mac.${NC}"
