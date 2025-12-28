@@ -14,7 +14,11 @@ import { CatalogueSearchCTA } from "./catalogue-search-cta";
 import { CategoryFilter } from "./category-filter";
 import { CategorySection } from "./category-section";
 import { CommandFooter } from "./command-footer";
-import { CustomPackagesSection } from "./custom-package-card";
+import {
+  type CustomPackage,
+  CustomPackageCard,
+  CustomPackagesSection,
+} from "./custom-package-card";
 import { Header } from "./header";
 import { HomebrewSearchDialog } from "./homebrew-search-dialog";
 import { ShareDialog } from "./share-dialog";
@@ -27,12 +31,6 @@ interface BrewPickerProps {
   initialSelectedAppIds?: string[];
   initialCustomPackages?: Array<{ token: string; name: string }>;
 }
-
-type CustomPackage = {
-  token: string;
-  name: string;
-  type: "cask" | "formula";
-};
 
 function generateCommandWithCustom(
   appIds: Array<string>,
@@ -77,6 +75,16 @@ export function BrewPicker({
   initialSelectedAppIds = [],
   initialCustomPackages = [],
 }: BrewPickerProps) {
+  // Track apps that came from the share link
+  const sharedAppIds = React.useMemo(
+    () => new Set(initialSelectedAppIds),
+    [initialSelectedAppIds],
+  );
+  const sharedCustomTokens = React.useMemo(
+    () => new Set(initialCustomPackages.map((pkg) => pkg.token)),
+    [initialCustomPackages],
+  );
+
   const [selectedApps, setSelectedApps] = React.useState<Set<string>>(
     new Set(initialSelectedAppIds),
   );
@@ -90,6 +98,9 @@ export function BrewPicker({
       ]),
     ),
   );
+  const [selectedCustomPackages, setSelectedCustomPackages] = React.useState<
+    Set<string>
+  >(new Set(initialCustomPackages.map((pkg) => pkg.token)));
   const [selectedCategory, setSelectedCategory] = React.useState<
     AppCategory | "all"
   >("all");
@@ -139,16 +150,27 @@ export function BrewPicker({
     return grouped;
   }, [filteredApps, categories]);
 
-  const selectedCount = selectedApps.size + customPackages.size;
+  const selectedCount = selectedApps.size + selectedCustomPackages.size;
+
+  const selectedCustomPackagesMap = React.useMemo(() => {
+    const map = new Map<string, CustomPackage>();
+    for (const token of selectedCustomPackages) {
+      const pkg = customPackages.get(token);
+      if (pkg) {
+        map.set(token, pkg);
+      }
+    }
+    return map;
+  }, [selectedCustomPackages, customPackages]);
 
   const brewCommand = generateCommandWithCustom(
     Array.from(selectedApps),
-    customPackages,
+    selectedCustomPackagesMap,
     "install",
   );
   const uninstallCommand = generateCommandWithCustom(
     Array.from(selectedApps),
-    customPackages,
+    selectedCustomPackagesMap,
     "uninstall",
   );
 
@@ -160,11 +182,11 @@ export function BrewPicker({
         tokens.add(app.brewName);
       }
     }
-    for (const token of customPackages.keys()) {
+    for (const token of selectedCustomPackages) {
       tokens.add(token);
     }
     return tokens;
-  }, [selectedApps, customPackages]);
+  }, [selectedApps, selectedCustomPackages]);
 
   const handleToggle = (appId: string) => {
     setSelectedApps((prev) => {
@@ -177,6 +199,18 @@ export function BrewPicker({
       return next;
     });
   };
+
+  const handleToggleCustomPackage = React.useCallback((token: string) => {
+    setSelectedCustomPackages((prev) => {
+      const next = new Set(prev);
+      if (next.has(token)) {
+        next.delete(token);
+      } else {
+        next.add(token);
+      }
+      return next;
+    });
+  }, []);
 
   const handleSelectPackage = React.useCallback((pkg: SearchResult) => {
     const existingApp = APPS.find((app) => app.brewName === pkg.token);
@@ -193,16 +227,26 @@ export function BrewPicker({
       return;
     }
 
+    // For custom packages, add to the map if not present
     setCustomPackages((prev) => {
       const next = new Map(prev);
-      if (next.has(pkg.token)) {
-        next.delete(pkg.token);
-      } else {
+      if (!next.has(pkg.token)) {
         next.set(pkg.token, {
           token: pkg.token,
           name: pkg.name,
           type: pkg.type,
         });
+      }
+      return next;
+    });
+
+    // Toggle selection state
+    setSelectedCustomPackages((prev) => {
+      const next = new Set(prev);
+      if (next.has(pkg.token)) {
+        next.delete(pkg.token);
+      } else {
+        next.add(pkg.token);
       }
       return next;
     });
@@ -218,20 +262,38 @@ export function BrewPicker({
 
   const handleClearAll = () => {
     setSelectedApps(new Set());
-    setCustomPackages(new Map());
+    setSelectedCustomPackages(new Set());
   };
 
   const handleToggleMode = () => {
     setIsUninstallMode((prev) => !prev);
   };
 
-  const handleRemoveCustomPackage = React.useCallback((token: string) => {
-    setCustomPackages((prev) => {
-      const next = new Map(prev);
-      next.delete(token);
-      return next;
-    });
-  }, []);
+  const handleRemoveCustomPackage = React.useCallback(
+    (token: string) => {
+      // If it's from the share link, just deselect it
+      if (sharedCustomTokens.has(token)) {
+        setSelectedCustomPackages((prev) => {
+          const next = new Set(prev);
+          next.delete(token);
+          return next;
+        });
+      } else {
+        // Otherwise, remove it completely
+        setCustomPackages((prev) => {
+          const next = new Map(prev);
+          next.delete(token);
+          return next;
+        });
+        setSelectedCustomPackages((prev) => {
+          const next = new Set(prev);
+          next.delete(token);
+          return next;
+        });
+      }
+    },
+    [sharedCustomTokens],
+  );
 
   const handleShare = () => {
     setIsShareDialogOpen(true);
@@ -282,10 +344,10 @@ export function BrewPicker({
                 </div>
               </div>
 
-              {selectedApps.size > 0 && (
+              {(sharedAppIds.size > 0 || sharedCustomTokens.size > 0) && (
                 <div className="mb-12">
                   <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                    {Array.from(selectedApps)
+                    {Array.from(sharedAppIds)
                       .map((id) => apps.find((app) => app.id === id))
                       .filter((app): app is App => app !== undefined)
                       .map((app) => (
@@ -296,15 +358,20 @@ export function BrewPicker({
                           onToggle={handleToggle}
                         />
                       ))}
+                    {Array.from(sharedCustomTokens)
+                      .map((token) => customPackages.get(token))
+                      .filter((pkg): pkg is CustomPackage => pkg !== undefined)
+                      .map((pkg) => (
+                        <CustomPackageCard
+                          key={pkg.token}
+                          pkg={pkg}
+                          onRemove={handleRemoveCustomPackage}
+                          isSelected={selectedCustomPackages.has(pkg.token)}
+                          onToggle={handleToggleCustomPackage}
+                          showCheckbox={true}
+                        />
+                      ))}
                   </div>
-                  {customPackages.size > 0 && (
-                    <div className="mt-4">
-                      <CustomPackagesSection
-                        packages={customPackages}
-                        onRemove={handleRemoveCustomPackage}
-                      />
-                    </div>
-                  )}
                 </div>
               )}
 
@@ -353,10 +420,16 @@ export function BrewPicker({
               </div>
             )}
 
-            <CustomPackagesSection
-              packages={customPackages}
-              onRemove={handleRemoveCustomPackage}
-            />
+            {customPackages.size > sharedCustomTokens.size && (
+              <CustomPackagesSection
+                packages={customPackages}
+                selectedTokens={selectedCustomPackages}
+                onRemove={handleRemoveCustomPackage}
+                fromShareLink={false}
+                sharedTokens={sharedCustomTokens}
+                onToggle={handleToggleCustomPackage}
+              />
+            )}
 
             <CatalogueSearchCTA
               onOpenSearch={() => setIsSearchDialogOpen(true)}
@@ -387,7 +460,7 @@ export function BrewPicker({
         open={isShareDialogOpen}
         onOpenChange={setIsShareDialogOpen}
         selectedAppIds={Array.from(selectedApps)}
-        customPackageTokens={Array.from(customPackages.keys())}
+        customPackageTokens={Array.from(selectedCustomPackages)}
       />
     </div>
   );
