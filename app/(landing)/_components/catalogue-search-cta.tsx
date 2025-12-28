@@ -1,7 +1,6 @@
 "use client";
 
-import { MagnifyingGlassIcon, Package } from "@phosphor-icons/react";
-import { Button } from "@/app/components/ui/button";
+import { ArrowRight, MagnifyingGlassIcon } from "@phosphor-icons/react";
 
 interface CatalogueSearchCTAProps {
   onOpenSearch: () => void;
@@ -9,29 +8,29 @@ interface CatalogueSearchCTAProps {
 
 export function CatalogueSearchCTA({ onOpenSearch }: CatalogueSearchCTAProps) {
   return (
-    <section className="mt-8 border-t border-dashed border-border pt-8">
-      <div className="flex flex-col items-center justify-center gap-4 rounded-lg border border-dashed border-border bg-muted/30 px-6 py-8 text-center">
-        <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
-          <Package className="size-6" weight="duotone" />
+    <div className="mt-6">
+      <button
+        type="button"
+        onClick={onOpenSearch}
+        className="group relative flex w-full items-center justify-between gap-4 overflow-hidden rounded-xl border border-border bg-card/50 p-4 text-left transition-all hover:border-primary/50 hover:bg-card hover:shadow-sm sm:p-5"
+      >
+        <div className="flex items-center gap-4">
+          <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+            <MagnifyingGlassIcon className="size-5" weight="bold" />
+          </div>
+          <div className="space-y-0.5">
+            <h3 className="font-mono text-sm font-medium leading-none transition-colors group-hover:text-primary">
+              Can&apos;t find your app?
+            </h3>
+            <p className="font-mono text-[11px] text-muted-foreground">
+              Search 10,000+ formulae and casks in the Homebrew catalogue
+            </p>
+          </div>
         </div>
-        <div className="space-y-1">
-          <h3 className="font-mono text-sm font-medium">
-            Can&apos;t find your app?
-          </h3>
-          <p className="max-w-md font-mono text-xs text-muted-foreground">
-            Search the entire Homebrew catalogue with over 10,000+ formulae and
-            casks available for installation.
-          </p>
+        <div className="hidden shrink-0 text-muted-foreground transition-colors group-hover:text-primary sm:block">
+          <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" weight="bold" />
         </div>
-        <Button
-          onClick={onOpenSearch}
-          variant="outline"
-          className="gap-2 font-mono text-xs"
-        >
-          <MagnifyingGlassIcon className="size-3.5" weight="bold" />
-          Search Homebrew Catalogue
-        </Button>
-      </div>
-    </section>
+      </button>
+    </div>
   );
 }
