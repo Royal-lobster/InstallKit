@@ -8,7 +8,9 @@ import {
   TerminalWindowIcon,
   UsersIcon,
 } from "@phosphor-icons/react";
+import type * as React from "react";
 import { useCopyToClipboard } from "usehooks-ts";
+import { useAnalytics } from "@/app/(landing)/_hooks/use-analytics";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,12 +20,12 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
-import { useAnalytics } from "@/lib/hooks/use-analytics";
 
 interface SyncDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  children: React.ReactNode;
+  triggerProps?: Omit<React.ComponentProps<typeof DialogTrigger>, "children">;
 }
 
 const SYNC_COMMAND = "curl -fsSL installkit.app/s | bash";
@@ -46,7 +48,7 @@ const BENEFITS = [
   },
 ];
 
-export function SyncDialog({ open, onOpenChange }: SyncDialogProps) {
+export function SyncDialog({ children, triggerProps }: SyncDialogProps) {
   const [copiedText, copy] = useCopyToClipboard();
   const { trackCopy } = useAnalytics();
   const copied = copiedText === SYNC_COMMAND;
@@ -62,11 +64,12 @@ export function SyncDialog({ open, onOpenChange }: SyncDialogProps) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog>
+      <DialogTrigger {...triggerProps}>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-lg">
         <DialogClose />
         <DialogHeader className="items-center pt-6 pb-2">
-          <div className="mb-3 flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 via-primary/10 to-transparent ring-1 ring-primary/20">
+          <div className="mb-3 flex size-14 items-center justify-center rounded-2xl bg-linear-to-br from-primary/20 via-primary/10 to-transparent ring-1 ring-primary/20">
             <TerminalWindowIcon
               className="size-7 text-primary"
               weight="duotone"

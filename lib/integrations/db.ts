@@ -9,7 +9,7 @@ export type HomebrewPackage = {
   type: "cask" | "formula";
 };
 
-interface HomebrewCatalogueDB extends DBSchema {
+interface HomebrewCatalogDB extends DBSchema {
   packages: {
     key: string;
     value: HomebrewPackage;
@@ -26,15 +26,15 @@ interface HomebrewCatalogueDB extends DBSchema {
   };
 }
 
-const DB_NAME = "homebrew-catalogue";
+const DB_NAME = "homebrew-catalog";
 const DB_VERSION = 1;
 
-let dbInstance: IDBPDatabase<HomebrewCatalogueDB> | null = null;
+let dbInstance: IDBPDatabase<HomebrewCatalogDB> | null = null;
 
-export async function getDB(): Promise<IDBPDatabase<HomebrewCatalogueDB>> {
+export async function getDB(): Promise<IDBPDatabase<HomebrewCatalogDB>> {
   if (dbInstance) return dbInstance;
 
-  dbInstance = await openDB<HomebrewCatalogueDB>(DB_NAME, DB_VERSION, {
+  dbInstance = await openDB<HomebrewCatalogDB>(DB_NAME, DB_VERSION, {
     upgrade(db) {
       // Packages store
       if (!db.objectStoreNames.contains("packages")) {

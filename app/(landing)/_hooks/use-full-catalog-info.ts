@@ -1,9 +1,9 @@
 "use client";
 
 import { useMemo } from "react";
-import { useHomebrewCatalogue } from "@/lib/hooks/use-catalogue";
+import { useFullCatalog } from "@/app/(landing)/_hooks/use-full-catalog";
 
-export type HomebrewInfo = {
+export type FullCatalogInfo = {
   name?: string;
   description?: string;
   homepage?: string;
@@ -12,8 +12,8 @@ export type HomebrewInfo = {
   kind: "cask" | "formula";
 };
 
-export function useHomebrewInfo(brewName: string, enabled = false) {
-  const { getPackage, isReady } = useHomebrewCatalogue();
+export function useFullCatalogInfo(brewName: string, enabled = false) {
+  const { getPackage, isReady } = useFullCatalog();
 
   return useMemo(() => {
     if (!enabled || !isReady) {
@@ -34,7 +34,7 @@ export function useHomebrewInfo(brewName: string, enabled = false) {
       };
     }
 
-    const data: HomebrewInfo = {
+    const data: FullCatalogInfo = {
       name: Array.isArray(pkg.name) ? pkg.name[0] : pkg.name,
       description: pkg.desc,
       homepage: pkg.homepage,

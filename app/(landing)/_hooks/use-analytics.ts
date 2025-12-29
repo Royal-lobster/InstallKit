@@ -6,7 +6,7 @@ export interface CopyEvent {
   selectedAppsCount?: number;
   isUninstallMode?: boolean;
   selectedApps?: string[];
-  customPackagesCount?: number;
+  fullCatalogPackagesCount?: number;
 }
 
 export function useAnalytics() {

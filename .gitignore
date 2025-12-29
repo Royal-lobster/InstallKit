@@ -51,3 +51,4 @@ todos.json
 dist
 dist-ssr
 *.local
+tsconfig.tsbuildinfo

@@ -1,33 +1,45 @@
 "use client";
 
 import { CheckIcon, CopyIcon, ShareNetworkIcon } from "@phosphor-icons/react";
-
+import { useBoolean } from "usehooks-ts";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
+import { useCopyCommand } from "../_hooks/use-copy-command";
+import { ShareDialog } from "./share-dialog";
 
 interface CommandFooterProps {
   brewCommand: string;
   uninstallCommand: string;
   selectedCount: number;
-  copied: boolean;
-  isUninstallMode: boolean;
-  onCopy: () => void;
-  onToggleMode: () => void;
-  onShare?: () => void;
+  selectedApps?: string[]; // For analytics
+  fullCatalogPackagesCount?: number; // For analytics
 }
 
 export function CommandFooter({
   brewCommand,
   uninstallCommand,
   selectedCount,
-  copied,
-  isUninstallMode,
-  onCopy,
-  onToggleMode,
-  onShare,
+  selectedApps = [],
+  fullCatalogPackagesCount = 0,
 }: CommandFooterProps) {
+  const uninstallMode = useBoolean(false);
+  const { handleCopy, isCopied } = useCopyCommand();
+
+  const isUninstallMode = uninstallMode.value;
   const displayCommand = isUninstallMode ? uninstallCommand : brewCommand;
+  const copied = isCopied(displayCommand);
+
+  const handleCopyClick = () => {
+    handleCopy(displayCommand, {
+      type: "brew_command",
+      command: displayCommand,
+      selectedAppsCount: selectedCount - fullCatalogPackagesCount,
+      fullCatalogPackagesCount,
+      isUninstallMode,
+      selectedApps,
+    });
+  };
   const commandLabel = isUninstallMode ? "uninstall" : "install";
   const controlHeight = "h-9 min-h-[36px]";
 
@@ -50,7 +62,7 @@ export function CommandFooter({
               </code>
             </div>
             <Button
-              onClick={onCopy}
+              onClick={handleCopyClick}
               disabled={!displayCommand}
               size="lg"
               className={cn(
@@ -70,20 +82,20 @@ export function CommandFooter({
                 </>
               )}
             </Button>
-            {onShare && (
-              <Button
-                onClick={onShare}
-                disabled={!displayCommand}
-                variant="outline"
-                size="lg"
-                className={cn(
-                  "shrink-0 px-3 py-2.5 shadow-sm transition-all active:scale-95",
+            <ShareDialog
+              disabled={!displayCommand}
+              triggerProps={{
+                className: cn(
+                  "flex items-center justify-center shrink-0 gap-2 rounded-md border border-input bg-background px-3 py-2.5 text-sm font-medium shadow-sm transition-all active:scale-95",
                   controlHeight,
-                )}
-              >
-                <ShareNetworkIcon className="size-4" />
-              </Button>
-            )}
+                  "hover:bg-accent hover:text-accent-foreground",
+                ),
+                type: "button",
+                "aria-label": "Share installation kit",
+              }}
+            >
+              <ShareNetworkIcon className="size-4" />
+            </ShareDialog>
           </div>
 
           <div className="flex items-center justify-between gap-3 text-muted-foreground/80">
@@ -98,7 +110,7 @@ export function CommandFooter({
               </span>
               <Switch
                 checked={isUninstallMode}
-                onCheckedChange={onToggleMode}
+                onCheckedChange={uninstallMode.toggle}
                 aria-label="Toggle uninstall mode"
               />
             </div>

@@ -1877,7 +1877,7 @@ const DESIGN_APPS: Array<App> = [
   },
 ];
 
-export const APPS: Array<App> = [
+export const CURATED_APPS: Array<App> = [
   ...BROWSER_APPS,
   ...DEVELOPMENT_APPS,
   ...PRODUCTIVITY_APPS,

@@ -47,7 +47,7 @@ async function getPackageTokensByType(): Promise<{
 
 /**
  * Lookup package types for shared links (server-side only).
- * This is needed for SSR when loading shared links with custom packages.
+ * This is needed for SSR when loading shared links with full catalog packages.
  * Now uses a more efficient approach that only fetches tokens instead of full data.
  */
 export async function lookupPackageTypes(
