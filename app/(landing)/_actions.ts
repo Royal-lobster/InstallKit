@@ -5,89 +5,50 @@ import {
   unstable_cacheTag as cacheTag,
 } from "next/cache";
 
-type HomebrewPackage = {
-  token: string;
-  name: string | string[];
-  desc: string;
-  homepage: string;
-  version: string;
-  type: "cask" | "formula";
-};
-
 type RawFormula = {
   name: string;
-  full_name: string;
-  desc: string;
-  homepage: string;
-  versions: {
-    stable: string;
-  };
 };
 
 type RawCask = {
   token: string;
-  name: string[];
-  desc: string;
-  homepage: string;
-  version: string;
 };
 
-async function fetchFormulae(): Promise<HomebrewPackage[]> {
+/**
+ * Efficiently fetch only the package names/tokens to determine types.
+ * This is much more efficient than fetching full package data.
+ */
+async function getPackageTokensByType(): Promise<{
+  casks: Set<string>;
+  formulae: Set<string>;
+}> {
   "use cache";
-  cacheTag("homebrew-formulae");
+  cacheTag("homebrew-tokens");
   cacheLife("hours");
 
-  const response = await fetch("https://formulae.brew.sh/api/formula.json");
-  if (!response.ok) {
-    throw new Error("Failed to fetch formulae");
+  const [casksResponse, formulaeResponse] = await Promise.all([
+    fetch("https://formulae.brew.sh/api/cask.json"),
+    fetch("https://formulae.brew.sh/api/formula.json"),
+  ]);
+
+  if (!casksResponse.ok || !formulaeResponse.ok) {
+    throw new Error("Failed to fetch package information");
   }
 
-  const data: RawFormula[] = await response.json();
+  const [casksData, formulaeData] = await Promise.all([
+    casksResponse.json() as Promise<RawCask[]>,
+    formulaeResponse.json() as Promise<RawFormula[]>,
+  ]);
 
-  return data.map((formula) => ({
-    token: formula.name,
-    name: formula.full_name,
-    desc: formula.desc || "",
-    homepage: formula.homepage || "",
-    version: formula.versions?.stable || "",
-    type: "formula" as const,
-  }));
-}
-
-async function fetchCasks(): Promise<HomebrewPackage[]> {
-  "use cache";
-  cacheTag("homebrew-casks");
-  cacheLife("hours");
-
-  const response = await fetch("https://formulae.brew.sh/api/cask.json");
-  if (!response.ok) {
-    throw new Error("Failed to fetch casks");
-  }
-
-  const data: RawCask[] = await response.json();
-
-  return data.map((cask) => ({
-    token: cask.token,
-    name: cask.name,
-    desc: cask.desc || "",
-    homepage: cask.homepage || "",
-    version: cask.version || "",
-    type: "cask" as const,
-  }));
-}
-
-async function getCatalogue(): Promise<HomebrewPackage[]> {
-  "use cache";
-  cacheTag("homebrew-catalogue");
-  cacheLife("hours");
-
-  const [formulae, casks] = await Promise.all([fetchFormulae(), fetchCasks()]);
-  return [...casks, ...formulae];
+  return {
+    casks: new Set(casksData.map((cask) => cask.token)),
+    formulae: new Set(formulaeData.map((formula) => formula.name)),
+  };
 }
 
 /**
  * Lookup package types for shared links (server-side only).
  * This is needed for SSR when loading shared links with custom packages.
+ * Now uses a more efficient approach that only fetches tokens instead of full data.
  */
 export async function lookupPackageTypes(
   tokens: string[],
@@ -96,14 +57,17 @@ export async function lookupPackageTypes(
     return new Map();
   }
 
-  const catalogue = await getCatalogue();
+  const { casks, formulae } = await getPackageTokensByType();
   const result = new Map<string, "cask" | "formula">();
 
   for (const token of tokens) {
-    const pkg = catalogue.find((p) => p.token === token);
-    if (pkg) {
-      result.set(token, pkg.type);
+    if (casks.has(token)) {
+      result.set(token, "cask");
+    } else if (formulae.has(token)) {
+      result.set(token, "formula");
     }
+    // If token is not found in either, we don't add it to the result
+    // The calling code will default to "cask" if needed
   }
 
   return result;
