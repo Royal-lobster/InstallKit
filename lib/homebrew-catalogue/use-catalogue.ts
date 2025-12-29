@@ -9,6 +9,7 @@ import {
   savePackages,
 } from "./db";
 import {
+  clearIndex,
   createSearchIndex,
   getPackageFromIndex,
   isIndexReady,
@@ -66,6 +67,9 @@ const store: CatalogueStore = {
   initPromise: null,
 };
 
+// Track if we're already initialized to prevent multiple attempts
+let isInitialized = false;
+
 function updateState(partial: Partial<CatalogueState>) {
   store.state = { ...store.state, ...partial };
   for (const listener of store.listeners) {
@@ -91,26 +95,38 @@ async function fetchCatalogue(): Promise<HomebrewPackage[]> {
     casksRes.json() as Promise<RawCask[]>,
   ]);
 
-  const formulae: HomebrewPackage[] = formulaeData.map((formula) => ({
-    token: formula.name,
-    name: formula.full_name,
-    desc: formula.desc || "",
-    homepage: formula.homepage || "",
-    version: formula.versions?.stable || "",
-    type: "formula" as const,
-  }));
-
-  const casks: HomebrewPackage[] = casksData.map((cask) => ({
-    token: cask.token,
-    name: Array.isArray(cask.name) ? cask.name[0] : cask.name,
-    desc: cask.desc || "",
-    homepage: cask.homepage || "",
-    version: cask.version || "",
-    type: "cask" as const,
-  }));
-
-  // Casks first (they're usually what users want for GUI apps)
-  return [...casks, ...formulae];
+  // Process and optimize data to reduce memory usage
+  const packages: HomebrewPackage[] = [];
+  
+  // Process casks first (they're usually what users want for GUI apps)
+  for (const cask of casksData) {
+    packages.push({
+      token: cask.token,
+      name: Array.isArray(cask.name) ? cask.name[0] : cask.name,
+      desc: cask.desc || "",
+      homepage: cask.homepage || "",
+      version: cask.version || "",
+      type: "cask" as const,
+    });
+  }
+  
+  // Then process formulae
+  for (const formula of formulaeData) {
+    packages.push({
+      token: formula.name,
+      name: formula.full_name,
+      desc: formula.desc || "",
+      homepage: formula.homepage || "",
+      version: formula.versions?.stable || "",
+      type: "formula" as const,
+    });
+  }
+  
+  // Clear source data to free memory
+  formulaeData.length = 0;
+  casksData.length = 0;
+  
+  return packages;
 }
 
 async function initializeCatalogue(): Promise<void> {
@@ -203,11 +219,15 @@ export function useHomebrewCatalogue() {
     store.listeners.add(listener);
 
     // Initialize catalogue after page load (using requestIdleCallback if available)
-    if (!hasInitialized.current && !store.initPromise) {
+    if (!hasInitialized.current && !store.initPromise && !isInitialized) {
       hasInitialized.current = true;
+      isInitialized = true;
 
       const init = () => {
-        store.initPromise = initializeCatalogue();
+        // Double-check we haven't already started initialization
+        if (!store.initPromise) {
+          store.initPromise = initializeCatalogue();
+        }
       };
 
       // Delay initialization to after page load
@@ -225,8 +245,20 @@ export function useHomebrewCatalogue() {
       }
     }
 
+    // Cleanup on page unload to prevent memory leaks
+    const handleBeforeUnload = () => {
+      clearIndex();
+    };
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("beforeunload", handleBeforeUnload);
+    }
+
     return () => {
       store.listeners.delete(listener);
+      if (typeof window !== "undefined") {
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+      }
     };
   }, []);
 

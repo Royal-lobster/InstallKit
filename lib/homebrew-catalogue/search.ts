@@ -15,31 +15,34 @@ let tokenIndex: Index | null = null;
 let nameIndex: Index | null = null;
 let descIndex: Index | null = null;
 const indexedPackages: Map<string, HomebrewPackage> = new Map();
-let packageList: HomebrewPackage[] = [];
+const packageList: HomebrewPackage[] = [];
 
 export function createSearchIndex(packages: HomebrewPackage[]): void {
-  // Create separate indexes for each field
+  // Clear existing indexes to prevent memory leaks
+  clearIndex();
+  
+  // Create separate indexes for each field with smaller cache to save memory
   tokenIndex = new Index({
     tokenize: "forward",
-    resolution: 9,
-    cache: 100,
+    resolution: 7, // Reduced from 9
+    cache: 50,     // Reduced from 100
   });
 
   nameIndex = new Index({
-    tokenize: "forward",
-    resolution: 9,
-    cache: 100,
+    tokenize: "forward", 
+    resolution: 7, // Reduced from 9
+    cache: 50,     // Reduced from 100
   });
 
   descIndex = new Index({
     tokenize: "forward",
     resolution: 5,
-    cache: 100,
+    cache: 25,     // Reduced from 100
   });
 
   // Index all packages
   indexedPackages.clear();
-  packageList = [];
+  packageList.length = 0; // More memory efficient than reassigning
 
   for (let i = 0; i < packages.length; i++) {
     const pkg = packages[i];
@@ -75,14 +78,17 @@ export function searchPackages(
 
   const trimmedQuery = query.trim().toLowerCase();
 
-  // Search each field
+  // Search each field with smaller limits to reduce memory usage
+  const searchLimit = Math.min(limit * 2, 200); // Cap at 200 results max
   const tokenResults = tokenIndex.search(trimmedQuery, {
-    limit: limit * 2,
+    limit: searchLimit,
   }) as number[];
   const nameResults = nameIndex.search(trimmedQuery, {
-    limit: limit * 2,
+    limit: searchLimit,
   }) as number[];
-  const descResults = descIndex.search(trimmedQuery, { limit }) as number[];
+  const descResults = descIndex.search(trimmedQuery, { 
+    limit: Math.min(limit, 100) // Cap desc results
+  }) as number[];
 
   // Collect unique results with scores
   const scoreMap = new Map<number, number>();
@@ -151,9 +157,20 @@ export function getPackageFromIndex(
 }
 
 export function clearIndex(): void {
-  tokenIndex = null;
-  nameIndex = null;
-  descIndex = null;
+  // Properly dispose of FlexSearch indexes
+  if (tokenIndex) {
+    tokenIndex.clear();
+    tokenIndex = null;
+  }
+  if (nameIndex) {
+    nameIndex.clear();
+    nameIndex = null;
+  }
+  if (descIndex) {
+    descIndex.clear();
+    descIndex = null;
+  }
+  
   indexedPackages.clear();
-  packageList = [];
+  packageList.length = 0; // More memory efficient
 }
