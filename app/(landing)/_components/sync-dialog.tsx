@@ -10,6 +10,7 @@ import {
 } from "@phosphor-icons/react";
 import type * as React from "react";
 import { useCopyToClipboard } from "usehooks-ts";
+import { useAnalytics } from "@/app/(landing)/_hooks/use-analytics";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,7 +22,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useAnalytics } from "@/lib/hooks/use-analytics";
 
 interface SyncDialogProps {
   children: React.ReactNode;

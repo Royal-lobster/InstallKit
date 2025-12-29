@@ -7,7 +7,7 @@ import {
   type HomebrewPackage,
   hasPackages,
   savePackages,
-} from "../integrations/db";
+} from "../../../lib/integrations/db";
 import {
   clearIndex,
   createSearchIndex,
@@ -15,7 +15,7 @@ import {
   isIndexReady,
   type SearchResult,
   searchPackages,
-} from "../integrations/search";
+} from "../../../lib/integrations/search";
 
 // Stale time: 30 minutes
 const STALE_TIME_MS = 30 * 60 * 1000;
@@ -69,6 +69,92 @@ const store: CatalogueStore = {
 
 // Track if we're already initialized to prevent multiple attempts
 let isInitialized = false;
+
+/**
+ * Hook to manage the Homebrew catalogue.
+ *
+ * This hook:
+ * - Loads catalogue from IndexedDB on mount (after page load)
+ * - Fetches fresh data if cache is stale or missing
+ * - Provides search functionality
+ * - Provides package lookup by token
+ *
+ * All state is shared across hook instances.
+ */
+export function useFullCatalogue() {
+  const [state, setState] = useState(store.state);
+  const hasInitialized = useRef(false);
+
+  useEffect(() => {
+    // Subscribe to store updates
+    const listener = () => setState(store.state);
+    store.listeners.add(listener);
+
+    // Initialize catalogue after page load (using requestIdleCallback if available)
+    if (!hasInitialized.current && !store.initPromise && !isInitialized) {
+      hasInitialized.current = true;
+      isInitialized = true;
+
+      const init = () => {
+        // Double-check we haven't already started initialization
+        if (!store.initPromise) {
+          store.initPromise = initializeCatalogue();
+        }
+      };
+
+      // Delay initialization to after page load
+      if (typeof window !== "undefined") {
+        if ("requestIdleCallback" in window) {
+          (
+            window as typeof window & {
+              requestIdleCallback: (cb: () => void) => number;
+            }
+          ).requestIdleCallback(init, { timeout: 2000 });
+        } else {
+          // Fallback for Safari
+          setTimeout(init, 100);
+        }
+      }
+    }
+
+    // Cleanup on page unload to prevent memory leaks
+    const handleBeforeUnload = () => {
+      clearIndex();
+    };
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("beforeunload", handleBeforeUnload);
+    }
+
+    return () => {
+      store.listeners.delete(listener);
+      if (typeof window !== "undefined") {
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+      }
+    };
+  }, []);
+
+  const search = useCallback(
+    (query: string, limit?: number): SearchResult[] => {
+      if (!isIndexReady()) return [];
+      return searchPackages(query, limit);
+    },
+    [],
+  );
+
+  const getPackage = useCallback(
+    (token: string): HomebrewPackage | undefined => {
+      return getPackageFromIndex(token);
+    },
+    [],
+  );
+
+  return {
+    ...state,
+    search,
+    getPackage,
+  };
+}
 
 function updateState(partial: Partial<CatalogueState>) {
   store.state = { ...store.state, ...partial };
@@ -196,90 +282,4 @@ async function refreshCatalogueInBackground(): Promise<void> {
     // Silently fail background refresh - we already have data
     console.warn("Background catalogue refresh failed");
   }
-}
-
-/**
- * Hook to manage the Homebrew catalogue.
- *
- * This hook:
- * - Loads catalogue from IndexedDB on mount (after page load)
- * - Fetches fresh data if cache is stale or missing
- * - Provides search functionality
- * - Provides package lookup by token
- *
- * All state is shared across hook instances.
- */
-export function useHomebrewCatalogue() {
-  const [state, setState] = useState(store.state);
-  const hasInitialized = useRef(false);
-
-  useEffect(() => {
-    // Subscribe to store updates
-    const listener = () => setState(store.state);
-    store.listeners.add(listener);
-
-    // Initialize catalogue after page load (using requestIdleCallback if available)
-    if (!hasInitialized.current && !store.initPromise && !isInitialized) {
-      hasInitialized.current = true;
-      isInitialized = true;
-
-      const init = () => {
-        // Double-check we haven't already started initialization
-        if (!store.initPromise) {
-          store.initPromise = initializeCatalogue();
-        }
-      };
-
-      // Delay initialization to after page load
-      if (typeof window !== "undefined") {
-        if ("requestIdleCallback" in window) {
-          (
-            window as typeof window & {
-              requestIdleCallback: (cb: () => void) => number;
-            }
-          ).requestIdleCallback(init, { timeout: 2000 });
-        } else {
-          // Fallback for Safari
-          setTimeout(init, 100);
-        }
-      }
-    }
-
-    // Cleanup on page unload to prevent memory leaks
-    const handleBeforeUnload = () => {
-      clearIndex();
-    };
-
-    if (typeof window !== "undefined") {
-      window.addEventListener("beforeunload", handleBeforeUnload);
-    }
-
-    return () => {
-      store.listeners.delete(listener);
-      if (typeof window !== "undefined") {
-        window.removeEventListener("beforeunload", handleBeforeUnload);
-      }
-    };
-  }, []);
-
-  const search = useCallback(
-    (query: string, limit?: number): SearchResult[] => {
-      if (!isIndexReady()) return [];
-      return searchPackages(query, limit);
-    },
-    [],
-  );
-
-  const getPackage = useCallback(
-    (token: string): HomebrewPackage | undefined => {
-      return getPackageFromIndex(token);
-    },
-    [],
-  );
-
-  return {
-    ...state,
-    search,
-    getPackage,
-  };
 }

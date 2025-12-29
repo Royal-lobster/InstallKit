@@ -6,6 +6,10 @@ import type * as React from "react";
 import { useForm } from "react-hook-form";
 import { useBoolean, useCopyToClipboard } from "usehooks-ts";
 import { z } from "zod";
+import {
+  useSelectedApps,
+  useSelectedCustomPackages,
+} from "@/app/(landing)/_hooks/use-package-store";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,10 +25,6 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
-import {
-  useSelectedApps,
-  useSelectedCustomPackages,
-} from "@/lib/hooks/use-package-store";
 import { createShortURL } from "@/lib/integrations/shorturl";
 
 interface ShareDialogProps {

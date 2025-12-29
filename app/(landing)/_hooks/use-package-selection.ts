@@ -1,8 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo } from "react";
-import { APPS } from "@/lib/data/apps";
-import { useHomebrewCatalogue } from "@/lib/hooks/use-catalogue";
+import { useFullCatalogue } from "@/app/(landing)/_hooks/use-full-catalogue";
 import {
   useBrewCommands,
   useCustomPackages,
@@ -12,7 +11,8 @@ import {
   useSelectedCount,
   useSelectedCustomPackages,
   useSelectedTokens,
-} from "@/lib/hooks/use-package-store";
+} from "@/app/(landing)/_hooks/use-package-store";
+import { APPS } from "@/lib/data/apps";
 import type { SearchResult } from "@/lib/integrations/search";
 
 interface InitialPackage {
@@ -25,7 +25,7 @@ export function usePackageSelection(
   initialSelectedAppIds: string[],
   initialCustomPackages: InitialPackage[],
 ) {
-  const { getPackage } = useHomebrewCatalogue();
+  const { getPackage } = useFullCatalogue();
 
   // Resolve package types for initial custom packages
   const resolvedInitialPackages = useMemo(() => {

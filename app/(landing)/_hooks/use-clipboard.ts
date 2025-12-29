@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useCopyToClipboard } from "usehooks-ts";
-import { type CopyEvent, useAnalytics } from "@/lib/hooks/use-analytics";
+import {
+  type CopyEvent,
+  useAnalytics,
+} from "@/app/(landing)/_hooks/use-analytics";
 
 export function useClipboard() {
   const [, copy] = useCopyToClipboard();
