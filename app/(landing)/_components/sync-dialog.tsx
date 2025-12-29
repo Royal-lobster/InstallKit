@@ -66,7 +66,7 @@ export function SyncDialog({ open, onOpenChange }: SyncDialogProps) {
       <DialogContent className="sm:max-w-lg">
         <DialogClose />
         <DialogHeader className="items-center pt-6 pb-2">
-          <div className="mb-3 flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 via-primary/10 to-transparent ring-1 ring-primary/20">
+          <div className="mb-3 flex size-14 items-center justify-center rounded-2xl bg-linear-to-br from-primary/20 via-primary/10 to-transparent ring-1 ring-primary/20">
             <TerminalWindowIcon
               className="size-7 text-primary"
               weight="duotone"

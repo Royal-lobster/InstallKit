@@ -28,7 +28,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { APPS } from "@/lib/data/apps";
-import { range } from "@/lib/helpers/range";
 import type { SearchResult } from "@/lib/integrations/search";
 import { useFullCatalogSearch } from "../_hooks/use-full-catalog-search";
 
@@ -189,7 +188,7 @@ export function FullCatalogSearch({
               </div>
             )}
           </div>
-          <CommandList className="max-h-[400px] overflow-y-auto p-2">
+          <CommandList className="max-h-100 overflow-y-auto p-2">
             {query.trim().length < 2 && (
               <div className="flex flex-col items-center justify-center gap-4 py-12 text-center">
                 <MagnifyingGlassIcon className="size-12 text-muted-foreground/20" />

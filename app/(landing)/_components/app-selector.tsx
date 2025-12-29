@@ -5,7 +5,7 @@ import * as React from "react";
 import { APPS } from "@/lib/data/apps";
 import type { App, AppCategory } from "@/lib/data/schema";
 import { CATEGORIES } from "@/lib/data/schema";
-import { SearchResult } from "@/lib/integrations/search";
+import type { SearchResult } from "@/lib/integrations/search";
 import { useInstallKit } from "../_hooks/use-installkit";
 import { useSearchQuery } from "../_hooks/use-search-query";
 import { AppCard } from "./app-card";
