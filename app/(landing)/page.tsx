@@ -18,14 +18,24 @@ import { useFilteredApps } from "./_hooks/use-filtered-apps";
 import { usePackageSelection } from "./_hooks/use-package-selection";
 import { useUrlParams } from "./_hooks/use-url-params";
 
-export default function HomePage() {
+export interface HomepageSearchParams {
+  name?: string;
+  packages?: string;
+  description?: string;
+}
+
+export default function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<HomepageSearchParams>;
+}) {
   // URL parameters
   const {
     kitName,
     kitDescription,
     initialSelectedAppIds,
     initialFullCatalogPackages,
-  } = useUrlParams();
+  } = useUrlParams({ searchParams });
 
   // Package selection state (apps + full catalog packages)
   const {

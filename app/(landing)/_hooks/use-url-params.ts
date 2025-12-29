@@ -1,8 +1,8 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+import { use, useMemo } from "react";
 import { APPS } from "@/lib/data/apps";
+import type { HomepageSearchParams } from "../page";
 
 export interface UrlParams {
   kitName: string | undefined;
@@ -15,13 +15,16 @@ export interface UrlParams {
   }>;
 }
 
-export function useUrlParams(): UrlParams {
-  const params = useSearchParams();
-
+export function useUrlParams({
+  searchParams,
+}: {
+  searchParams: Promise<HomepageSearchParams>;
+}): UrlParams {
+  const params = use(searchParams);
   return useMemo(() => {
-    const kitName = params.get("name") || undefined;
-    const kitDescription = params.get("description") || undefined;
-    const packagesParam = params.get("packages") || "";
+    const kitName = params.name || undefined;
+    const kitDescription = params.description || undefined;
+    const packagesParam = params.packages || "";
 
     const packageTokens = packagesParam
       .split(",")
