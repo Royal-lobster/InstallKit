@@ -86,7 +86,7 @@ export function ShareDialog({
       const baseUrl =
         typeof window !== "undefined"
           ? window.location.origin
-          : "https://installkit.vercel.app";
+          : "https://installkit.app";
       const longUrl = `${baseUrl}?${params.toString()}`;
 
       let shortUrl = null;

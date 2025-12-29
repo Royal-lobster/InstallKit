@@ -17,7 +17,7 @@ export function generateShareURL(
   const baseUrl =
     typeof window !== "undefined"
       ? window.location.origin
-      : "https://installkit.vercel.app";
+      : "https://installkit.app";
 
   return `${baseUrl}?${params.toString()}`;
 }

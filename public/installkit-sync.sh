@@ -496,7 +496,7 @@ fi
 # -----------------------------------------------------------------------------
 TITLE_ENCODED=$(printf "%s's brew packages" "$USERNAME" | sed 's/ /+/g' | sed "s/'/\%27/g")
 PACKAGES_ENCODED=$(echo "$SELECTED_PACKAGES" | sed 's/,/%2C/g')
-INSTALLKIT_URL="https://installkit.vercel.app?name=$TITLE_ENCODED&packages=$PACKAGES_ENCODED"
+INSTALLKIT_URL="https://installkit.app?name=$TITLE_ENCODED&packages=$PACKAGES_ENCODED"
 
 echo
 echo -e "${GREEN}✅ Your InstallKit URL:${NC}"

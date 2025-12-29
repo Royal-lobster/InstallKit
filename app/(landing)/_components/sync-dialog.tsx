@@ -25,7 +25,7 @@ interface SyncDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const SYNC_COMMAND = "curl -fsSL installkit.vercel.app/s | bash";
+const SYNC_COMMAND = "curl -fsSL installkit.app/s | bash";
 
 const BENEFITS = [
   {

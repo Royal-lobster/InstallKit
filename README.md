@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://installkit.vercel.app" target="_blank">
+  <a href="https://installkit.app" target="_blank">
     <img src="https://img.shields.io/badge/🌐_Try_InstallKit-4285f4?style=for-the-badge&logoColor=white" alt="Try InstallKit" />
   </a>
 </p>
@@ -46,7 +46,7 @@ Perfect for:
 
 ### Option 1: Browse and Select Apps
 
-1. Go to [installkit.vercel.app](https://installkit.vercel.app)
+1. Go to [installkit.app](https://installkit.app)
 2. Browse through 200+ popular Mac apps organized by category
 3. Check the apps you want to install
 4. Copy the generated Homebrew command
@@ -57,7 +57,7 @@ Perfect for:
 Already have a Mac with apps installed via Homebrew? Generate a shareable link with all your apps:
 
 ```bash
-curl -fsSL installkit.vercel.app/s | bash
+curl -fsSL installkit.app/s | bash
 ```
 
 This scans your installed Homebrew packages and creates a personalized InstallKit link. Use it to:
