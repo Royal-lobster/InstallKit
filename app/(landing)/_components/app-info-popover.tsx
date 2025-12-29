@@ -16,9 +16,9 @@ import {
   getHomebrewUrl,
 } from "@/lib/helpers/brew-commands";
 import {
-  type HomebrewInfo,
-  useHomebrewInfo,
-} from "../_hooks/use-homebrew-info";
+  type FullCatalogInfo,
+  useFullCatalogInfo,
+} from "../_hooks/use-full-catalog-info";
 import { AppIcon } from "./app-icon";
 
 interface AppInfoPopoverProps {
@@ -26,7 +26,7 @@ interface AppInfoPopoverProps {
 }
 
 function getDescription(
-  brewInfo: HomebrewInfo | undefined,
+  brewInfo: FullCatalogInfo | undefined,
   fallback: string,
   error: Error | null,
 ) {
@@ -43,7 +43,7 @@ export function AppInfoPopover({ app }: AppInfoPopoverProps) {
     data: brewInfo,
     isLoading,
     error,
-  } = useHomebrewInfo(app.brewName, open);
+  } = useFullCatalogInfo(app.brewName, open);
 
   const homebrewUrl =
     brewInfo?.url ??

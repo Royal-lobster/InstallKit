@@ -13,7 +13,7 @@ import {
 } from "@phosphor-icons/react";
 import * as React from "react";
 import { SyncDialog } from "@/app/(landing)/_components/sync-dialog";
-import { useBrewPickerContext } from "@/app/(landing)/_hooks/use-brew-picker-context";
+import { useInstallKit } from "@/app/(landing)/_hooks/use-installkit";
 import { useSearchQuery } from "@/app/(landing)/_hooks/use-search-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,7 +31,7 @@ export function AppShell({ children }: React.PropsWithChildren) {
     onCopy,
     onToggleMode,
     onShare,
-  } = useBrewPickerContext();
+  } = useInstallKit();
 
   const { searchQuery, setSearchQuery } = useSearchQuery();
   const [isSyncDialogOpen, setIsSyncDialogOpen] = React.useState(false);

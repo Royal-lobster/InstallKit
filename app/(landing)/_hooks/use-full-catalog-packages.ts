@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useIsomorphicLayoutEffect, useLocalStorage } from "usehooks-ts";
 import type { CustomPackage } from "@/lib/helpers/brew-commands";
 
-export function useCustomPackages(
+export function useFullCatalogPackages(
   initialPackages: Array<{
     token: string;
     name: string;
@@ -16,7 +16,7 @@ export function useCustomPackages(
   const [customPackagesArray, setCustomPackagesArray] = useLocalStorage<
     CustomPackage[]
   >(
-    "installkit-custom-packages",
+    "installkit-full-catalog-packages",
     initialPackages.map((pkg) => ({
       token: pkg.token,
       name: pkg.name,
@@ -26,7 +26,7 @@ export function useCustomPackages(
 
   const [selectedCustomPackageIds, setSelectedCustomPackageIds] =
     useLocalStorage<string[]>(
-      "installkit-selected-custom-packages",
+      "installkit-selected-full-catalog-packages",
       initialPackages.map((pkg) => pkg.token),
     );
 

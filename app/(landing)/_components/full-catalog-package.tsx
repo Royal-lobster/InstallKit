@@ -9,27 +9,27 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { SelectionCheckbox } from "./selection-checkbox";
 
-export interface CustomPackage {
+export interface FullCatalogPackageType {
   token: string;
   name: string;
   type: "cask" | "formula";
 }
 
-interface CustomPackageCardProps {
-  pkg: CustomPackage;
+interface FullCatalogPackageProps {
+  pkg: FullCatalogPackageType;
   onRemove: (token: string) => void;
   isSelected?: boolean;
   onToggle?: (token: string) => void;
   showCheckbox?: boolean;
 }
 
-export function CustomPackageCard({
+export function FullCatalogPackage({
   pkg,
   onRemove,
   isSelected = true,
   onToggle,
   showCheckbox = false,
-}: CustomPackageCardProps) {
+}: FullCatalogPackageProps) {
   const [isRemoving, setIsRemoving] = React.useState(false);
 
   const handleRemove = React.useCallback(() => {
@@ -58,50 +58,55 @@ export function CustomPackageCard({
       onClick={handleClick}
       className={cn(
         "group flex select-none items-center gap-2.5 border px-2.5 py-2 text-left transition-colors",
-        onToggle && "cursor-pointer hover:bg-muted/50",
-        isSelected ? "border-primary/50 bg-primary/5" : "border-border bg-card",
-        !showCheckbox &&
-          isRemoving &&
-          "scale-95 opacity-0 transition-all duration-200",
+        "cursor-pointer hover:border-muted-foreground/40",
+        isSelected
+          ? "bg-accent/50 border-accent-foreground/20"
+          : "bg-background hover:bg-accent/20",
+        isRemoving && "opacity-50",
+        onToggle && "cursor-pointer",
       )}
     >
-      <div className="flex size-5 shrink-0 items-center justify-center">
-        <Package className="size-4 text-muted-foreground" weight="duotone" />
+      {showCheckbox && onToggle && (
+        <SelectionCheckbox isSelected={isSelected} onToggle={onToggle} />
+      )}
+
+      <div className="flex h-8 w-8 items-center justify-center rounded bg-muted">
+        <Package size={16} className="text-muted-foreground" />
       </div>
-      <span className="min-w-0 flex-1 truncate font-mono text-xs">
-        {pkg.name}
-      </span>
-      <div className="flex items-center gap-2">
-        {showCheckbox ? (
-          <SelectionCheckbox
-            isSelected={isSelected}
-            onToggle={onToggle ? () => onToggle(pkg.token) : undefined}
-          />
-        ) : (
-          <>
-            <Badge
-              variant="secondary"
-              className="shrink-0 font-mono text-[10px] uppercase"
-            >
-              {pkg.type}
-            </Badge>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              className="size-6 rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-              onClick={handleRemove}
-            >
-              <XIcon className="size-3.5" weight="bold" />
-            </Button>
-          </>
-        )}
+
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-1.5">
+          <span className="truncate text-sm font-medium">{pkg.name}</span>
+          <Badge
+            variant="outline"
+            className="font-mono text-[10px] font-medium"
+          >
+            {pkg.type}
+          </Badge>
+        </div>
+        <div className="font-mono text-xs text-muted-foreground">
+          {pkg.token}
+        </div>
       </div>
+
+      <Button
+        size="sm"
+        variant="ghost"
+        onClick={(e) => {
+          e.stopPropagation();
+          handleRemove();
+        }}
+        className="h-6 w-6 p-0 opacity-60 hover:opacity-100 focus:opacity-100"
+      >
+        <XIcon size={12} />
+        <span className="sr-only">Remove {pkg.name}</span>
+      </Button>
     </div>
   );
 }
 
-interface CustomPackagesSectionProps {
-  packages: Map<string, CustomPackage>;
+interface FullCatalogPackagesSectionProps {
+  packages: Map<string, FullCatalogPackageType>;
   selectedTokens: Set<string>;
   onRemove: (token: string) => void;
   fromShareLink?: boolean;
@@ -110,7 +115,7 @@ interface CustomPackagesSectionProps {
   showCheckbox?: boolean;
 }
 
-export function CustomPackagesSection({
+export function FullCatalogPackagesSection({
   packages,
   selectedTokens,
   onRemove,
@@ -118,7 +123,7 @@ export function CustomPackagesSection({
   sharedTokens = new Set(),
   onToggle,
   showCheckbox = false,
-}: CustomPackagesSectionProps) {
+}: FullCatalogPackagesSectionProps) {
   // Filter packages based on whether we're showing shared or non-shared packages
   const displayPackages = Array.from(packages.values()).filter((pkg) =>
     fromShareLink ? sharedTokens.has(pkg.token) : !sharedTokens.has(pkg.token),
@@ -132,7 +137,7 @@ export function CustomPackagesSection({
     <section className="mt-8">
       <div className="mb-3 flex items-center gap-2">
         <h2 className="font-mono text-xs font-medium uppercase tracking-wider text-muted-foreground">
-          From Homebrew Search
+          From Full Catalog
         </h2>
         <span className="font-mono text-[10px] text-muted-foreground/60">
           ({displayPackages.length})
@@ -141,7 +146,7 @@ export function CustomPackagesSection({
       </div>
       <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {displayPackages.map((pkg) => (
-          <CustomPackageCard
+          <FullCatalogPackage
             key={pkg.token}
             pkg={pkg}
             onRemove={onRemove}

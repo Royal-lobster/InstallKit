@@ -24,7 +24,7 @@ interface ShareDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   selectedAppIds: string[];
-  customPackageTokens: string[];
+  fullCatalogPackageTokens: string[];
 }
 
 const MAX_NAME_LENGTH = 60;
@@ -51,7 +51,7 @@ export function ShareDialog({
   open,
   onOpenChange,
   selectedAppIds,
-  customPackageTokens,
+  fullCatalogPackageTokens,
 }: ShareDialogProps) {
   const {
     register,
@@ -73,7 +73,7 @@ export function ShareDialog({
 
   const generateLink = useMutation({
     mutationFn: async (data: FormData) => {
-      const allPackages = [...selectedAppIds, ...customPackageTokens];
+      const allPackages = [...selectedAppIds, ...fullCatalogPackageTokens];
       const params = new URLSearchParams({
         name: data.name.trim(),
         packages: allPackages.join(","),

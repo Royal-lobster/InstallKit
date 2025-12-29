@@ -1,6 +1,6 @@
 import { APPS } from "@/lib/data/apps";
+import { AppSelectionLayout } from "../(layout)/app-selection-layout";
 import { lookupPackageTypes } from "./_actions";
-import { BrewPicker } from "./_components/brew-picker";
 
 export default async function HomePage({
   searchParams,
@@ -32,7 +32,7 @@ export default async function HomePage({
     }
   }
 
-  // Only fetch Homebrew catalogue if there are external packages
+  // Only fetch full catalog if there are external packages
   const packageTypes =
     externalTokens.length > 0
       ? await lookupPackageTypes(externalTokens)
@@ -49,7 +49,7 @@ export default async function HomePage({
   }));
 
   return (
-    <BrewPicker
+    <AppSelectionLayout
       kitName={kitName}
       kitDescription={kitDescription}
       initialSelectedAppIds={selectedAppIds}

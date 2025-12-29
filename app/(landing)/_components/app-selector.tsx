@@ -6,37 +6,35 @@ import { APPS } from "@/lib/data/apps";
 import type { App, AppCategory } from "@/lib/data/schema";
 import { CATEGORIES } from "@/lib/data/schema";
 import { SearchResult } from "@/lib/integrations/search";
-import { useBrewPickerContext } from "../_hooks/use-brew-picker-context";
+import { useInstallKit } from "../_hooks/use-installkit";
 import { useSearchQuery } from "../_hooks/use-search-query";
 import { AppCard } from "./app-card";
-import { AppGridView } from "./app-grid-view";
-import { CategoryFilter } from "./category-filter";
-import { CategoryGridView } from "./category-grid-view";
+import { AppGrid } from "./app-grid";
+import { Categories } from "./categories";
 import {
-  CustomPackageCard,
-  CustomPackagesSection,
-} from "./custom-package-card";
-import { EmptySearchState } from "./empty-search-state";
-import { HomebrewSearchDialog } from "./homebrew-search-dialog";
+  FullCatalogPackage,
+  FullCatalogPackagesSection,
+} from "./full-catalog-package";
+import { FullCatalogSearch } from "./full-catalog-search";
 import { ShareDialog } from "./share-dialog";
 
-export function BrewPickerContent() {
+export function AppSelector() {
   const {
     sharedAppIds,
-    sharedCustomTokens,
+    sharedCustomTokens: sharedFullCatalogTokens,
     selectedApps,
     toggleApp,
-    customPackages,
-    selectedCustomPackages,
-    toggleCustomPackage,
-    removeCustomPackage,
-    addCustomPackage,
+    fullCatalogPackages,
+    selectedFullCatalogPackages,
+    toggleFullCatalogPackage,
+    removeFullCatalogPackage,
+    addFullCatalogPackage,
     selectedTokens,
     isShareDialogOpen,
     setIsShareDialogOpen,
     kitName,
     kitDescription,
-  } = useBrewPickerContext();
+  } = useInstallKit();
 
   const { searchQuery } = useSearchQuery();
 
@@ -92,24 +90,25 @@ export function BrewPickerContent() {
         return;
       }
 
-      addCustomPackage({
+      addFullCatalogPackage({
         token: pkg.token,
         name: pkg.name,
         type: pkg.type,
       });
 
-      toggleCustomPackage(pkg.token);
+      toggleFullCatalogPackage(pkg.token);
     },
-    [toggleApp, addCustomPackage, toggleCustomPackage],
+    [toggleApp, addFullCatalogPackage, toggleFullCatalogPackage],
   );
 
   const showCategorySections = selectedCategory === "all";
+  const hasEmptySearch = filteredApps.length === 0 && searchQuery.trim();
 
   return (
     <>
       <div className="border-b border-border">
         <div className="mx-auto max-w-6xl px-4 py-2">
-          <CategoryFilter
+          <Categories
             categories={CATEGORIES}
             selectedCategory={selectedCategory}
             onCategoryChange={setSelectedCategory}
@@ -131,13 +130,13 @@ export function BrewPickerContent() {
               )}
               <div className="mt-4 text-center text-sm text-muted-foreground">
                 <span className="font-medium text-foreground">
-                  {sharedAppIds.size + sharedCustomTokens.size} apps
+                  {sharedAppIds.size + sharedFullCatalogTokens.size} apps
                 </span>{" "}
                 pre-selected for quick installation
               </div>
             </div>
 
-            {(sharedAppIds.size > 0 || sharedCustomTokens.size > 0) && (
+            {(sharedAppIds.size > 0 || sharedFullCatalogTokens.size > 0) && (
               <div className="mb-12">
                 <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                   {Array.from(sharedAppIds)
@@ -151,16 +150,16 @@ export function BrewPickerContent() {
                         onToggle={toggleApp}
                       />
                     ))}
-                  {Array.from(sharedCustomTokens)
-                    .map((token) => customPackages.get(token))
+                  {Array.from(sharedFullCatalogTokens)
+                    .map((token) => fullCatalogPackages.get(token))
                     .filter((pkg) => pkg !== undefined)
                     .map((pkg) => (
-                      <CustomPackageCard
+                      <FullCatalogPackage
                         key={pkg.token}
                         pkg={pkg}
-                        onRemove={removeCustomPackage}
-                        isSelected={selectedCustomPackages.has(pkg.token)}
-                        onToggle={toggleCustomPackage}
+                        onRemove={removeFullCatalogPackage}
+                        isSelected={selectedFullCatalogPackages.has(pkg.token)}
+                        onToggle={toggleFullCatalogPackage}
                         showCheckbox={true}
                       />
                     ))}
@@ -179,38 +178,65 @@ export function BrewPickerContent() {
         )}
 
         <div className="mt-2">
-          {filteredApps.length > 0 ? (
-            showCategorySections ? (
-              <CategoryGridView
-                appsByCategory={appsByCategory}
-                categories={CATEGORIES}
-                selectedApps={selectedApps}
-                onToggle={toggleApp}
-              />
-            ) : (
-              <AppGridView
-                apps={filteredApps}
-                selectedApps={selectedApps}
-                onToggle={toggleApp}
-              />
-            )
+          {hasEmptySearch ? (
+            <div className="py-12 text-center">
+              <div className="mx-auto max-w-md">
+                <div className="mb-4 text-muted-foreground">
+                  <svg
+                    className="mx-auto h-12 w-12"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1}
+                      d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h.01M12 12h.01M15 12h.01M12 3c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold">No apps found</h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  No apps matched your search for "{searchQuery}". Try a
+                  different search term or browse our categories.
+                </p>
+              </div>
+            </div>
           ) : (
-            <EmptySearchState query={searchQuery} />
+            <>
+              {showCategorySections ? (
+                <Categories
+                  categories={CATEGORIES}
+                  appsByCategory={appsByCategory}
+                  selectedApps={selectedApps}
+                  onToggle={toggleApp}
+                  showGrid={true}
+                />
+              ) : (
+                <AppGrid
+                  apps={filteredApps}
+                  selectedApps={selectedApps}
+                  onToggle={toggleApp}
+                />
+              )}
+            </>
           )}
 
-          {customPackages.size > sharedCustomTokens.size && (
-            <CustomPackagesSection
-              packages={customPackages}
-              selectedTokens={selectedCustomPackages}
-              onRemove={removeCustomPackage}
+          {fullCatalogPackages.size > sharedFullCatalogTokens.size && (
+            <FullCatalogPackagesSection
+              packages={fullCatalogPackages}
+              selectedTokens={selectedFullCatalogPackages}
+              onRemove={removeFullCatalogPackage}
               fromShareLink={false}
-              sharedTokens={sharedCustomTokens}
-              onToggle={toggleCustomPackage}
+              sharedTokens={sharedFullCatalogTokens}
+              onToggle={toggleFullCatalogPackage}
             />
           )}
 
           <div className="mt-6">
-            <HomebrewSearchDialog
+            <FullCatalogSearch
               onSelectPackage={handleSelectPackage}
               selectedTokens={selectedTokens}
             />
@@ -222,7 +248,7 @@ export function BrewPickerContent() {
         open={isShareDialogOpen}
         onOpenChange={setIsShareDialogOpen}
         selectedAppIds={Array.from(selectedApps)}
-        customPackageTokens={Array.from(selectedCustomPackages)}
+        fullCatalogPackageTokens={Array.from(selectedFullCatalogPackages)}
       />
     </>
   );

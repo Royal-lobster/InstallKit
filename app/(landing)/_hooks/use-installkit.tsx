@@ -2,35 +2,34 @@
 
 import * as React from "react";
 import { useBoolean, useCopyToClipboard } from "usehooks-ts";
-import { APPS } from "@/lib/data/apps";
 import { useAnalytics } from "@/lib/hooks/use-analytics";
 import { useAppSelection } from "./use-app-selection";
 import { useBrewCommands } from "./use-brew-commands";
-import { useCustomPackages } from "./use-custom-packages";
+import { useFullCatalogPackages } from "./use-full-catalog-packages";
 
-interface BrewPickerContextValue {
+interface InstallKitContextValue {
   // App selection
   selectedApps: Set<string>;
   toggleApp: (id: string) => void;
   clearAll: () => void;
 
-  // Custom packages
-  customPackages: Map<
+  // Full catalog packages
+  fullCatalogPackages: Map<
     string,
     { token: string; name: string; type: "cask" | "formula" }
   >;
-  selectedCustomPackages: Set<string>;
-  selectedCustomPackagesMap: Map<
+  selectedFullCatalogPackages: Set<string>;
+  selectedFullCatalogPackagesMap: Map<
     string,
     { token: string; name: string; type: "cask" | "formula" }
   >;
-  toggleCustomPackage: (token: string) => void;
-  addCustomPackage: (pkg: {
+  toggleFullCatalogPackage: (token: string) => void;
+  addFullCatalogPackage: (pkg: {
     token: string;
     name: string;
     type: "cask" | "formula";
   }) => void;
-  removeCustomPackage: (token: string) => void;
+  removeFullCatalogPackage: (token: string) => void;
 
   // Commands
   brewCommand: string;
@@ -48,20 +47,20 @@ interface BrewPickerContextValue {
   onToggleMode: () => void;
   onShare: () => void;
   onClearAll: () => void;
-  setIsShareDialogOpen: (open: boolean) => void;
+  setIsShareDialogOpen: (isOpen: boolean) => void;
 
-  // Shared data
+  // Shared state
   sharedAppIds: Set<string>;
   sharedCustomTokens: Set<string>;
   kitName?: string;
   kitDescription?: string;
 }
 
-const BrewPickerContext = React.createContext<BrewPickerContextValue | null>(
+const InstallKitContext = React.createContext<InstallKitContextValue | null>(
   null,
 );
 
-interface BrewPickerProviderProps {
+interface InstallKitProviderProps {
   children: React.ReactNode;
   initialSelectedAppIds?: string[];
   initialCustomPackages?: Array<{
@@ -73,75 +72,66 @@ interface BrewPickerProviderProps {
   kitDescription?: string;
 }
 
-export function BrewPickerProvider({
+export function InstallKitProvider({
   children,
   initialSelectedAppIds = [],
   initialCustomPackages = [],
   kitName,
   kitDescription,
-}: BrewPickerProviderProps) {
-  const sharedAppIds = React.useMemo(
-    () => new Set(initialSelectedAppIds),
-    [initialSelectedAppIds],
-  );
-  const sharedCustomTokens = React.useMemo(
-    () => new Set(initialCustomPackages.map((pkg) => pkg.token)),
-    [initialCustomPackages],
-  );
-
+}: InstallKitProviderProps) {
   const { selectedApps, toggleApp, clearAll } = useAppSelection(
     initialSelectedAppIds,
   );
 
   const {
-    customPackages,
-    selectedCustomPackages,
-    selectedCustomPackagesMap,
-    toggleCustomPackage,
-    addCustomPackage,
-    removeCustomPackage,
-  } = useCustomPackages(initialCustomPackages, sharedCustomTokens);
+    customPackages: fullCatalogPackages,
+    selectedCustomPackages: selectedFullCatalogPackages,
+    selectedCustomPackagesMap: selectedFullCatalogPackagesMap,
+    toggleCustomPackage: toggleFullCatalogPackage,
+    addCustomPackage: addFullCatalogPackage,
+    removeCustomPackage: removeFullCatalogPackage,
+  } = useFullCatalogPackages(initialCustomPackages);
 
   const { brewCommand, uninstallCommand, selectedTokens } = useBrewCommands(
     selectedApps,
-    selectedCustomPackagesMap,
+    selectedFullCatalogPackagesMap,
   );
 
-  const [copiedText, copy] = useCopyToClipboard();
   const { trackCopy } = useAnalytics();
   const uninstallMode = useBoolean(false);
   const shareDialog = useBoolean(false);
 
-  const selectedCount = selectedApps.size + selectedCustomPackages.size;
-  const displayCommand = uninstallMode.value ? uninstallCommand : brewCommand;
-  const copied = copiedText === displayCommand;
+  const selectedCount = selectedApps.size + selectedFullCatalogPackages.size;
+
+  const [, copy] = useCopyToClipboard();
+  const [copied, setCopied] = React.useState(false);
 
   const handleCopy = () => {
-    if (!displayCommand) return;
-
-    // Track the copy event
-    const selectedAppNames = Array.from(selectedApps)
-      .map((appId) => APPS.find((app) => app.id === appId)?.brewName)
-      .filter(Boolean) as string[];
+    const command = uninstallMode.value ? uninstallCommand : brewCommand;
+    copy(command);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
 
     trackCopy({
       type: "brew_command",
-      command: displayCommand,
-      selectedAppsCount: selectedApps.size,
-      customPackagesCount: selectedCustomPackages.size,
+      command: command,
+      selectedAppsCount: selectedCount,
       isUninstallMode: uninstallMode.value,
-      selectedApps: selectedAppNames,
     });
-
-    copy(displayCommand);
   };
+
+  // Shared state from URL params
+  const sharedAppIds = new Set(initialSelectedAppIds);
+  const sharedCustomTokens = new Set(
+    initialCustomPackages.map((pkg) => pkg.token),
+  );
 
   const handleClearAll = () => {
     clearAll();
-    if (customPackages.size > 0) {
-      for (const token of customPackages.keys()) {
+    if (fullCatalogPackages.size > 0) {
+      for (const token of fullCatalogPackages.keys()) {
         if (!sharedCustomTokens.has(token)) {
-          removeCustomPackage(token);
+          removeFullCatalogPackage(token);
         }
       }
     }
@@ -151,16 +141,16 @@ export function BrewPickerProvider({
     shareDialog.setTrue();
   };
 
-  const value: BrewPickerContextValue = {
+  const value: InstallKitContextValue = {
     selectedApps,
     toggleApp,
     clearAll,
-    customPackages,
-    selectedCustomPackages,
-    selectedCustomPackagesMap,
-    toggleCustomPackage,
-    addCustomPackage,
-    removeCustomPackage,
+    fullCatalogPackages,
+    selectedFullCatalogPackages,
+    selectedFullCatalogPackagesMap,
+    toggleFullCatalogPackage,
+    addFullCatalogPackage,
+    removeFullCatalogPackage,
     brewCommand,
     uninstallCommand,
     selectedTokens,
@@ -180,18 +170,16 @@ export function BrewPickerProvider({
   };
 
   return (
-    <BrewPickerContext.Provider value={value}>
+    <InstallKitContext.Provider value={value}>
       {children}
-    </BrewPickerContext.Provider>
+    </InstallKitContext.Provider>
   );
 }
 
-export function useBrewPickerContext() {
-  const context = React.useContext(BrewPickerContext);
+export function useInstallKit() {
+  const context = React.useContext(InstallKitContext);
   if (!context) {
-    throw new Error(
-      "useBrewPickerContext must be used within a BrewPickerProvider",
-    );
+    throw new Error("useInstallKit must be used within an InstallKitProvider");
   }
   return context;
 }

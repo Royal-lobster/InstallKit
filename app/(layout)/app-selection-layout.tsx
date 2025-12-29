@@ -1,10 +1,10 @@
 "use client";
 
 import { AppShell } from "@/app/(layout)/app-shell";
-import { BrewPickerProvider } from "../_hooks/use-brew-picker-context";
-import { BrewPickerContent } from "./brew-picker-content";
+import { AppSelector } from "../(landing)/_components/app-selector";
+import { InstallKitProvider } from "../(landing)/_hooks/use-installkit";
 
-interface BrewPickerProps {
+interface AppSelectionLayoutProps {
   kitName?: string;
   kitDescription?: string;
   initialSelectedAppIds?: string[];
@@ -15,22 +15,22 @@ interface BrewPickerProps {
   }>;
 }
 
-export function BrewPicker({
+export function AppSelectionLayout({
   kitName,
   kitDescription,
   initialSelectedAppIds = [],
   initialCustomPackages = [],
-}: BrewPickerProps) {
+}: AppSelectionLayoutProps) {
   return (
-    <BrewPickerProvider
+    <InstallKitProvider
       initialSelectedAppIds={initialSelectedAppIds}
       initialCustomPackages={initialCustomPackages}
       kitName={kitName}
       kitDescription={kitDescription}
     >
       <AppShell>
-        <BrewPickerContent />
+        <AppSelector />
       </AppShell>
-    </BrewPickerProvider>
+    </InstallKitProvider>
   );
 }
