@@ -139,7 +139,6 @@ export function ShareDialog({
         {children}
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
-        <DialogClose />
         <div className="flex flex-col gap-1.5 p-6 pb-0">
           <DialogTitle>Share Installation Kit</DialogTitle>
           <DialogDescription>
