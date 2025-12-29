@@ -10,12 +10,10 @@ import { AppGrid, AppGridByCategory } from "./_components/app-grid-by-category";
 import { Categories } from "./_components/categories";
 import { CommandFooter } from "./_components/command-footer";
 import { FullCatalogPackagesSection } from "./_components/full-catalog-package";
+import { FullCatalogSearch } from "./_components/full-catalog-search";
 import { Header } from "./_components/header";
 import { KitSection } from "./_components/kit-section";
-import {
-  FullCatalogSearchSection,
-  SearchResultsSection,
-} from "./_components/search-results-section";
+import { SearchResultsSection } from "./_components/search-results-section";
 import { useFilteredApps } from "./_hooks/use-filtered-apps";
 import { usePackageSelection } from "./_hooks/use-package-selection";
 import { useUrlParams } from "./_hooks/use-url-params";
@@ -80,7 +78,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="mx-auto max-w-6xl px-4 py-4">
+        <div className="mx-auto max-w-6xl px-4 py-6">
           {kitName && (
             <KitSection
               name={kitName}
@@ -196,9 +194,9 @@ function AppContent({
           onToggle={onToggleFullCatalogPackage}
           onRemove={onRemoveFullCatalogPackage}
         />
-        <FullCatalogSearchSection
-          selectedTokens={selectedTokens}
+        <FullCatalogSearch
           onSelectPackage={onSelectPackage}
+          selectedTokens={selectedTokens}
         />
       </div>
     );
@@ -219,9 +217,9 @@ function AppContent({
         onToggle={onToggleFullCatalogPackage}
         onRemove={onRemoveFullCatalogPackage}
       />
-      <FullCatalogSearchSection
-        selectedTokens={selectedTokens}
+      <FullCatalogSearch
         onSelectPackage={onSelectPackage}
+        selectedTokens={selectedTokens}
       />
     </div>
   );

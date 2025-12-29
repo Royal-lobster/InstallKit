@@ -38,9 +38,9 @@ export function SearchResultsSection({
         <EmptySearchResults query={searchQuery} />
       )}
 
-      <FullCatalogSearchSection
-        selectedTokens={selectedTokens}
+      <FullCatalogSearch
         onSelectPackage={onSelectPackage}
+        selectedTokens={selectedTokens}
       />
     </div>
   );
@@ -54,25 +54,6 @@ function EmptySearchResults({ query }: EmptySearchResultsProps) {
   return (
     <div className="py-12 text-center">
       <p className="text-muted-foreground">No apps found matching "{query}"</p>
-    </div>
-  );
-}
-
-interface FullCatalogSearchSectionProps {
-  selectedTokens: Set<string>;
-  onSelectPackage: (pkg: SearchResult) => void;
-}
-
-export function FullCatalogSearchSection({
-  selectedTokens,
-  onSelectPackage,
-}: FullCatalogSearchSectionProps) {
-  return (
-    <div className="border-t border-border/40 pt-8">
-      <FullCatalogSearch
-        onSelectPackage={onSelectPackage}
-        selectedTokens={selectedTokens}
-      />
     </div>
   );
 }
