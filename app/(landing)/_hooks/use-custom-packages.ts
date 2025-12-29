@@ -31,12 +31,16 @@ export function useCustomPackages(
     );
 
   // Use initial values during SSR, localStorage values after hydration
-  const effectiveCustomPackages = mounted ? customPackagesArray : initialPackages.map((pkg) => ({
-    token: pkg.token,
-    name: pkg.name,
-    type: pkg.type,
-  }));
-  const effectiveSelectedIds = mounted ? selectedCustomPackageIds : initialPackages.map((pkg) => pkg.token);
+  const effectiveCustomPackages = mounted
+    ? customPackagesArray
+    : initialPackages.map((pkg) => ({
+        token: pkg.token,
+        name: pkg.name,
+        type: pkg.type,
+      }));
+  const effectiveSelectedIds = mounted
+    ? selectedCustomPackageIds
+    : initialPackages.map((pkg) => pkg.token);
 
   const customPackages = useMemo(
     () => new Map(effectiveCustomPackages.map((pkg) => [pkg.token, pkg])),
@@ -102,7 +106,12 @@ export function useCustomPackages(
         });
       }
     },
-    [sharedTokens, setCustomPackagesArray, setSelectedCustomPackageIds, mounted],
+    [
+      sharedTokens,
+      setCustomPackagesArray,
+      setSelectedCustomPackageIds,
+      mounted,
+    ],
   );
 
   const selectedCustomPackagesMap = useMemo(() => {

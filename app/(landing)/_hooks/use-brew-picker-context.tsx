@@ -2,6 +2,8 @@
 
 import * as React from "react";
 import { useBoolean, useCopyToClipboard } from "usehooks-ts";
+import { APPS } from "@/lib/data/apps";
+import { useAnalytics } from "@/lib/hooks/use-analytics";
 import { useAppSelection } from "./use-app-selection";
 import { useBrewCommands } from "./use-brew-commands";
 import { useCustomPackages } from "./use-custom-packages";
@@ -106,6 +108,7 @@ export function BrewPickerProvider({
   );
 
   const [copiedText, copy] = useCopyToClipboard();
+  const { trackCopy } = useAnalytics();
   const uninstallMode = useBoolean(false);
   const shareDialog = useBoolean(false);
 
@@ -115,6 +118,21 @@ export function BrewPickerProvider({
 
   const handleCopy = () => {
     if (!displayCommand) return;
+
+    // Track the copy event
+    const selectedAppNames = Array.from(selectedApps)
+      .map((appId) => APPS.find((app) => app.id === appId)?.brewName)
+      .filter(Boolean) as string[];
+
+    trackCopy({
+      type: "brew_command",
+      command: displayCommand,
+      selectedAppsCount: selectedApps.size,
+      customPackagesCount: selectedCustomPackages.size,
+      isUninstallMode: uninstallMode.value,
+      selectedApps: selectedAppNames,
+    });
+
     copy(displayCommand);
   };
 

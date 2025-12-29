@@ -19,6 +19,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useAnalytics } from "@/lib/hooks/use-analytics";
 
 interface SyncDialogProps {
   open: boolean;
@@ -47,9 +48,16 @@ const BENEFITS = [
 
 export function SyncDialog({ open, onOpenChange }: SyncDialogProps) {
   const [copiedText, copy] = useCopyToClipboard();
+  const { trackCopy } = useAnalytics();
   const copied = copiedText === SYNC_COMMAND;
 
   const handleCopy = async () => {
+    // Track the copy event
+    trackCopy({
+      type: "sync_command",
+      command: SYNC_COMMAND,
+    });
+
     await copy(SYNC_COMMAND);
   };
 
