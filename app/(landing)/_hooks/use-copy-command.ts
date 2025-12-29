@@ -27,7 +27,7 @@ export function useCopyCommand() {
     return true;
   };
 
-  const isCopied = (text: string) => copiedText === text;
+  const isCopied = (text: string) => copiedText !== "" && copiedText === text;
 
   return {
     handleCopy,
