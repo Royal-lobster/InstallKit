@@ -1,4 +1,4 @@
-import type { App } from "@/lib/schema";
+import type { App } from "@/lib/data/schema";
 import { AppCard } from "./app-card";
 
 interface AppGridViewProps {

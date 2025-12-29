@@ -1,6 +1,6 @@
+import type { App, AppCategory } from "@/lib/data/schema";
+import { AppCategoryEnum } from "@/lib/data/schema";
 import { favicon, simpleIcon } from "@/lib/helpers/icons";
-import type { App, AppCategory } from "@/lib/schema";
-import { AppCategoryEnum } from "@/lib/schema";
 
 const BROWSER_APPS: Array<App> = [
   {

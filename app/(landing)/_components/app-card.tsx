@@ -2,7 +2,7 @@
 
 "use client";
 
-import type { App } from "@/lib/schema";
+import type { App } from "@/lib/data/schema";
 import { cn } from "@/lib/utils";
 import { AppIcon } from "./app-icon";
 import { AppInfoPopover } from "./app-info-popover";

@@ -1,6 +1,6 @@
 "use client";
 
-import type { App, AppCategory } from "@/lib/schema";
+import type { App, AppCategory } from "@/lib/data/schema";
 import { AppCard } from "./app-card";
 
 interface CategorySectionProps {

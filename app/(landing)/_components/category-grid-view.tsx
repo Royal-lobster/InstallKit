@@ -1,4 +1,4 @@
-import type { App, AppCategory } from "@/lib/schema";
+import type { App, AppCategory } from "@/lib/data/schema";
 import { CategorySection } from "./category-section";
 
 interface CategoryGridViewProps {

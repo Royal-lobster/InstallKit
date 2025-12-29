@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo, useState } from "react";
 import { useIsomorphicLayoutEffect, useLocalStorage } from "usehooks-ts";
-import type { CustomPackage } from "@/lib/brew-commands";
+import type { CustomPackage } from "@/lib/helpers/brew-commands";
 
 export function useCustomPackages(
   initialPackages: Array<{

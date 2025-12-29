@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { useHomebrewCatalogue } from "@/lib/homebrew-catalogue";
+import { useHomebrewCatalogue } from "@/lib/hooks/use-catalogue";
 
 export type HomebrewInfo = {
   name?: string;

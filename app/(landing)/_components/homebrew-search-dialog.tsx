@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/dialog";
 import { APPS } from "@/lib/data/apps";
 import { range } from "@/lib/helpers/range";
-import type { SearchResult } from "@/lib/homebrew-catalogue";
+import type { SearchResult } from "@/lib/integrations/search";
 import { useHomebrewSearch } from "../_hooks/use-homebrew-search";
 import { SearchResultItem } from "./search-result-item";
 

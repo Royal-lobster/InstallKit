@@ -1,5 +1,5 @@
 import { APPS } from "@/lib/data/apps";
-import type { App } from "@/lib/schema";
+import type { App } from "@/lib/data/schema";
 
 export interface CustomPackage {
   token: string;

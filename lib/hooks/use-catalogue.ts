@@ -7,7 +7,7 @@ import {
   type HomebrewPackage,
   hasPackages,
   savePackages,
-} from "./db";
+} from "../integrations/db";
 import {
   clearIndex,
   createSearchIndex,
@@ -15,7 +15,7 @@ import {
   isIndexReady,
   type SearchResult,
   searchPackages,
-} from "./search";
+} from "../integrations/search";
 
 // Stale time: 30 minutes
 const STALE_TIME_MS = 30 * 60 * 1000;

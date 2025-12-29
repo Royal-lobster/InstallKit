@@ -3,9 +3,9 @@
 import Fuse from "fuse.js";
 import * as React from "react";
 import { APPS } from "@/lib/data/apps";
-import type { SearchResult } from "@/lib/homebrew-catalogue";
-import type { App, AppCategory } from "@/lib/schema";
-import { CATEGORIES } from "@/lib/schema";
+import type { App, AppCategory } from "@/lib/data/schema";
+import { CATEGORIES } from "@/lib/data/schema";
+import { SearchResult } from "@/lib/integrations/search";
 import { useBrewPickerContext } from "../_hooks/use-brew-picker-context";
 import { useSearchQuery } from "../_hooks/use-search-query";
 import { AppCard } from "./app-card";

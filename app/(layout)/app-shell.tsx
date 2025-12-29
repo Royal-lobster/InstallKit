@@ -15,7 +15,6 @@ import * as React from "react";
 import { SyncDialog } from "@/app/(landing)/_components/sync-dialog";
 import { useBrewPickerContext } from "@/app/(landing)/_hooks/use-brew-picker-context";
 import { useSearchQuery } from "@/app/(landing)/_hooks/use-search-query";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";

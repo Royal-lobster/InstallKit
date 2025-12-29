@@ -2,12 +2,7 @@
 
 import { useMemo } from "react";
 import { useDebounceValue } from "usehooks-ts";
-import {
-  type SearchResult,
-  useHomebrewCatalogue,
-} from "@/lib/homebrew-catalogue";
-
-export type { SearchResult };
+import { useHomebrewCatalogue } from "@/lib/hooks/use-catalogue";
 
 export function useHomebrewSearch(query: string) {
   const [debouncedQuery] = useDebounceValue(query, 150); // Faster debounce for client-side search
