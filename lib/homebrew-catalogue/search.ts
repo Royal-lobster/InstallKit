@@ -20,24 +20,24 @@ const packageList: HomebrewPackage[] = [];
 export function createSearchIndex(packages: HomebrewPackage[]): void {
   // Clear existing indexes to prevent memory leaks
   clearIndex();
-  
+
   // Create separate indexes for each field with smaller cache to save memory
   tokenIndex = new Index({
     tokenize: "forward",
     resolution: 7, // Reduced from 9
-    cache: 50,     // Reduced from 100
+    cache: 50, // Reduced from 100
   });
 
   nameIndex = new Index({
-    tokenize: "forward", 
+    tokenize: "forward",
     resolution: 7, // Reduced from 9
-    cache: 50,     // Reduced from 100
+    cache: 50, // Reduced from 100
   });
 
   descIndex = new Index({
     tokenize: "forward",
     resolution: 5,
-    cache: 25,     // Reduced from 100
+    cache: 25, // Reduced from 100
   });
 
   // Index all packages
@@ -86,8 +86,8 @@ export function searchPackages(
   const nameResults = nameIndex.search(trimmedQuery, {
     limit: searchLimit,
   }) as number[];
-  const descResults = descIndex.search(trimmedQuery, { 
-    limit: Math.min(limit, 100) // Cap desc results
+  const descResults = descIndex.search(trimmedQuery, {
+    limit: Math.min(limit, 100), // Cap desc results
   }) as number[];
 
   // Collect unique results with scores
@@ -170,7 +170,7 @@ export function clearIndex(): void {
     descIndex.clear();
     descIndex = null;
   }
-  
+
   indexedPackages.clear();
   packageList.length = 0; // More memory efficient
 }

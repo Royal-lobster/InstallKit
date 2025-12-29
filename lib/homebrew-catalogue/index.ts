@@ -5,10 +5,10 @@ export {
   hasPackages,
 } from "./db";
 export {
+  clearIndex,
   getPackageFromIndex,
   isIndexReady,
   type SearchResult,
   searchPackages,
-  clearIndex,
 } from "./search";
 export { type CatalogueState, useHomebrewCatalogue } from "./use-catalogue";

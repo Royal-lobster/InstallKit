@@ -97,7 +97,7 @@ async function fetchCatalogue(): Promise<HomebrewPackage[]> {
 
   // Process and optimize data to reduce memory usage
   const packages: HomebrewPackage[] = [];
-  
+
   // Process casks first (they're usually what users want for GUI apps)
   for (const cask of casksData) {
     packages.push({
@@ -109,7 +109,7 @@ async function fetchCatalogue(): Promise<HomebrewPackage[]> {
       type: "cask" as const,
     });
   }
-  
+
   // Then process formulae
   for (const formula of formulaeData) {
     packages.push({
@@ -121,11 +121,11 @@ async function fetchCatalogue(): Promise<HomebrewPackage[]> {
       type: "formula" as const,
     });
   }
-  
+
   // Clear source data to free memory
   formulaeData.length = 0;
   casksData.length = 0;
-  
+
   return packages;
 }
 
