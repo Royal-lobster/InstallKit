@@ -2,8 +2,10 @@
 
 import { useQueryState } from "nuqs";
 import { useState } from "react";
-import type { AppCategory } from "@/lib/data/schema";
+import type { App, AppCategory } from "@/lib/data/schema";
 import { CATEGORIES } from "@/lib/data/schema";
+import type { FullCatalogPackage } from "@/lib/helpers/brew-commands";
+import type { SearchResult } from "@/lib/integrations/search";
 import { AppGrid, AppGridByCategory } from "./_components/app-grid-by-category";
 import { Categories } from "./_components/categories";
 import { CommandFooter } from "./_components/command-footer";
@@ -92,15 +94,6 @@ export default function HomePage() {
             />
           )}
 
-          <FullCatalogPackagesSection
-            packages={fullCatalogPackages}
-            selectedTokens={selectedFullCatalogPackages}
-            sharedTokens={sharedFullCatalogTokens}
-            onToggle={toggleFullCatalogPackage}
-            onRemove={removeFullCatalogPackage}
-            showCheckbox={true}
-          />
-
           <AppContent
             hasSearchQuery={hasSearchQuery}
             searchQuery={searchQuery}
@@ -111,6 +104,11 @@ export default function HomePage() {
             selectedTokens={selectedTokens}
             onToggleApp={toggleApp}
             onSelectPackage={handleSelectPackage}
+            fullCatalogPackages={fullCatalogPackages}
+            selectedFullCatalogPackages={selectedFullCatalogPackages}
+            sharedFullCatalogTokens={sharedFullCatalogTokens}
+            onToggleFullCatalogPackage={toggleFullCatalogPackage}
+            onRemoveFullCatalogPackage={removeFullCatalogPackage}
           />
         </div>
       </main>
@@ -132,14 +130,17 @@ interface AppContentProps {
   hasSearchQuery: boolean;
   searchQuery: string;
   showCategorySections: boolean;
-  filteredApps: import("@/lib/data/schema").App[];
-  appsByCategory: Map<AppCategory, import("@/lib/data/schema").App[]>;
+  filteredApps: App[];
+  appsByCategory: Map<AppCategory, App[]>;
   selectedApps: Set<string>;
   selectedTokens: Set<string>;
   onToggleApp: (appId: string) => void;
-  onSelectPackage: (
-    pkg: import("@/lib/integrations/search").SearchResult,
-  ) => void;
+  onSelectPackage: (pkg: SearchResult) => void;
+  fullCatalogPackages: Map<string, FullCatalogPackage>;
+  selectedFullCatalogPackages: Set<string>;
+  sharedFullCatalogTokens: Set<string>;
+  onToggleFullCatalogPackage: (token: string) => void;
+  onRemoveFullCatalogPackage: (token: string) => void;
 }
 
 function AppContent({
@@ -152,17 +153,31 @@ function AppContent({
   selectedTokens,
   onToggleApp,
   onSelectPackage,
+  fullCatalogPackages,
+  selectedFullCatalogPackages,
+  sharedFullCatalogTokens,
+  onToggleFullCatalogPackage,
+  onRemoveFullCatalogPackage,
 }: AppContentProps) {
   if (hasSearchQuery) {
     return (
-      <SearchResultsSection
-        searchQuery={searchQuery}
-        filteredApps={filteredApps}
-        selectedApps={selectedApps}
-        selectedTokens={selectedTokens}
-        onToggleApp={onToggleApp}
-        onSelectPackage={onSelectPackage}
-      />
+      <div className="space-y-8">
+        <SearchResultsSection
+          searchQuery={searchQuery}
+          filteredApps={filteredApps}
+          selectedApps={selectedApps}
+          selectedTokens={selectedTokens}
+          onToggleApp={onToggleApp}
+          onSelectPackage={onSelectPackage}
+        />
+        <FullCatalogPackagesSection
+          packages={fullCatalogPackages}
+          selectedTokens={selectedFullCatalogPackages}
+          sharedTokens={sharedFullCatalogTokens}
+          onToggle={onToggleFullCatalogPackage}
+          onRemove={onRemoveFullCatalogPackage}
+        />
+      </div>
     );
   }
 
@@ -173,6 +188,13 @@ function AppContent({
           appsByCategory={appsByCategory}
           selectedApps={selectedApps}
           onToggleApp={onToggleApp}
+        />
+        <FullCatalogPackagesSection
+          packages={fullCatalogPackages}
+          selectedTokens={selectedFullCatalogPackages}
+          sharedTokens={sharedFullCatalogTokens}
+          onToggle={onToggleFullCatalogPackage}
+          onRemove={onRemoveFullCatalogPackage}
         />
         <FullCatalogSearchSection
           selectedTokens={selectedTokens}
@@ -189,6 +211,13 @@ function AppContent({
         apps={filteredApps}
         selectedApps={selectedApps}
         onToggleApp={onToggleApp}
+      />
+      <FullCatalogPackagesSection
+        packages={fullCatalogPackages}
+        selectedTokens={selectedFullCatalogPackages}
+        sharedTokens={sharedFullCatalogTokens}
+        onToggle={onToggleFullCatalogPackage}
+        onRemove={onRemoveFullCatalogPackage}
       />
       <FullCatalogSearchSection
         selectedTokens={selectedTokens}

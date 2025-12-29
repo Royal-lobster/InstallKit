@@ -11,6 +11,14 @@ interface AppCardProps {
 
 export function AppCard({ app, isSelected, onToggle }: AppCardProps) {
   return (
-    <AppSelectionCard app={app} isSelected={isSelected} onToggle={onToggle} />
+    <AppSelectionCard
+      variant="app"
+      id={app.id}
+      name={app.name}
+      app={app}
+      isSelected={isSelected}
+      onToggle={onToggle}
+      showInfoPopover={true}
+    />
   );
 }

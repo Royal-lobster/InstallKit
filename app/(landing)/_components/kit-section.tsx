@@ -59,9 +59,13 @@ export function KitSection({
               return (
                 <AppSelectionCard
                   key={app.id}
+                  variant="app"
+                  id={app.id}
+                  name={app.name}
                   app={app}
                   isSelected={isSelected}
                   onToggle={onToggleApp}
+                  showInfoPopover={true}
                 />
               );
             })}
