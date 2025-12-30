@@ -48,7 +48,7 @@ function DialogContent({
         data-slot="dialog-content"
         data-size={size}
         className={cn(
-          "data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 bg-background ring-foreground/10 rounded-xl ring-1 duration-100",
+          "data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 bg-background rounded-xl border border-border/40 shadow-2xl duration-100",
           "fixed top-1/2 left-1/2 z-50 w-full -translate-x-1/2 -translate-y-1/2 outline-none",
           "max-h-[90vh] overflow-hidden flex flex-col",
           "data-[size=sm]:max-w-sm",
@@ -115,18 +115,29 @@ function DialogDescription({
   );
 }
 
-function DialogClose({ className, ...props }: DialogPrimitive.Close.Props) {
+function DialogClose({
+  className,
+  children,
+  ...props
+}: DialogPrimitive.Close.Props) {
+  const isDefault = !children;
+
   return (
     <DialogPrimitive.Close
       data-slot="dialog-close"
       className={cn(
-        "absolute right-3 top-3 rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
+        isDefault &&
+          "absolute right-3 top-3 rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
         className,
       )}
       {...props}
     >
-      <XIcon className="size-4" weight="bold" />
-      <span className="sr-only">Close</span>
+      {children ?? (
+        <>
+          <XIcon className="size-4" weight="bold" />
+          <span className="sr-only">Close</span>
+        </>
+      )}
     </DialogPrimitive.Close>
   );
 }

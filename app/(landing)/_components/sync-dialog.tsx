@@ -14,7 +14,6 @@ import { useAnalytics } from "@/app/(landing)/_hooks/use-analytics";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogBody,
   DialogClose,
   DialogContent,
   DialogDescription,
@@ -66,60 +65,70 @@ export function SyncDialog({ children, triggerProps }: SyncDialogProps) {
   return (
     <Dialog>
       <DialogTrigger {...triggerProps}>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
-        <DialogClose />
-        <DialogHeader className="items-center pt-6 pb-2">
-          <div className="mb-3 flex size-14 items-center justify-center rounded-2xl bg-linear-to-br from-primary/20 via-primary/10 to-transparent ring-1 ring-primary/20">
-            <TerminalWindowIcon
-              className="size-7 text-primary"
-              weight="duotone"
-            />
-          </div>
-          <DialogTitle className="text-lg font-semibold tracking-tight">
-            Sync Your Existing Setup
-          </DialogTitle>
-          <DialogDescription className="text-center text-sm">
-            Already have apps installed via Homebrew? Generate a shareable
-            InstallKit link from your current setup.
-          </DialogDescription>
-        </DialogHeader>
+      <DialogContent className="max-w-md gap-0 p-0 overflow-hidden border-border/40 shadow-2xl">
+        <DialogClose className="absolute right-4 top-4 z-50" />
 
-        <DialogBody className="space-y-5">
-          <div className="space-y-2">
-            <span className="text-xs font-medium text-muted-foreground">
-              Run this in Terminal
-            </span>
-            <div className="group relative">
-              <div className="flex items-center gap-2 rounded-lg border border-border bg-secondary/50 p-3 pr-12 font-mono text-sm transition-colors group-hover:border-primary/30 group-hover:bg-secondary/70">
-                <span className="text-muted-foreground">$</span>
-                <code className="flex-1 select-all text-foreground">
+        <div className="p-6 pb-2">
+          <DialogHeader className="items-start text-left">
+            <div className="mb-4 flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/20">
+              <TerminalWindowIcon className="size-5" weight="duotone" />
+            </div>
+            <DialogTitle className="text-xl font-semibold tracking-tight">
+              Sync Your Setup
+            </DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground mt-1.5">
+              Generate a shareable InstallKit link from your current Homebrew
+              setup.
+            </DialogDescription>
+          </DialogHeader>
+        </div>
+
+        <div className="px-6 py-2 space-y-6">
+          <div className="space-y-3">
+            <div className="overflow-hidden rounded-lg border bg-zinc-950 shadow-sm">
+              <div className="flex items-center justify-between border-b border-white/5 bg-white/5 px-3 py-2">
+                <span className="text-[10px] font-medium text-zinc-400">
+                  Terminal Command
+                </span>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-6 gap-1.5 px-2 text-[10px] text-zinc-400 hover:text-white hover:bg-white/10"
+                  onClick={handleCopy}
+                >
+                  {copied ? (
+                    <>
+                      <CheckIcon className="size-3" />
+                      Copied
+                    </>
+                  ) : (
+                    <>
+                      <CopyIcon className="size-3" />
+                      Copy
+                    </>
+                  )}
+                </Button>
+              </div>
+              <div className="p-3 overflow-x-auto">
+                <code className="text-[11px] font-mono text-zinc-300 whitespace-pre-wrap break-all">
                   {SYNC_COMMAND}
                 </code>
               </div>
-              <Button
-                size="sm"
-                variant={copied ? "default" : "ghost"}
-                onClick={handleCopy}
-                className="absolute right-1.5 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
-              >
-                {copied ? (
-                  <CheckIcon className="size-4" weight="bold" />
-                ) : (
-                  <CopyIcon className="size-4" />
-                )}
-              </Button>
             </div>
+            <p className="text-[11px] text-muted-foreground text-center">
+              Paste this into your Terminal to generate your link
+            </p>
           </div>
 
           <div className="space-y-3">
-            <h3 className="text-xs font-medium text-muted-foreground">
-              What happens
+            <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              What you can do
             </h3>
-            <div className="grid gap-2.5">
+            <div className="grid gap-2">
               {BENEFITS.map((benefit) => (
                 <div
                   key={benefit.title}
-                  className="flex items-start gap-3 rounded-lg border border-border/50 bg-card/50 p-3 transition-colors hover:border-border hover:bg-card"
+                  className="flex items-start gap-3 rounded-lg border bg-card/50 p-3 transition-colors hover:bg-accent/50"
                 >
                   <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
                     <benefit.icon className="size-4" weight="duotone" />
@@ -136,15 +145,15 @@ export function SyncDialog({ children, triggerProps }: SyncDialogProps) {
               ))}
             </div>
           </div>
+        </div>
 
-          <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 px-3 py-2.5">
-            <p className="text-xs text-amber-600 dark:text-amber-400">
-              <span className="font-medium">Note:</span> This only reads your
-              installed Homebrew packages. It doesn't modify anything on your
-              Mac.
-            </p>
-          </div>
-        </DialogBody>
+        <div className="mt-6 bg-muted/30 p-4 border-t">
+          <p className="text-xs text-muted-foreground text-center">
+            <span className="font-medium text-foreground">Safe & Secure:</span>{" "}
+            This only reads your installed packages. It doesn't modify your
+            system.
+          </p>
+        </div>
       </DialogContent>
     </Dialog>
   );

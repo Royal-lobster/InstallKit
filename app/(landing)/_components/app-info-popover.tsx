@@ -1,6 +1,6 @@
 "use client";
 
-import { Info } from "@phosphor-icons/react";
+import { ArrowSquareOut, Globe, Info } from "@phosphor-icons/react";
 import type * as React from "react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -75,67 +75,80 @@ export function AppInfoPopover({ app }: AppInfoPopoverProps) {
         side="top"
         sideOffset={12}
         onClick={(e: React.MouseEvent) => e.stopPropagation()}
-        className="pointer-events-auto"
+        className="w-80 overflow-hidden p-0 pointer-events-auto"
       >
-        <div className="flex items-start gap-3">
-          <div className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-md border bg-card">
-            <AppIcon
-              iconUrl={app.iconUrl}
-              invertInDark={app.invertInDark}
-              size="md"
-            />
-          </div>
-          <div className="min-w-0 space-y-1">
-            <div className="flex items-center gap-2">
-              <p className="truncate text-sm font-semibold">
-                {brewInfo?.name ?? app.name}
-              </p>
-              <Badge variant="secondary" className="uppercase tracking-wider">
-                {brewInfo?.kind ?? "brew"}
-              </Badge>
+        <div className="p-4 pb-3">
+          <div className="flex items-start gap-3">
+            <div className="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-lg border bg-card shadow-sm">
+              <AppIcon
+                iconUrl={app.iconUrl}
+                invertInDark={app.invertInDark}
+                size="md"
+              />
             </div>
-            <p className="text-xs text-muted-foreground">{description}</p>
-            <div className="flex flex-wrap items-center gap-2">
-              <Badge
-                variant="outline"
-                className="max-w-full truncate font-mono"
-              >
-                {brewCommand}
-              </Badge>
-              {brewInfo?.version && (
-                <Badge variant="outline" className="max-w-full truncate">
-                  v{brewInfo.version}
-                </Badge>
-              )}
-            </div>
-            <div className="flex flex-wrap gap-2 pt-1">
-              <a
-                href={homebrewUrl}
-                target="_blank"
-                rel="noreferrer"
-                onClick={(e: React.MouseEvent) => e.stopPropagation()}
-                className="text-[11px] font-medium text-primary hover:underline"
-              >
-                Homebrew page
-              </a>
-              {brewInfo?.homepage && (
-                <a
-                  href={brewInfo.homepage}
-                  target="_blank"
-                  rel="noreferrer"
-                  onClick={(e: React.MouseEvent) => e.stopPropagation()}
-                  className="text-[11px] font-medium text-muted-foreground hover:underline"
+            <div className="min-w-0 space-y-1.5">
+              <div className="flex items-center gap-2">
+                <p className="truncate text-sm font-semibold leading-none">
+                  {brewInfo?.name ?? app.name}
+                </p>
+                <Badge
+                  variant="secondary"
+                  className="h-5 px-1.5 text-[10px] uppercase tracking-wider"
                 >
-                  Homepage
-                </a>
+                  {brewInfo?.kind ?? "brew"}
+                </Badge>
+              </div>
+              <p className="text-xs text-muted-foreground leading-snug">
+                {description}
+              </p>
+              <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                <Badge
+                  variant="outline"
+                  className="max-w-full truncate font-mono text-[10px]"
+                >
+                  {brewCommand}
+                </Badge>
+                {brewInfo?.version && (
+                  <Badge
+                    variant="outline"
+                    className="max-w-full truncate text-[10px]"
+                  >
+                    v{brewInfo.version}
+                  </Badge>
+                )}
+              </div>
+              {isLoading && (
+                <p className="text-[10px] text-muted-foreground animate-pulse">
+                  Loading Homebrew data...
+                </p>
               )}
             </div>
-            {isLoading && (
-              <p className="text-[11px] text-muted-foreground">
-                Loading Homebrew data...
-              </p>
-            )}
           </div>
+        </div>
+
+        <div className="flex items-center gap-4 border-t bg-muted/40 p-3">
+          <a
+            href={homebrewUrl}
+            target="_blank"
+            rel="noreferrer"
+            onClick={(e: React.MouseEvent) => e.stopPropagation()}
+            className="flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground transition-colors hover:text-primary"
+          >
+            <ArrowSquareOut className="size-3.5" />
+            Homebrew
+          </a>
+          {brewInfo?.homepage && (
+            <a
+              href={brewInfo.homepage}
+              target="_blank"
+              rel="noreferrer"
+              onClick={(e: React.MouseEvent) => e.stopPropagation()}
+              className="flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground transition-colors hover:text-primary"
+            >
+              <Globe className="size-3.5" />
+              Website
+            </a>
+          )}
         </div>
       </PopoverContent>
     </Popover>

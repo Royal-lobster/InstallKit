@@ -13,9 +13,11 @@ import {
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Dialog,
+  DialogBody,
   DialogClose,
   DialogContent,
   DialogDescription,
+  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -138,148 +140,168 @@ export function ShareDialog({
       <DialogTrigger disabled={disabled} {...triggerProps}>
         {children}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
-        <div className="flex flex-col gap-1.5 p-6 pb-0">
-          <DialogTitle>Share Installation Kit</DialogTitle>
-          <DialogDescription>
-            Create a shareable link for your selected apps that others can use
-            for quick installation.
-          </DialogDescription>
+      <DialogContent className="max-w-md gap-0 p-0 overflow-hidden">
+        <DialogClose className="absolute right-4 top-4 z-50" />
+
+        <div className="p-6 pb-2">
+          <DialogHeader className="items-start text-left p-0">
+            <div className="mb-4 flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/20">
+              <ShareNetworkIcon className="size-5" weight="duotone" />
+            </div>
+            <DialogTitle className="text-xl font-semibold tracking-tight">
+              Share Installation Kit
+            </DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground mt-1.5">
+              Create a shareable link for your selected apps that others can use
+              for quick installation.
+            </DialogDescription>
+          </DialogHeader>
         </div>
 
         <form
           onSubmit={handleSubmit((data) => generateLink.mutate(data))}
-          className="space-y-4 p-6 py-4"
+          className="flex flex-col flex-1 overflow-hidden"
         >
-          <Field>
-            <div className="flex items-center justify-between">
-              <FieldLabel htmlFor="name">Kit Name *</FieldLabel>
-              <span className="text-xs text-muted-foreground">
-                {name.length}/{MAX_NAME_LENGTH}
-              </span>
-            </div>
-            <Input
-              id="name"
-              placeholder="e.g., My Development Setup"
-              disabled={isLinkGenerated}
-              maxLength={MAX_NAME_LENGTH}
-              {...register("name")}
-            />
-            <FieldError errors={errors.name ? [errors.name] : undefined} />
-          </Field>
-
-          <Field>
-            <div className="flex items-center justify-between">
-              <FieldLabel htmlFor="description">
-                Description (optional)
-              </FieldLabel>
-              <span className="text-xs text-muted-foreground">
-                {description?.length || 0}/{MAX_DESCRIPTION_LENGTH}
-              </span>
-            </div>
-            <Textarea
-              id="description"
-              placeholder="Describe what this kit is for..."
-              disabled={isLinkGenerated}
-              rows={3}
-              {...register("description", {
-                onChange: (e) => {
-                  const value = e.target.value;
-                  if (value.length > MAX_DESCRIPTION_LENGTH) {
-                    e.target.value = value.slice(0, MAX_DESCRIPTION_LENGTH);
-                  }
-                },
-              })}
-            />
-            <FieldError
-              errors={errors.description ? [errors.description] : undefined}
-            />
-          </Field>
-
-          {!isLinkGenerated && (
-            <div className="flex items-center justify-between gap-3">
-              <Label
-                htmlFor="create-short-link"
-                className="cursor-pointer font-normal text-sm"
-              >
-                Create short link for easier sharing
-              </Label>
-              <Switch
-                id="create-short-link"
-                checked={createShortLink}
-                onCheckedChange={(checked: boolean) =>
-                  setValue("createShortLink", checked)
-                }
+          <DialogBody className="space-y-5 px-6 py-2">
+            <Field>
+              <div className="flex items-center justify-between">
+                <FieldLabel htmlFor="name">Kit Name</FieldLabel>
+                <span className="text-xs text-muted-foreground">
+                  {name.length}/{MAX_NAME_LENGTH}
+                </span>
+              </div>
+              <Input
+                id="name"
+                placeholder="e.g., My Development Setup"
+                disabled={isLinkGenerated}
+                maxLength={MAX_NAME_LENGTH}
+                {...register("name")}
               />
-            </div>
-          )}
+              <FieldError errors={errors.name ? [errors.name] : undefined} />
+            </Field>
 
-          {generateLink.isError && (
-            <p className="text-sm text-destructive font-medium">
-              {generateLink.error instanceof Error
-                ? generateLink.error.message
-                : "Failed to generate short URL. Please try again."}
-            </p>
-          )}
+            <Field>
+              <div className="flex items-center justify-between">
+                <FieldLabel htmlFor="description">
+                  Description{" "}
+                  <span className="text-muted-foreground font-normal">
+                    (Optional)
+                  </span>
+                </FieldLabel>
+                <span className="text-xs text-muted-foreground">
+                  {description?.length || 0}/{MAX_DESCRIPTION_LENGTH}
+                </span>
+              </div>
+              <Textarea
+                id="description"
+                placeholder="Describe what this kit is for..."
+                disabled={isLinkGenerated}
+                rows={3}
+                className="resize-none"
+                {...register("description", {
+                  onChange: (e) => {
+                    const value = e.target.value;
+                    if (value.length > MAX_DESCRIPTION_LENGTH) {
+                      e.target.value = value.slice(0, MAX_DESCRIPTION_LENGTH);
+                    }
+                  },
+                })}
+              />
+              <FieldError
+                errors={errors.description ? [errors.description] : undefined}
+              />
+            </Field>
 
-          {isLinkGenerated && (
-            <>
-              {shortUrl && (
+            {!isLinkGenerated && (
+              <div className="flex items-center justify-between gap-3 px-1 pb-2">
+                <Label
+                  htmlFor="create-short-link"
+                  className="cursor-pointer font-medium text-sm"
+                >
+                  Create short link
+                </Label>
+                <Switch
+                  id="create-short-link"
+                  checked={createShortLink}
+                  onCheckedChange={(checked: boolean) =>
+                    setValue("createShortLink", checked)
+                  }
+                />
+              </div>
+            )}
+
+            {generateLink.isError && (
+              <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive font-medium">
+                {generateLink.error instanceof Error
+                  ? generateLink.error.message
+                  : "Failed to generate short URL. Please try again."}
+              </div>
+            )}
+
+            {isLinkGenerated && (
+              <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                {shortUrl && (
+                  <Field>
+                    <FieldLabel htmlFor="url-type">Link Type</FieldLabel>
+                    <div className="flex gap-2">
+                      <Toggle
+                        pressed={!shortUrlMode.value}
+                        onPressedChange={() => shortUrlMode.setFalse()}
+                        variant="outline"
+                        className="flex-1"
+                      >
+                        Long URL
+                      </Toggle>
+                      <Toggle
+                        pressed={shortUrlMode.value}
+                        onPressedChange={() => shortUrlMode.setTrue()}
+                        variant="outline"
+                        className="flex-1"
+                      >
+                        Short URL
+                      </Toggle>
+                    </div>
+                  </Field>
+                )}
+
                 <Field>
-                  <FieldLabel htmlFor="url-type">Link Type</FieldLabel>
+                  <FieldLabel htmlFor="shareable-url">
+                    Shareable Link
+                  </FieldLabel>
                   <div className="flex gap-2">
-                    <Toggle
-                      pressed={!shortUrlMode.value}
-                      onPressedChange={() => shortUrlMode.setFalse()}
+                    <Input
+                      id="shareable-url"
+                      value={
+                        shortUrl && shortUrlMode.value ? shortUrl : longUrl
+                      }
+                      readOnly
+                      className="font-mono text-sm bg-muted/50"
+                    />
+                    <Button
                       variant="outline"
-                      className="flex-1"
+                      size="icon"
+                      onClick={handleCopyUrl}
+                      className="shrink-0"
+                      type="button"
                     >
-                      Long URL
-                    </Toggle>
-                    <Toggle
-                      pressed={shortUrlMode.value}
-                      onPressedChange={() => shortUrlMode.setTrue()}
-                      variant="outline"
-                      className="flex-1"
-                    >
-                      Short URL
-                    </Toggle>
+                      {copied ? (
+                        <CheckIcon className="size-4" weight="bold" />
+                      ) : (
+                        <CopyIcon className="size-4" />
+                      )}
+                    </Button>
                   </div>
                 </Field>
-              )}
+              </div>
+            )}
+          </DialogBody>
 
-              <Field>
-                <FieldLabel htmlFor="shareable-url">Shareable Link</FieldLabel>
-                <div className="flex gap-2">
-                  <Input
-                    id="shareable-url"
-                    value={shortUrl && shortUrlMode.value ? shortUrl : longUrl}
-                    readOnly
-                    className="font-mono text-sm"
-                  />
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={handleCopyUrl}
-                    className="shrink-0"
-                  >
-                    {copied ? (
-                      <CheckIcon className="size-4" weight="bold" />
-                    ) : (
-                      <CopyIcon className="size-4" />
-                    )}
-                  </Button>
-                </div>
-              </Field>
-            </>
-          )}
-
-          <div className="flex justify-end gap-2 pt-2">
+          <div className="flex justify-end gap-2 p-4 border-t bg-muted/30">
             {!isLinkGenerated ? (
               <>
                 <DialogClose
                   type="button"
-                  className={buttonVariants({ variant: "outline" })}
+                  className={buttonVariants({ variant: "ghost" })}
                 >
                   Cancel
                 </DialogClose>
