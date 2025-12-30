@@ -139,39 +139,51 @@ export function InstallationHelpDialog({
               terminal: () => (
                 <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    Open the Terminal app to run the command.
+                    Open the Terminal app to run the command. Choose one of
+                    these methods:
                   </p>
 
                   <div className="grid gap-2">
-                    <button
-                      type="button"
-                      className="flex items-center gap-3 rounded-lg border bg-card p-3 text-left transition-colors hover:bg-accent/50"
-                    >
+                    <div className="flex items-center gap-3 rounded-lg border bg-card/50 p-3">
                       <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10 text-primary">
                         <MagnifyingGlassIcon className="size-4" weight="bold" />
                       </div>
                       <div>
-                        <div className="text-sm font-medium">Spotlight</div>
+                        <div className="text-sm font-medium">
+                          Spotlight Search
+                        </div>
                         <div className="text-[11px] text-muted-foreground">
-                          Cmd + Space, type "Terminal"
+                          Press{" "}
+                          <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+                            <span className="text-xs">⌘</span>Space
+                          </kbd>
+                          , type "Terminal"
                         </div>
                       </div>
-                    </button>
+                    </div>
 
-                    <button
-                      type="button"
-                      className="flex items-center gap-3 rounded-lg border bg-card p-3 text-left transition-colors hover:bg-accent/50"
-                    >
+                    <div className="relative">
+                      <div className="absolute inset-0 flex items-center">
+                        <span className="w-full border-t border-dashed" />
+                      </div>
+                      <div className="relative flex justify-center text-xs">
+                        <span className="bg-background px-2 text-muted-foreground">
+                          or
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 rounded-lg border bg-card/50 p-3">
                       <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10 text-primary">
                         <FolderIcon className="size-4" weight="bold" />
                       </div>
                       <div>
                         <div className="text-sm font-medium">Finder</div>
                         <div className="text-[11px] text-muted-foreground">
-                          Applications → Utilities
+                          Applications → Utilities → Terminal
                         </div>
                       </div>
-                    </button>
+                    </div>
                   </div>
                 </div>
               ),
