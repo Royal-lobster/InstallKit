@@ -15,8 +15,8 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
 const { useStepper } = defineStepper(
-  { id: "homebrew", title: "Ensure Homebrew" },
   { id: "terminal", title: "Open Terminal" },
+  { id: "homebrew", title: "Ensure Homebrew" },
   { id: "paste", title: "Paste Command" },
   { id: "run", title: "Run & Finish" },
 );
