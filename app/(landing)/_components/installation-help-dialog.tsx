@@ -235,7 +235,9 @@ export function InstallationHelpDialog({
               run: () => (
                 <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    Press Enter and wait for the installation to complete.
+                    Press Enter and wait for the{" "}
+                    {isUninstallMode ? "uninstallation" : "installation"} to
+                    complete.
                   </p>
 
                   <div className="overflow-hidden rounded-lg border bg-zinc-950 shadow-sm">
@@ -249,7 +251,8 @@ export function InstallationHelpDialog({
                     <div className="p-3 font-mono text-[11px]">
                       <div className="space-y-1">
                         <div className="text-zinc-400">
-                          ==&gt; Downloading...
+                          ==&gt; {isUninstallMode ? "Removing" : "Downloading"}
+                          ...
                         </div>
                         <div className="text-zinc-500">##O#- # #</div>
                         <div className="text-zinc-300">
@@ -257,7 +260,10 @@ export function InstallationHelpDialog({
                           {isUninstallMode ? "Uninstalling" : "Installing"}
                           ...
                         </div>
-                        <div className="text-green-400 mt-2">✔ Success!</div>
+                        <div className="text-green-400 mt-2">
+                          ✔ Your apps are{" "}
+                          {isUninstallMode ? "uninstalled" : "installed"}!
+                        </div>
                       </div>
                     </div>
                   </div>
