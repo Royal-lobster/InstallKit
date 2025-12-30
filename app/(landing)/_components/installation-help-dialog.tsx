@@ -1,25 +1,24 @@
 "use client";
 
-import { CheckCircleIcon, CopyIcon, TerminalIcon } from "@phosphor-icons/react";
+import {
+  CheckCircleIcon,
+  CheckIcon,
+  CopyIcon,
+  FolderIcon,
+  MagnifyingGlassIcon,
+} from "@phosphor-icons/react";
 import { defineStepper } from "@stepperize/react";
 import { useState } from "react";
 import { useCopyToClipboard } from "usehooks-ts";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogBody,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 
 const { useStepper } = defineStepper(
   { id: "homebrew", title: "Ensure Homebrew" },
   { id: "terminal", title: "Open Terminal" },
-  { id: "paste", title: "Paste command" },
-  { id: "run", title: "Run command" },
+  { id: "paste", title: "Paste Command" },
+  { id: "run", title: "Run & Finish" },
 );
 
 interface InstallationHelpDialogProps {
@@ -52,326 +51,231 @@ export function InstallationHelpDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl" size="xl">
-        <DialogHeader>
-          <DialogTitle>
-            How to {isUninstallMode ? "Uninstall" : "Install"} Your Apps
-          </DialogTitle>
-          <DialogDescription>
-            Follow these simple steps to{" "}
-            {isUninstallMode ? "uninstall" : "install"} your selected
-            applications using Homebrew in the Terminal.
-          </DialogDescription>
-        </DialogHeader>
+      <DialogContent className="max-w-md gap-0 p-0 overflow-hidden border-border/40 shadow-2xl">
+        <DialogTitle className="sr-only">Installation Guide</DialogTitle>
 
-        <DialogBody className="space-y-4">
-          {/* Stepper Progress */}
-          <div className="flex items-center justify-between">
-            {stepper.all.map((step, index) => {
-              const stepIndex = stepper.all.findIndex((s) => s.id === step.id);
-              const currentIndex = stepper.all.findIndex(
-                (s) => s.id === stepper.current.id,
-              );
-              const isCompleted = stepIndex < currentIndex;
-              const isCurrent = step.id === stepper.current.id;
+        {/* Compact Progress Bar */}
+        <div className="flex h-1 w-full bg-secondary/50">
+          {stepper.all.map((step, index) => {
+            const currentIndex = stepper.all.findIndex(
+              (s) => s.id === stepper.current.id,
+            );
+            const isCompleted = index <= currentIndex;
 
-              return (
-                <div key={step.id} className="flex items-center flex-1 relative">
-                  {index < stepper.all.length - 1 && (
-                    <div
-                      className={`absolute left-1/2 top-4 h-0.5 w-full transition-colors ${
-                        isCompleted ? "bg-primary" : "bg-border"
-                      }`}
-                    />
-                  )}
-                  <div className="flex flex-col items-center w-full gap-1.5 relative z-10">
-                    <button
-                      type="button"
-                      onClick={() => stepper.goTo(step.id)}
-                      className={`flex h-8 w-8 items-center justify-center text-xs font-bold transition-colors ${
-                        isCurrent
-                          ? "bg-primary text-primary-foreground rounded-md"
-                          : isCompleted
-                            ? "bg-primary text-primary-foreground rounded-md"
-                            : "bg-secondary text-muted-foreground rounded-md"
-                      }`}
-                    >
-                      {isCompleted ? "✓" : index}
-                    </button>
-                    <span className="text-[10px] text-center text-muted-foreground leading-tight">
-                      {step.title}
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
+            return (
+              <div
+                key={step.id}
+                className={cn(
+                  "flex-1 transition-all duration-500",
+                  isCompleted ? "bg-primary" : "bg-transparent",
+                )}
+              />
+            );
+          })}
+        </div>
+
+        <div className="p-6 pb-2">
+          <div className="mb-6">
+            <div className="flex items-center gap-2 text-muted-foreground mb-1">
+              <span className="text-[10px] font-mono uppercase tracking-wider">
+                Step{" "}
+                {stepper.all.findIndex((s) => s.id === stepper.current.id) + 1}{" "}
+                of {stepper.all.length}
+              </span>
+            </div>
+            <h2 className="text-xl font-semibold tracking-tight">
+              {stepper.current.title}
+            </h2>
           </div>
 
-          {/* Step Content */}
-          {stepper.switch({
-            homebrew: () => (
-              <div className="space-y-3">
-                <h3 className="font-semibold">
-                  First, ensure Homebrew is installed
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Homebrew is a package manager for macOS. If you don't have it
-                  installed yet, copy and run this command:
-                </p>
-
-                <div className="overflow-hidden rounded-lg border bg-secondary/30">
-                  <div className="flex items-center justify-between gap-2 border-b bg-secondary/50 px-3 py-1.5">
-                    <div className="flex items-center gap-2">
-                      <TerminalIcon className="size-3.5 text-muted-foreground" />
-                      <span className="text-xs text-muted-foreground">
-                        Terminal Command
-                      </span>
-                    </div>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-6 gap-1 px-2 text-xs"
-                      onClick={() =>
-                        handleCopyCommand(HOMEBREW_INSTALL_COMMAND)
-                      }
-                    >
-                      {isCopied(HOMEBREW_INSTALL_COMMAND) ? (
-                        <>
-                          <CheckCircleIcon className="size-3" weight="fill" />
-                          Copied
-                        </>
-                      ) : (
-                        <>
-                          <CopyIcon className="size-3" />
-                          Copy
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                  <div className="overflow-x-auto px-3 py-2">
-                    <code className="text-xs font-mono break-all">
-                      {HOMEBREW_INSTALL_COMMAND}
-                    </code>
-                  </div>
-                </div>
-              </div>
-            ),
-            terminal: () => (
-              <div className="space-y-3">
-                <h3 className="font-semibold">Open Terminal</h3>
-                <p className="text-sm text-muted-foreground">
-                  Terminal lets you run commands. Here's how to open it:
-                </p>
-
-                <div className="rounded-lg border bg-secondary/20 p-4 space-y-3">
-                  <div className="flex items-start gap-2.5">
-                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px] font-bold shrink-0 mt-0.5">
-                      A
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium">Using Spotlight</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        Press{" "}
-                        <kbd className="px-1.5 py-0.5 text-[10px] font-semibold bg-secondary border rounded">
-                          ⌘ Cmd
-                        </kbd>{" "}
-                        +{" "}
-                        <kbd className="px-1.5 py-0.5 text-[10px] font-semibold bg-secondary border rounded">
-                          Space
-                        </kbd>
-                        , type "Terminal", press{" "}
-                        <kbd className="px-1.5 py-0.5 text-[10px] font-semibold bg-secondary border rounded">
-                          Enter
-                        </kbd>
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px] font-bold shrink-0 mt-0.5">
-                      B
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium">Using Finder</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        Applications → Utilities → Terminal
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-3 overflow-hidden rounded-md border bg-background">
-                    <div className="flex items-center gap-2 border-b bg-secondary/50 px-2.5 py-1.5">
-                      <div className="flex gap-1">
-                        <div className="h-2.5 w-2.5 rounded-full bg-red-500" />
-                        <div className="h-2.5 w-2.5 rounded-full bg-yellow-500" />
-                        <div className="h-2.5 w-2.5 rounded-full bg-green-500" />
-                      </div>
-                      <span className="text-[10px] text-muted-foreground">
-                        Terminal
-                      </span>
-                    </div>
-                    <div className="bg-black/90 px-3 py-2 font-mono text-[11px] text-green-400">
-                      <div>Last login: {new Date().toDateString()}</div>
-                      <div className="mt-1.5">
-                        user@MacBook ~ %{" "}
-                        <span className="animate-pulse">▊</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ),
-            paste: () => (
-              <div className="space-y-3">
-                <h3 className="font-semibold">Paste the command</h3>
-                <p className="text-sm text-muted-foreground">
-                  The command has been copied. Now paste it into Terminal:
-                </p>
-
-                <div className="overflow-hidden rounded-lg border bg-secondary/30">
-                  <div className="flex items-center justify-between gap-2 border-b bg-secondary/50 px-3 py-1.5">
-                    <div className="flex items-center gap-2">
-                      <TerminalIcon className="size-3.5 text-muted-foreground" />
-                      <span className="text-xs text-muted-foreground">
-                        Your Command
-                      </span>
-                    </div>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-6 gap-1 px-2 text-xs"
-                      onClick={() => handleCopyCommand(command)}
-                    >
-                      {isCopied(command) ? (
-                        <>
-                          <CheckCircleIcon className="size-3" weight="fill" />
-                          Copied
-                        </>
-                      ) : (
-                        <>
-                          <CopyIcon className="size-3" />
-                          Copy Again
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                  <div className="overflow-x-auto px-3 py-2">
-                    <code className="text-xs font-mono break-all">
-                      {command}
-                    </code>
-                  </div>
-                </div>
-
-                <div className="rounded-lg border bg-secondary/20 p-3">
-                  <p className="text-sm mb-2">
-                    In Terminal, press{" "}
-                    <kbd className="px-1.5 py-0.5 text-[10px] font-semibold bg-secondary border rounded">
-                      ⌘ Cmd
-                    </kbd>{" "}
-                    +{" "}
-                    <kbd className="px-1.5 py-0.5 text-[10px] font-semibold bg-secondary border rounded">
-                      V
-                    </kbd>{" "}
-                    to paste
+          <div className="min-h-60">
+            {stepper.switch({
+              homebrew: () => (
+                <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Homebrew is required. If you don't have it, copy and run
+                    this command first.
                   </p>
 
-                  <div className="overflow-hidden rounded-md border bg-background">
-                    <div className="flex items-center gap-2 border-b bg-secondary/50 px-2.5 py-1.5">
-                      <div className="flex gap-1">
-                        <div className="h-2.5 w-2.5 rounded-full bg-red-500" />
-                        <div className="h-2.5 w-2.5 rounded-full bg-yellow-500" />
-                        <div className="h-2.5 w-2.5 rounded-full bg-green-500" />
-                      </div>
-                      <span className="text-[10px] text-muted-foreground">
-                        Terminal
+                  <div className="overflow-hidden rounded-lg border bg-zinc-950 shadow-sm">
+                    <div className="flex items-center justify-between border-b border-white/5 bg-white/5 px-3 py-2">
+                      <span className="text-[10px] font-medium text-zinc-400">
+                        Install Command
                       </span>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-6 gap-1.5 px-2 text-[10px] text-zinc-400 hover:text-white hover:bg-white/10"
+                        onClick={() =>
+                          handleCopyCommand(HOMEBREW_INSTALL_COMMAND)
+                        }
+                      >
+                        {isCopied(HOMEBREW_INSTALL_COMMAND) ? (
+                          <>
+                            <CheckIcon className="size-3" />
+                            Copied
+                          </>
+                        ) : (
+                          <>
+                            <CopyIcon className="size-3" />
+                            Copy
+                          </>
+                        )}
+                      </Button>
                     </div>
-                    <div className="bg-black/90 px-3 py-2 font-mono text-[11px] text-green-400">
-                      <div>user@MacBook ~ % {command}</div>
-                      <div className="mt-1">
-                        <span className="animate-pulse">▊</span>
+                    <div className="p-3 overflow-x-auto">
+                      <code className="text-[11px] font-mono text-zinc-300 whitespace-pre-wrap break-all">
+                        {HOMEBREW_INSTALL_COMMAND}
+                      </code>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <CheckCircleIcon className="size-4 text-muted-foreground/50" />
+                    <span>Already have it? Skip this step.</span>
+                  </div>
+                </div>
+              ),
+              terminal: () => (
+                <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Open the Terminal app to run the command.
+                  </p>
+
+                  <div className="grid gap-2">
+                    <button
+                      type="button"
+                      className="flex items-center gap-3 rounded-lg border bg-card p-3 text-left transition-colors hover:bg-accent/50"
+                    >
+                      <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10 text-primary">
+                        <MagnifyingGlassIcon className="size-4" weight="bold" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium">Spotlight</div>
+                        <div className="text-[11px] text-muted-foreground">
+                          Cmd + Space, type "Terminal"
+                        </div>
+                      </div>
+                    </button>
+
+                    <button
+                      type="button"
+                      className="flex items-center gap-3 rounded-lg border bg-card p-3 text-left transition-colors hover:bg-accent/50"
+                    >
+                      <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10 text-primary">
+                        <FolderIcon className="size-4" weight="bold" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium">Finder</div>
+                        <div className="text-[11px] text-muted-foreground">
+                          Applications → Utilities
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              ),
+              paste: () => (
+                <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Paste the command into your terminal window.
+                  </p>
+
+                  <div className="relative overflow-hidden rounded-lg border bg-zinc-950 shadow-sm">
+                    <div className="flex items-center justify-between border-b border-white/5 bg-white/5 px-3 py-1.5">
+                      <div className="flex gap-1.5">
+                        <div className="h-2 w-2 rounded-full bg-red-500/50" />
+                        <div className="h-2 w-2 rounded-full bg-yellow-500/50" />
+                        <div className="h-2 w-2 rounded-full bg-green-500/50" />
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-5 gap-1 px-1.5 text-[10px] text-zinc-400 hover:text-white hover:bg-white/10"
+                        onClick={() => handleCopyCommand(command)}
+                      >
+                        {isCopied(command) ? "Copied" : "Copy"}
+                      </Button>
+                    </div>
+                    <div className="p-3 font-mono text-[11px]">
+                      <div className="flex gap-2 text-zinc-300 break-all">
+                        <span className="text-green-400 shrink-0">➜</span>
+                        <span className="text-blue-400 shrink-0">~</span>
+                        <span>{command}</span>
+                        <span className="animate-pulse bg-zinc-500 w-1.5 h-4 block" />
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            ),
-            run: () => (
-              <div className="space-y-3">
-                <h3 className="font-semibold">Press Enter to run</h3>
-                <p className="text-sm text-muted-foreground">
-                  After pasting, press{" "}
-                  <kbd className="px-1.5 py-0.5 text-[10px] font-semibold bg-secondary border rounded">
-                    Enter
-                  </kbd>{" "}
-                  to execute. Homebrew will{" "}
-                  {isUninstallMode ? "uninstall" : "install"} your apps.
-                </p>
 
-                <div className="rounded-lg border bg-secondary/20 p-3 space-y-2.5">
-                  <div className="overflow-hidden rounded-md border bg-background">
-                    <div className="flex items-center gap-2 border-b bg-secondary/50 px-2.5 py-1.5">
-                      <div className="flex gap-1">
-                        <div className="h-2.5 w-2.5 rounded-full bg-red-500" />
-                        <div className="h-2.5 w-2.5 rounded-full bg-yellow-500" />
-                        <div className="h-2.5 w-2.5 rounded-full bg-green-500" />
-                      </div>
-                      <span className="text-[10px] text-muted-foreground">
-                        Terminal
-                      </span>
-                    </div>
-                    <div className="bg-black/90 px-3 py-2 font-mono text-[11px] text-green-400">
-                      <div>user@MacBook ~ % {command}</div>
-                      <div className="mt-1.5 text-blue-400">
-                        ==&gt; Downloading...
-                      </div>
-                      <div className="text-yellow-400">
+                  <div className="flex items-center justify-center gap-2 rounded-md bg-muted/50 p-2 text-xs text-muted-foreground">
+                    <kbd className="rounded bg-background border px-1.5 py-0.5 font-mono text-[10px]">
+                      ⌘V
+                    </kbd>
+                    <span>to paste</span>
+                  </div>
+                </div>
+              ),
+              run: () => (
+                <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Press Enter and wait for the installation to complete.
+                  </p>
+
+                  <div className="rounded-lg border bg-zinc-950 p-3 font-mono text-[10px] shadow-sm">
+                    <div className="space-y-1">
+                      <div className="text-zinc-400">==&gt; Downloading...</div>
+                      <div className="text-zinc-500">##O#- # #</div>
+                      <div className="text-zinc-300">
                         ==&gt; {isUninstallMode ? "Uninstalling" : "Installing"}
                         ...
                       </div>
-                      <div className="text-green-400">✓ Success!</div>
+                      <div className="text-green-400 mt-2">✔ Success!</div>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-2 rounded-md bg-primary/10 p-2.5">
+                  <div className="flex items-start gap-3 rounded-lg bg-green-500/10 p-3">
                     <CheckCircleIcon
-                      className="size-4 text-primary shrink-0 mt-0.5"
+                      className="size-5 text-green-600 shrink-0"
                       weight="fill"
                     />
-                    <div className="text-xs text-muted-foreground">
-                      <p className="font-medium text-foreground">That's it!</p>
-                      <p className="mt-0.5">
-                        Your applications will be{" "}
-                        {isUninstallMode
-                          ? "uninstalled"
-                          : "installed and ready to use"}
-                        . This may take a few minutes.
+                    <div className="text-xs text-green-700 dark:text-green-400">
+                      <p className="font-medium">All done!</p>
+                      <p className="mt-0.5 opacity-90">
+                        Your apps are ready to use.
                       </p>
                     </div>
                   </div>
                 </div>
-              </div>
-            ),
-          })}
-        </DialogBody>
+              ),
+            })}
+          </div>
+        </div>
 
-        <DialogFooter>
+        <div className="p-4 pt-0 flex items-center justify-between">
           <Button
-            variant="outline"
+            variant="ghost"
+            size="sm"
             onClick={stepper.prev}
             disabled={stepper.isFirst}
+            className="text-muted-foreground hover:text-foreground"
           >
-            Previous
+            Back
           </Button>
-          <div className="flex-1 text-center text-sm text-muted-foreground">
-            Step {stepper.all.findIndex((s) => s.id === stepper.current.id) + 1}{" "}
-            of {stepper.all.length}
-          </div>
+
           {stepper.isLast ? (
-            <Button onClick={() => onOpenChange(false)}>Finish</Button>
+            <Button
+              size="sm"
+              onClick={() => onOpenChange(false)}
+              className="px-6"
+            >
+              Finish
+            </Button>
           ) : (
-            <Button onClick={stepper.next}>Next</Button>
+            <Button size="sm" onClick={stepper.next} className="px-6">
+              Next
+            </Button>
           )}
-        </DialogFooter>
+        </div>
       </DialogContent>
     </Dialog>
   );
