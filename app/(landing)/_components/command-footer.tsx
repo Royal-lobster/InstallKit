@@ -105,29 +105,40 @@ export function CommandFooter({
                 )}
               </PopoverTrigger>
               <PopoverContent
-                className="w-80"
+                className="w-80 p-0 overflow-hidden"
                 align="end"
                 side="top"
                 sideOffset={8}
               >
-                <div className="space-y-3">
-                  <div>
-                    <h4 className="font-semibold text-sm mb-1">
-                      Command copied!
-                    </h4>
-                    <p className="text-xs text-muted-foreground">
-                      Not sure what to do next? We'll guide you through the
-                      process step by step.
-                    </p>
+                <div className="p-4 pb-3">
+                  <div className="flex items-start gap-3">
+                    <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                      <CheckIcon className="size-4" weight="bold" />
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="font-semibold text-sm">Command copied!</h4>
+                      <p className="text-xs text-muted-foreground leading-snug">
+                        Paste the command into your terminal to{" "}
+                        {isUninstallMode ? "uninstall" : "install"} your apps.
+                      </p>
+                    </div>
                   </div>
-                  <Button
-                    onClick={handleOpenHelp}
-                    className="w-full gap-2"
-                    size="sm"
-                  >
-                    <QuestionIcon className="size-4" weight="bold" />
-                    Show me how to install
-                  </Button>
+                </div>
+                <div className="border-t bg-muted/40 p-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-[11px] text-muted-foreground font-medium">
+                      New to Terminal?
+                    </p>
+                    <Button
+                      onClick={handleOpenHelp}
+                      variant="secondary"
+                      size="sm"
+                      className="h-7 px-3 text-xs gap-1.5"
+                    >
+                      <QuestionIcon className="size-3.5" weight="bold" />
+                      View Guide
+                    </Button>
+                  </div>
                 </div>
               </PopoverContent>
             </Popover>
