@@ -5,7 +5,7 @@ import { useDebounceValue } from "usehooks-ts";
 import { useFullCatalog } from "@/app/(landing)/_hooks/use-full-catalog";
 
 export function useFullCatalogSearch(query: string) {
-  const [debouncedQuery] = useDebounceValue(query, 150); // Faster debounce for client-side search
+  const [debouncedQuery] = useDebounceValue(query, 300);
   const { search, isReady, isLoading, error } = useFullCatalog();
 
   const results = useMemo(() => {

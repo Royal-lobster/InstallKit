@@ -27,6 +27,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
 import { CURATED_APPS } from "@/lib/data/curated-catalogue";
 import type { SearchResult } from "@/lib/integrations/search";
 import { useFullCatalogSearch } from "../_hooks/use-full-catalog-search";
@@ -130,6 +131,26 @@ function SearchResultItem({
   );
 }
 
+function SearchResultSkeleton() {
+  return (
+    <div className="flex items-center gap-3 rounded-lg px-3 py-2.5">
+      <Skeleton className="size-8 shrink-0 rounded-md" />
+      <div className="min-w-0 flex-1 space-y-2">
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-4 w-28" />
+          <Skeleton className="h-4 w-12" />
+          <Skeleton className="h-4 w-10" />
+        </div>
+        <Skeleton className="h-3 w-48" />
+      </div>
+      <div className="flex shrink-0 items-center gap-2">
+        <Skeleton className="size-8 rounded-md" />
+        <Skeleton className="h-8 w-16 rounded-md" />
+      </div>
+    </div>
+  );
+}
+
 function FullCatalogTrigger() {
   return (
     <div className="group relative flex w-full items-center justify-between gap-4 overflow-hidden rounded-xl border border-border bg-card/50 p-4 text-left transition-all hover:border-primary/50 hover:bg-card hover:shadow-sm sm:p-5">
@@ -188,7 +209,7 @@ export function FullCatalogSearch({
               </div>
             )}
           </div>
-          <CommandList className="max-h-100 overflow-y-auto p-2">
+          <CommandList className="h-96 overflow-y-auto p-2">
             {query.trim().length < 2 && (
               <div className="flex flex-col items-center justify-center gap-4 py-12 text-center">
                 <MagnifyingGlassIcon className="size-12 text-muted-foreground/20" />
@@ -200,6 +221,15 @@ export function FullCatalogSearch({
                     Search over 10,000+ formulae and casks
                   </p>
                 </div>
+              </div>
+            )}
+            {query.trim().length >= 2 && isSearching && (
+              <div className="space-y-1">
+                <SearchResultSkeleton />
+                <SearchResultSkeleton />
+                <SearchResultSkeleton />
+                <SearchResultSkeleton />
+                <SearchResultSkeleton />
               </div>
             )}
             {query.trim().length >= 2 &&
@@ -216,7 +246,7 @@ export function FullCatalogSearch({
                   </p>
                 </div>
               )}
-            {query.trim().length >= 2 && results.length > 0 && (
+            {query.trim().length >= 2 && !isSearching && results.length > 0 && (
               <CommandGroup heading="Results">
                 {results.map((pkg) => {
                   const isInCatalog = CURATED_APPS.some(
