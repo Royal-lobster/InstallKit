@@ -162,7 +162,7 @@ export function ShareDialog({
           onSubmit={handleSubmit((data) => generateLink.mutate(data))}
           className="flex flex-col flex-1 overflow-hidden"
         >
-          <DialogBody className="space-y-5 px-6 py-2">
+          <DialogBody className="space-y-5 px-6 py-4 pb-6">
             <Field>
               <div className="flex items-center justify-between">
                 <FieldLabel htmlFor="name">Kit Name</FieldLabel>
@@ -279,9 +279,8 @@ export function ShareDialog({
                     />
                     <Button
                       variant="outline"
-                      size="icon"
                       onClick={handleCopyUrl}
-                      className="shrink-0"
+                      className="shrink-0 h-9 px-3 text-sm"
                       type="button"
                     >
                       {copied ? (
