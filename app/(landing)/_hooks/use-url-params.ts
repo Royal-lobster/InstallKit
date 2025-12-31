@@ -1,7 +1,5 @@
-"use client";
-
-import { use, useMemo } from "react";
 import { CURATED_APPS } from "@/lib/data/curated-catalogue";
+import { lookupPackageTypes } from "../_actions";
 import type { HomepageSearchParams } from "../page";
 
 export interface UrlParams {
@@ -15,47 +13,48 @@ export interface UrlParams {
   }>;
 }
 
-export function useUrlParams({
+export async function useUrlParams({
   searchParams,
 }: {
   searchParams: Promise<HomepageSearchParams>;
-}): UrlParams {
-  const params = use(searchParams);
-  return useMemo(() => {
-    const kitName = params.name || undefined;
-    const kitDescription = params.description || undefined;
-    const packagesParam = params.packages || "";
+}): Promise<UrlParams> {
+  const params = await searchParams;
+  const kitName = params.name || undefined;
+  const kitDescription = params.description || undefined;
+  const packagesParam = params.packages || "";
 
-    const packageTokens = packagesParam
-      .split(",")
-      .map((p) => p.trim())
-      .filter(Boolean);
+  const packageTokens = packagesParam
+    .split(",")
+    .map((p) => p.trim())
+    .filter(Boolean);
 
-    const selectedAppIds: string[] = [];
-    const externalTokens: string[] = [];
+  const selectedAppIds: string[] = [];
+  const externalTokens: string[] = [];
 
-    for (const token of packageTokens) {
-      const app = CURATED_APPS.find(
-        (a) => a.id === token || a.brewName === token,
-      );
-      if (app) {
-        selectedAppIds.push(app.id);
-      } else if (token) {
-        externalTokens.push(token);
-      }
+  for (const token of packageTokens) {
+    const app = CURATED_APPS.find(
+      (a) => a.id === token || a.brewName === token,
+    );
+    if (app) {
+      selectedAppIds.push(app.id);
+    } else if (token) {
+      externalTokens.push(token);
     }
+  }
 
-    const initialFullCatalogPackages = externalTokens.map((token) => ({
-      token,
-      name: token,
-      type: "cask" as const,
-    }));
+  // Lookup actual package types from Homebrew API
+  const packageTypesMap = await lookupPackageTypes(externalTokens);
 
-    return {
-      kitName,
-      kitDescription,
-      initialSelectedAppIds: selectedAppIds,
-      initialFullCatalogPackages,
-    };
-  }, [params]);
+  const initialFullCatalogPackages = externalTokens.map((token) => ({
+    token,
+    name: token,
+    type: packageTypesMap.get(token) || ("cask" as const),
+  }));
+
+  return {
+    kitName,
+    kitDescription,
+    initialSelectedAppIds: selectedAppIds,
+    initialFullCatalogPackages,
+  };
 }
