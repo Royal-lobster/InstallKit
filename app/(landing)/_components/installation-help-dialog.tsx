@@ -93,10 +93,20 @@ export function InstallationHelpDialog({
             {stepper.switch({
               homebrew: () => (
                 <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    Homebrew is required. If you don't have it, copy and run
-                    this command first.
-                  </p>
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      <a
+                        href="https://brew.sh"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-foreground hover:text-primary underline underline-offset-2 transition-colors"
+                      >
+                        Homebrew
+                      </a>{" "}
+                      is a package manager for macOS. If you don't have it, copy
+                      and run this command first.
+                    </p>
+                  </div>
 
                   <div className="overflow-hidden rounded-lg border bg-zinc-950 shadow-sm">
                     <div className="flex items-center justify-between border-b border-white/5 bg-white/5 px-3 h-9">
