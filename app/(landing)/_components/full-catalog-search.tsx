@@ -30,7 +30,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
-import { CURATED_APPS } from "@/lib/data/curated-catalogue";
+import { CURATED_APPS_BY_BREW_NAME } from "@/lib/data/curated-catalogue";
 import type { SearchResult } from "@/lib/integrations/search";
 import { useFullCatalogSearch } from "../_hooks/use-full-catalog-search";
 
@@ -275,9 +275,7 @@ export function FullCatalogSearch({
             {query.trim().length >= 2 && !isSearching && results.length > 0 && (
               <CommandGroup heading="Results">
                 {results.map((pkg) => {
-                  const isInCatalog = CURATED_APPS.some(
-                    (app) => app.brewName === pkg.token,
-                  );
+                  const isInCatalog = CURATED_APPS_BY_BREW_NAME.has(pkg.token);
                   return (
                     <SearchResultItem
                       key={`${pkg.type}-${pkg.token}`}

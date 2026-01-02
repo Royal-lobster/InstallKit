@@ -33,8 +33,11 @@ export function HomePageClient({
   initialSelectedAppIds,
   initialFullCatalogPackages,
 }: HomePageClientProps) {
-  // URL initialization only
-  useUrlInitialization(initialSelectedAppIds, initialFullCatalogPackages);
+  // URL initialization only - get shared tokens once
+  const { sharedFullCatalogTokens } = useUrlInitialization(
+    initialSelectedAppIds,
+    initialFullCatalogPackages,
+  );
 
   return (
     <CategoryProvider>
@@ -56,7 +59,7 @@ export function HomePageClient({
             />
           )}
 
-          <MainContent />
+          <MainContent sharedFullCatalogTokens={sharedFullCatalogTokens} />
         </div>
       </main>
 
@@ -65,7 +68,11 @@ export function HomePageClient({
   );
 }
 
-function MainContent() {
+function MainContent({
+  sharedFullCatalogTokens,
+}: {
+  sharedFullCatalogTokens: Set<string>;
+}) {
   // Get search query from URL
   const [searchQueryRaw] = useQueryState("search", {
     defaultValue: "",
@@ -75,9 +82,6 @@ function MainContent() {
 
   // Get category selection from context
   const { selectedCategory } = useCategory();
-
-  // Get shared full catalog tokens for URL initialization
-  const { sharedFullCatalogTokens } = useUrlInitialization([], []);
 
   // Package state
   const {

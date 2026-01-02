@@ -3,13 +3,14 @@
 import { CheckIcon, CopyIcon, ShareNetworkIcon } from "@phosphor-icons/react";
 import { useMutation } from "@tanstack/react-query";
 import type * as React from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useBoolean, useCopyToClipboard } from "usehooks-ts";
+import { useCopyToClipboard } from "usehooks-ts";
 import { z } from "zod";
 import {
   useSelectedApps,
   useSelectedFullCatalogPackages,
-} from "@/app/(landing)/_hooks/use-package-store";
+} from "@/app/(landing)/_hooks/use-package-state";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Dialog,
@@ -82,7 +83,7 @@ export function ShareDialog({
     },
   });
 
-  const shortUrlMode = useBoolean(true);
+  const [urlType, setUrlType] = useState<"short" | "long">("short");
   const [copiedText, copy] = useCopyToClipboard();
 
   const generateLink = useMutation({
@@ -120,7 +121,7 @@ export function ShareDialog({
     longUrl: "",
     shortUrl: null,
   };
-  const urlToCopy = shortUrl && shortUrlMode.value ? shortUrl : longUrl;
+  const urlToCopy = shortUrl && urlType === "short" ? shortUrl : longUrl;
   const copied = copiedText === urlToCopy;
   const isLinkGenerated = generateLink.isSuccess;
 
@@ -132,7 +133,7 @@ export function ShareDialog({
   const handleReset = () => {
     reset();
     generateLink.reset();
-    shortUrlMode.setTrue();
+    setUrlType("short");
   };
 
   return (
@@ -245,16 +246,16 @@ export function ShareDialog({
                     <FieldLabel htmlFor="url-type">Link Type</FieldLabel>
                     <div className="flex gap-2">
                       <Toggle
-                        pressed={!shortUrlMode.value}
-                        onPressedChange={() => shortUrlMode.setFalse()}
+                        pressed={urlType === "long"}
+                        onPressedChange={() => setUrlType("long")}
                         variant="outline"
                         className="flex-1"
                       >
                         Long URL
                       </Toggle>
                       <Toggle
-                        pressed={shortUrlMode.value}
-                        onPressedChange={() => shortUrlMode.setTrue()}
+                        pressed={urlType === "short"}
+                        onPressedChange={() => setUrlType("short")}
                         variant="outline"
                         className="flex-1"
                       >
@@ -272,7 +273,7 @@ export function ShareDialog({
                     <Input
                       id="shareable-url"
                       value={
-                        shortUrl && shortUrlMode.value ? shortUrl : longUrl
+                        shortUrl && urlType === "short" ? shortUrl : longUrl
                       }
                       readOnly
                       className="font-mono text-sm bg-muted/50"

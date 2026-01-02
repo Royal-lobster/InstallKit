@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { CURATED_APPS } from "@/lib/data/curated-catalogue";
+import { CURATED_APPS_BY_ID } from "@/lib/data/curated-catalogue";
 import type { FullCatalogPackage } from "@/lib/helpers/brew-commands";
 import { generateBulkBrewCommand } from "@/lib/helpers/brew-commands";
 import { usePackageStore } from "./use-package-store";
@@ -50,13 +50,13 @@ export function usePackageState() {
       state.selectedAppIds.length + state.selectedFullCatalogPackageIds.length;
 
     const selectedAppNames = state.selectedAppIds
-      .map((appId) => CURATED_APPS.find((app) => app.id === appId)?.brewName)
+      .map((appId) => CURATED_APPS_BY_ID.get(appId)?.brewName)
       .filter((name): name is string => Boolean(name));
 
     // Compute selected tokens (brew names from curated + full catalog tokens)
     const selectedTokens = new Set<string>();
     for (const appId of state.selectedAppIds) {
-      const app = CURATED_APPS.find((a) => a.id === appId);
+      const app = CURATED_APPS_BY_ID.get(appId);
       if (app) {
         selectedTokens.add(app.brewName);
       }
@@ -102,4 +102,15 @@ export function usePackageState() {
       hydrated: true,
     };
   }, [state]);
+}
+
+// Convenience selectors for backward compatibility
+export function useSelectedApps() {
+  const { selectedApps, hydrated } = usePackageState();
+  return hydrated ? selectedApps : new Set<string>();
+}
+
+export function useSelectedFullCatalogPackages() {
+  const { selectedFullCatalogPackages, hydrated } = usePackageState();
+  return hydrated ? selectedFullCatalogPackages : new Set<string>();
 }

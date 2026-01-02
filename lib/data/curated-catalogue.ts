@@ -1910,3 +1910,11 @@ export function getAppsByCategory(category: AppCategory): Array<App> {
   const apps = APPS_BY_CATEGORY[category];
   return apps ? [...apps] : [];
 }
+
+// Optimized lookup maps for O(1) access
+export const CURATED_APPS_BY_ID = new Map(
+  CURATED_APPS.map((app) => [app.id, app]),
+);
+export const CURATED_APPS_BY_BREW_NAME = new Map(
+  CURATED_APPS.map((app) => [app.brewName, app]),
+);

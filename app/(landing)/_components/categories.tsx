@@ -1,9 +1,8 @@
 "use client";
 
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import type { App, AppCategory } from "@/lib/data/schema";
+import type { AppCategory } from "@/lib/data/schema";
 import { useCategory } from "../_hooks/use-category";
-import { AppCard } from "./app-card";
 
 interface CategoriesProps {
   categories: Array<{ id: AppCategory; label: string }>;

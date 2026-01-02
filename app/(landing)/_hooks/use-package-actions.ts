@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
-import { CURATED_APPS } from "@/lib/data/curated-catalogue";
+import { CURATED_APPS_BY_BREW_NAME } from "@/lib/data/curated-catalogue";
 import type { SearchResult } from "@/lib/integrations/search";
 import { useFullCatalog } from "./use-full-catalog";
 import { usePackageStore } from "./use-package-store";
@@ -42,9 +42,7 @@ export function usePackageActions(sharedFullCatalogTokens: Set<string>) {
   const handleSelectPackage = useCallback(
     (pkg: SearchResult) => {
       // Check if it's a curated app first
-      const existingApp = CURATED_APPS.find(
-        (app) => app.brewName === pkg.token,
-      );
+      const existingApp = CURATED_APPS_BY_BREW_NAME.get(pkg.token);
       if (existingApp) {
         toggleApp(existingApp.id);
         return;

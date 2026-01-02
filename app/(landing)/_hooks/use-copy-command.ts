@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useCopyToClipboard } from "usehooks-ts";
 import {
   type CopyEvent,
@@ -9,6 +9,16 @@ export function useCopyCommand() {
   const [, copy] = useCopyToClipboard();
   const [copiedText, setCopiedText] = useState<string>("");
   const { trackCopy } = useAnalytics();
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleCopy = (text: string, trackingData?: CopyEvent) => {
     if (!text) return false;
@@ -16,8 +26,16 @@ export function useCopyCommand() {
     copy(text);
     setCopiedText(text);
 
+    // Clear any existing timeout
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
     // Clear copied state after 2 seconds
-    setTimeout(() => setCopiedText(""), 2000);
+    timeoutRef.current = setTimeout(() => {
+      setCopiedText("");
+      timeoutRef.current = null;
+    }, 2000);
 
     // Track the copy event if tracking data provided
     if (trackingData) {

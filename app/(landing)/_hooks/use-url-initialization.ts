@@ -23,21 +23,10 @@ export function useUrlInitialization(
   const params = useSearchParams();
   const hasKitName = params.get("name");
 
-  // Resolve package types for initial full catalog packages
-  const resolvedInitialPackages = useMemo(() => {
-    return initialFullCatalogPackages.map((pkg) => {
-      const catalogPackage = getPackage(pkg.token);
-      return {
-        ...pkg,
-        type: catalogPackage?.type || pkg.type,
-      };
-    });
-  }, [initialFullCatalogPackages, getPackage]);
-
   // Shared tokens that came from URL
   const sharedFullCatalogTokens = useMemo(
-    () => new Set(resolvedInitialPackages.map((pkg) => pkg.token)),
-    [resolvedInitialPackages],
+    () => new Set(initialFullCatalogPackages.map((pkg) => pkg.token)),
+    [initialFullCatalogPackages],
   );
 
   // Initialize from URL on mount or when URL parameters change
@@ -50,15 +39,25 @@ export function useUrlInitialization(
     if (
       hydrated &&
       hasKitName &&
-      (initialSelectedAppIds.length > 0 || resolvedInitialPackages.length > 0)
+      (initialSelectedAppIds.length > 0 ||
+        initialFullCatalogPackages.length > 0)
     ) {
-      initializeFromUrl(initialSelectedAppIds, resolvedInitialPackages);
+      // Use the resolved packages here to avoid dependency issues
+      const resolvedPackages = initialFullCatalogPackages.map((pkg) => {
+        const catalogPackage = getPackage(pkg.token);
+        return {
+          ...pkg,
+          type: catalogPackage?.type || pkg.type,
+        };
+      });
+      initializeFromUrl(initialSelectedAppIds, resolvedPackages);
     }
   }, [
     hydrated,
     hasKitName,
     initialSelectedAppIds,
-    resolvedInitialPackages,
+    initialFullCatalogPackages,
+    getPackage,
     initializeFromUrl,
   ]);
 
