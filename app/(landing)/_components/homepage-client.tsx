@@ -6,6 +6,7 @@ import { CategoryProvider, useCategory } from "../_hooks/use-category";
 import { useFilteredApps } from "../_hooks/use-filtered-apps";
 import { usePackageActions } from "../_hooks/use-package-actions";
 import { usePackageState } from "../_hooks/use-package-state";
+import { usePackageStore } from "../_hooks/use-package-store";
 import { useUrlInitialization } from "../_hooks/use-url-initialization";
 import { AppGrid, AppGridByCategory } from "./app-grid-by-category";
 import { Categories } from "./categories";
@@ -33,18 +34,12 @@ export function HomePageClient({
   initialSelectedAppIds,
   initialFullCatalogPackages,
 }: HomePageClientProps) {
-  // URL initialization only - get shared tokens once
-  const { sharedFullCatalogTokens } = useUrlInitialization(
-    initialSelectedAppIds,
-    initialFullCatalogPackages,
-  );
+  // URL initialization only
+  useUrlInitialization(initialSelectedAppIds, initialFullCatalogPackages);
 
   return (
     <CategoryProvider>
-      <Header
-        initialSelectedAppIds={initialSelectedAppIds}
-        initialFullCatalogPackages={initialFullCatalogPackages}
-      />
+      <Header />
 
       <main className="flex-1 pb-24">
         <Categories categories={CATEGORIES} />
@@ -59,7 +54,7 @@ export function HomePageClient({
             />
           )}
 
-          <MainContent sharedFullCatalogTokens={sharedFullCatalogTokens} />
+          <MainContent />
         </div>
       </main>
 
@@ -68,11 +63,7 @@ export function HomePageClient({
   );
 }
 
-function MainContent({
-  sharedFullCatalogTokens,
-}: {
-  sharedFullCatalogTokens: Set<string>;
-}) {
+function MainContent() {
   // Get search query from URL
   const [searchQueryRaw] = useQueryState("search", {
     defaultValue: "",
@@ -91,13 +82,18 @@ function MainContent({
     selectedTokens,
   } = usePackageState();
 
+  // Get shared tokens from store
+  const sharedFullCatalogTokens = usePackageStore(
+    (state) => state.sharedFullCatalogTokens,
+  );
+
   // Package actions
   const {
     toggleApp,
     toggleFullCatalogPackage,
     removeFullCatalogPackage,
     handleSelectPackage,
-  } = usePackageActions(sharedFullCatalogTokens);
+  } = usePackageActions();
 
   // Filtered apps based on search and category
   const { filteredApps, appsByCategory, hasSearchQuery } = useFilteredApps(

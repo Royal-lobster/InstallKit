@@ -16,34 +16,16 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { usePackageActions } from "../_hooks/use-package-actions";
 import { usePackageState } from "../_hooks/use-package-state";
-import { useUrlInitialization } from "../_hooks/use-url-initialization";
 import { SyncDialog } from "./sync-dialog";
 
-interface HeaderProps {
-  initialSelectedAppIds: string[];
-  initialFullCatalogPackages: Array<{
-    token: string;
-    name: string;
-    type: "cask" | "formula";
-  }>;
-}
-
-export function Header({
-  initialSelectedAppIds,
-  initialFullCatalogPackages,
-}: HeaderProps) {
+export function Header() {
   const [searchQuery = "", setSearchQuery] = useQueryState("search", {
     defaultValue: "",
     clearOnDefault: true,
   });
 
-  const { sharedFullCatalogTokens } = useUrlInitialization(
-    initialSelectedAppIds,
-    initialFullCatalogPackages,
-  );
-
   const { selectedCount } = usePackageState();
-  const { clearAll } = usePackageActions(sharedFullCatalogTokens);
+  const { clearAll } = usePackageActions();
 
   const hasSelection = selectedCount > 0;
 

@@ -9,10 +9,10 @@ import { usePackageStore } from "./use-package-store";
 /**
  * Package actions that require additional logic beyond store actions.
  */
-export function usePackageActions(sharedFullCatalogTokens: Set<string>) {
+export function usePackageActions() {
   const { getPackage } = useFullCatalog();
 
-  // Get store actions
+  // Get store actions - no need for wrappers now
   const toggleApp = usePackageStore((state) => state.toggleApp);
   const toggleFullCatalogPackage = usePackageStore(
     (state) => state.toggleFullCatalogPackage,
@@ -20,23 +20,10 @@ export function usePackageActions(sharedFullCatalogTokens: Set<string>) {
   const addFullCatalogPackage = usePackageStore(
     (state) => state.addFullCatalogPackage,
   );
-  const removeFullCatalogPackageAction = usePackageStore(
+  const removeFullCatalogPackage = usePackageStore(
     (state) => state.removeFullCatalogPackage,
   );
-  const clearAllAction = usePackageStore((state) => state.clearAll);
-
-  // Wrap removeFullCatalogPackage to include sharedTokens
-  const removeFullCatalogPackage = useCallback(
-    (token: string) => {
-      removeFullCatalogPackageAction(token, sharedFullCatalogTokens);
-    },
-    [removeFullCatalogPackageAction, sharedFullCatalogTokens],
-  );
-
-  // Wrap clearAll to include sharedTokens
-  const clearAll = useCallback(() => {
-    clearAllAction(sharedFullCatalogTokens);
-  }, [clearAllAction, sharedFullCatalogTokens]);
+  const clearAll = usePackageStore((state) => state.clearAll);
 
   // Handle selecting a package from search
   const handleSelectPackage = useCallback(

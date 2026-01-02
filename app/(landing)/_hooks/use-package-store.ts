@@ -17,15 +17,16 @@ interface PackageSelectionState {
   selectedAppIds: string[];
   fullCatalogPackages: FullCatalogPackage[];
   selectedFullCatalogPackageIds: string[];
+  sharedFullCatalogTokens: Set<string>;
   hydrated: boolean;
 
   // Actions
   toggleApp: (appId: string) => void;
   clearApps: () => void;
   addFullCatalogPackage: (pkg: FullCatalogPackageInput) => void;
-  removeFullCatalogPackage: (token: string, sharedTokens?: Set<string>) => void;
+  removeFullCatalogPackage: (token: string) => void;
   toggleFullCatalogPackage: (token: string) => void;
-  clearAll: (sharedTokens?: Set<string>) => void;
+  clearAll: () => void;
   setHydrated: () => void;
   initializeFromUrl: (
     appIds: string[],
@@ -42,6 +43,7 @@ export const usePackageStore = create<PackageSelectionState>()(
       selectedAppIds: [],
       fullCatalogPackages: [],
       selectedFullCatalogPackageIds: [],
+      sharedFullCatalogTokens: new Set(),
       hydrated: false,
 
       // Actions
@@ -73,10 +75,10 @@ export const usePackageStore = create<PackageSelectionState>()(
         });
       },
 
-      removeFullCatalogPackage: (token: string, sharedTokens?: Set<string>) => {
+      removeFullCatalogPackage: (token: string) => {
         set((state) => {
           // If it's a shared token (from URL), only deselect, don't remove
-          if (sharedTokens?.has(token)) {
+          if (state.sharedFullCatalogTokens.has(token)) {
             return {
               selectedFullCatalogPackageIds:
                 state.selectedFullCatalogPackageIds.filter(
@@ -107,14 +109,12 @@ export const usePackageStore = create<PackageSelectionState>()(
         });
       },
 
-      clearAll: (sharedTokens?: Set<string>) => {
+      clearAll: () => {
         set((state) => {
           // Keep shared full catalog packages but deselect them
-          const filteredPackages = sharedTokens
-            ? state.fullCatalogPackages.filter((pkg) =>
-                sharedTokens.has(pkg.token),
-              )
-            : [];
+          const filteredPackages = state.fullCatalogPackages.filter((pkg) =>
+            state.sharedFullCatalogTokens.has(pkg.token),
+          );
 
           return {
             selectedAppIds: [],
@@ -139,6 +139,9 @@ export const usePackageStore = create<PackageSelectionState>()(
             selectedAppIds: [...appIds],
             fullCatalogPackages: [...fullCatalogPkgs],
             selectedFullCatalogPackageIds: fullCatalogPkgs.map((p) => p.token),
+            sharedFullCatalogTokens: new Set(
+              fullCatalogPkgs.map((p) => p.token),
+            ),
           };
         });
       },

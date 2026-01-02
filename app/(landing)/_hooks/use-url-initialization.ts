@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useFullCatalog } from "./use-full-catalog";
 import { usePackageStore } from "./use-package-store";
 
@@ -13,7 +13,7 @@ interface InitialPackage {
 
 /**
  * Handles URL-based initialization of packages.
- * Returns sharedFullCatalogTokens for tracking URL-shared packages.
+ * Stores sharedFullCatalogTokens directly in the Zustand store.
  */
 export function useUrlInitialization(
   initialSelectedAppIds: string[],
@@ -22,12 +22,6 @@ export function useUrlInitialization(
   const { getPackage } = useFullCatalog();
   const params = useSearchParams();
   const hasKitName = params.get("name");
-
-  // Shared tokens that came from URL
-  const sharedFullCatalogTokens = useMemo(
-    () => new Set(initialFullCatalogPackages.map((pkg) => pkg.token)),
-    [initialFullCatalogPackages],
-  );
 
   // Initialize from URL on mount or when URL parameters change
   const initializeFromUrl = usePackageStore((state) => state.initializeFromUrl);
@@ -60,6 +54,4 @@ export function useUrlInitialization(
     getPackage,
     initializeFromUrl,
   ]);
-
-  return { sharedFullCatalogTokens };
 }

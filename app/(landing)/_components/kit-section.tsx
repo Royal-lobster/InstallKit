@@ -3,7 +3,6 @@
 import { CURATED_APPS } from "@/lib/data/curated-catalogue";
 import { usePackageActions } from "../_hooks/use-package-actions";
 import { usePackageState } from "../_hooks/use-package-state";
-import { useUrlInitialization } from "../_hooks/use-url-initialization";
 import { AppSelectionCard } from "./app-selection-card";
 import { FullCatalogSelectionCard } from "./full-catalog-selection-card";
 
@@ -24,15 +23,8 @@ export function KitSection({
   selectedAppIds,
   fullCatalogPackages,
 }: KitSectionProps) {
-  const { sharedFullCatalogTokens } = useUrlInitialization(
-    selectedAppIds,
-    fullCatalogPackages,
-  );
-
   const { selectedApps, selectedTokens } = usePackageState();
-  const { toggleApp, toggleFullCatalogPackage } = usePackageActions(
-    sharedFullCatalogTokens,
-  );
+  const { toggleApp, toggleFullCatalogPackage } = usePackageActions();
 
   const preselectedApps = CURATED_APPS.filter((app) =>
     selectedAppIds.includes(app.id),

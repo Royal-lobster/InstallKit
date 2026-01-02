@@ -67,9 +67,6 @@ const store: CatalogStore = {
   initPromise: null,
 };
 
-// Track if we're already initialized to prevent multiple attempts
-let isInitialized = false;
-
 /**
  * Hook to manage the Homebrew full catalog.
  *
@@ -91,9 +88,8 @@ export function useFullCatalog() {
     store.listeners.add(listener);
 
     // Initialize catalog after page load (using requestIdleCallback if available)
-    if (!hasInitialized.current && !store.initPromise && !isInitialized) {
+    if (!hasInitialized.current && !store.initPromise) {
       hasInitialized.current = true;
-      isInitialized = true;
 
       const init = () => {
         // Double-check we haven't already started initialization
