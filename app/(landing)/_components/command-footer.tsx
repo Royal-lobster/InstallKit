@@ -1,6 +1,11 @@
 "use client";
 
-import { CheckIcon, CopyIcon, ShareNetworkIcon } from "@phosphor-icons/react";
+import {
+  CheckIcon,
+  CopyIcon,
+  Question,
+  ShareNetworkIcon,
+} from "@phosphor-icons/react";
 import { useState } from "react";
 import { useBoolean } from "usehooks-ts";
 import {
@@ -19,6 +24,7 @@ export function CommandFooter() {
   const uninstallMode = useBoolean(false);
   const { handleCopy, isCopied } = useCopyCommand();
   const [popoverOpen, setPopoverOpen] = useState(false);
+  const [helpDialogOpen, setHelpDialogOpen] = useState(false);
 
   const {
     brewCommand,
@@ -117,15 +123,27 @@ export function CommandFooter() {
                     <p className="text-[11px] text-muted-foreground font-medium">
                       New to Terminal?
                     </p>
-                    <InstallationHelpDialog
-                      command={displayCommand}
-                      isUninstallMode={isUninstallMode}
-                      onBeforeOpen={() => setPopoverOpen(false)}
-                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPopoverOpen(false);
+                        setHelpDialogOpen(true);
+                      }}
+                      className="h-7 px-3 text-xs gap-1.5 inline-flex items-center justify-center rounded-md bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
+                    >
+                      <Question className="size-3.5" weight="bold" />
+                      View Guide
+                    </button>
                   </div>
                 </div>
               </PopoverContent>
             </Popover>
+            <InstallationHelpDialog
+              command={displayCommand}
+              isUninstallMode={isUninstallMode}
+              open={helpDialogOpen}
+              onOpenChange={setHelpDialogOpen}
+            />
             <ShareDialog
               disabled={!displayCommand}
               triggerProps={{
